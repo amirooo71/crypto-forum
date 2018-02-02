@@ -8,13 +8,26 @@ use Illuminate\Http\Request;
 
 class RepliesController extends Controller
 {
+    /**
+     * RepliesController constructor.
+     */
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-    public function store(Thread $thread)
+    /**
+     * @param $channelId
+     * @param Thread $thread
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store($channelId, Thread $thread, Request $request)
     {
+        $this->validate($request, [
+            'body' => 'required',
+        ]);
+
         $thread->addReply(
             [
                 'body' => \request('body'),

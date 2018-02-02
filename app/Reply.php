@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reply extends Model
 {
+    use Favorable;
+
     protected $guarded = [];
+
+    protected $with = ['owner', 'favorites'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -15,5 +19,4 @@ class Reply extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-
 }
