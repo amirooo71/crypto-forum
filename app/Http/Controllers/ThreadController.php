@@ -33,11 +33,11 @@ class ThreadController extends Controller
     }
 
     /**
-     * @param $channelId
+     * @param $channel
      * @param Thread $thread
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show($channelId, Thread $thread)
+    public function show($channel, Thread $thread)
     {
 //        return $thread->load('replies');
 //        return Thread::withCount('replies')->first();
@@ -74,10 +74,29 @@ class ThreadController extends Controller
         return redirect($thread->path());
     }
 
-
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function create()
     {
         return view('threads.create');
+    }
+
+    /**
+     * @param $channel
+     * @param Thread $thread
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     */
+    public function destroy($channel, Thread $thread)
+    {
+        $thread->delete();
+
+        if (\request()->wantsJson()) {
+            return response([], 204);
+        }
+
+        return redirect('/threads');
     }
 
     /**
