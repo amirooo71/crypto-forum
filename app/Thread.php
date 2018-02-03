@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Thread extends Model
 {
+    use RecordsActivity;
 
     protected $guarded = [];
 
@@ -73,4 +74,6 @@ class Thread extends Model
     {
         return $filters->apply($query);
     }
+
+
 }

@@ -12,7 +12,7 @@
                     </h1>
                 </div>
 
-                @foreach($threads as $thread)
+                @foreach($avtivities as $activity)
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <div class="level">
