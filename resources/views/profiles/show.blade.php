@@ -12,23 +12,10 @@
                     </h1>
                 </div>
 
-                @foreach($avtivities as $activity)
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <div class="level">
-                        <span class="flex">
-                    <a href="/profiles/{{$thread->owner->name}}">{{$thread->owner->name}}</a> <i>posted : </i>
-                            {{$thread->title}}
-                        </span>
-                                <span>{{$thread->created_at->diffForHumans()}}</span>
-                            </div>
-                        </div>
-                        <div class="panel-body">
-                            {{$thread->body}}
-                        </div>
-                    </div>
+                @foreach($activities as $activity)
+                    @include("profiles.activities.{$activity->type}")
                 @endforeach
-                {{$threads->links()}}
+                {{--{{$threads->links()}}--}}
             </div>
         </div>
     </div>
