@@ -36,4 +36,9 @@ class ActivityTest extends TestCase
         create('App\Reply');
         $this->assertEquals(2, Activity::count());
     }
+
+
+    function it_fetches_a_feed_for_any_user(){
+        $this->signIn();
+    }
 }

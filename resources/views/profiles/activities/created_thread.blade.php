@@ -1,14 +1,14 @@
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <div class="level">
-            <span class="flex">
-                {{$profileUser->name}} replied to {{$activity->subject->thread->title}}
-            </span>
-        </div>
-    </div>
-    <div class="panel-body">
+@component('profiles.activities.activity')
+
+    @slot('header')
+        {{$profileUser->name}} published
+        <a href="{{$activity->subject->path()}}">
+            {{$activity->subject->title}}
+        </a>
+    @endslot
+
+    @slot('body')
         {{$activity->subject->body}}
-    </div>
-</div>
+    @endslot
 
-
+@endcomponent
