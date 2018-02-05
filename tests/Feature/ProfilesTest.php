@@ -25,11 +25,11 @@ class ProfilesTest extends TestCase
      */
     public function profiles_display_all_threads_created_bly_the_associated_user()
     {
-        $user = create('App\User');
-        $thread = create('App\Thread', ['user_id' => $user->id]);
-        $response = $this->get('/profiles/' . $user->name);
-//        $response->assertSee($thread->title);
-//        $response->assertSee($thread->body);
+        $this->signIn();
+        $thread = create('App\Thread', ['user_id' => auth()->id()]);
+        $response = $this->get('/profiles/' . auth()->user()->name);
+        $response->assertSee($thread->title);
+        $response->assertSee($thread->body);
     }
 
 }
