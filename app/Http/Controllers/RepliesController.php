@@ -37,4 +37,28 @@ class RepliesController extends Controller
 
         return back();
     }
+
+    /**
+     * @param Reply $reply
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function update(Reply $reply)
+    {
+        $this->authorize('update', $reply);
+        $reply->update(\request(['body']));
+    }
+
+
+    /**
+     * @param Reply $reply
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function destroy(Reply $reply)
+    {
+        $this->authorize('update', $reply);
+        $reply->delete();
+        return back();
+    }
 }

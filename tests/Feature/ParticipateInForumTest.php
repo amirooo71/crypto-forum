@@ -45,4 +45,49 @@ class ParticipateInForumTest extends TestCase
         $this->post($thread->path() . '/replies', $reply->toArray());
     }
 
+    /**
+     * @test
+     */
+    function unauthorized_users_cannot_delete_replies()
+    {
+        $this->expectException('Illuminate\Auth\AuthenticationException');
+        $reply = create('App\Reply');
+        $this->delete("/replies/{$reply->id}");
+
+    }
+
+    /**
+     * @test
+     */
+    function authorized_user_can_delete_replies()
+    {
+        $this->signIn();
+        $reply = create('App\Reply', ['user_id' => auth()->id()]);
+        $response = $this->delete("/replies/{$reply->id}");
+        $response->assertStatus(302);
+    }
+
+    /**
+     * @test
+     */
+    function authorized_users_can_update_replies()
+    {
+        $this->signIn();
+        $reply = create('App\Reply', ['user_id' => auth()->id()]);
+        $response = $this->patch("/replies/{$reply->id}", ['body' => 'You been changed, fool']);
+        $response->assertStatus(200);
+    }
+
+    /**
+     * @test
+     */
+    function unauthorized_users_cannot_update_replies()
+    {
+        $this->expectException('Illuminate\Auth\AuthenticationException');
+        $reply = create('App\Reply');
+        $this->patch("/replies/{$reply->id}", ['body' => 'You been changed, fool']);
+
+    }
+
+
 }
