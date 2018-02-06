@@ -6,6 +6,12 @@
 
 <script>
 
+    window.events = new Vue();
+
+    window.flash = function (message) {
+        window.events.$emit('flash', message);
+    };
+
     export default {
         props: ['message'],
         data() {
@@ -16,9 +22,14 @@
         },
 
         created() {
+            
             if (this.message) {
                 this.flash(this.message);
             }
+
+            window.events.$on('flash', message => {
+                this.flash(message);
+            });
         },
 
         methods: {

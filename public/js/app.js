@@ -43449,6 +43449,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 
+window.events = new Vue();
+
+window.flash = function (message) {
+    window.events.$emit('flash', message);
+};
+
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['message'],
     data: function data() {
@@ -43458,9 +43464,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         };
     },
     created: function created() {
+        var _this = this;
+
         if (this.message) {
             this.flash(this.message);
         }
+
+        window.events.$on('flash', function (message) {
+            _this.flash(message);
+        });
     },
 
 
@@ -43472,10 +43484,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.hide();
         },
         hide: function hide() {
-            var _this = this;
+            var _this2 = this;
 
             setTimeout(function () {
-                _this.show = false;
+                _this2.show = false;
             }, 3000);
         }
     }
@@ -43597,7 +43609,7 @@ exports = module.exports = __webpack_require__(9)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -43627,6 +43639,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
 
             this.editing = false;
+        },
+        destroy: function destroy() {
+            axios.delete('/replies/' + this.attr.id);
+            $(this.$el).fadeOut(300, function () {
+                flash('Your reply has been deleted.');
+            });
         }
     }
 });
