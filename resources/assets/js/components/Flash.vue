@@ -19,13 +19,6 @@
             if (this.message) {
                 this.flash(this.message);
             }
-
-            this.flash(this.message);
-
-            // window.events.$on('flash', message => {
-            //     this.flash(message);
-            // });
-
         },
 
         methods: {
