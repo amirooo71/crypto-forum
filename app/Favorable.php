@@ -33,12 +33,26 @@ trait Favorable
         }
     }
 
+    public function unfavorite()
+    {
+        $attributes = ['user_id' => auth()->id()];
+        $this->favorites()->where($attributes)->delete();
+    }
+
     /**
      * @return bool
      */
     public function isFavorited()
     {
         return $this->favorites()->where(['user_id' => auth()->id()])->exists();
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsFavoritedAttribute()
+    {
+        return $this->isFavorited();
     }
 
     /**
