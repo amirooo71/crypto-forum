@@ -7,12 +7,14 @@
                     said {{$reply->created_at->diffForHumans()}}...
                 </h5>
                 <div>
-                    <favorite :reply="{{$reply}}"></favorite>
+                    @if(\Illuminate\Support\Facades\Auth::check())
+                        <favorite :reply="{{$reply}}"></favorite>
+                    @endif
                     {{--<form method="POST" action="/replies/{{$reply->id}}/favorites">--}}
-                        {{--{{csrf_field()}}--}}
-                        {{--<button class="btn btn-default" type="submit" {{$reply->isFavorited() ? 'disabled' : ''}}>--}}
-                            {{--{{$reply->favorites_count}} {{str_plural('favorite',$reply->favorites_count)}}--}}
-                        {{--</button>--}}
+                    {{--{{csrf_field()}}--}}
+                    {{--<button class="btn btn-default" type="submit" {{$reply->isFavorited() ? 'disabled' : ''}}>--}}
+                    {{--{{$reply->favorites_count}} {{str_plural('favorite',$reply->favorites_count)}}--}}
+                    {{--</button>--}}
                     {{--</form>--}}
                 </div>
             </div>

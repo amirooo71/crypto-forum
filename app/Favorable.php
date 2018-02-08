@@ -13,6 +13,12 @@ use Illuminate\Database\Eloquent\Model;
 
 trait Favorable
 {
+    protected static function bootFavorable()
+    {
+        static::deleting(function ($model) {
+            $model->favorites->each->delete();
+        });
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
@@ -36,7 +42,7 @@ trait Favorable
     public function unfavorite()
     {
         $attributes = ['user_id' => auth()->id()];
-        $this->favorites()->where($attributes)->delete();
+        $this->favorites()->where($attributes)->get()->each->delete();
     }
 
     /**
