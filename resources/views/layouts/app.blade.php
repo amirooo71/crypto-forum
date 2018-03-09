@@ -13,6 +13,15 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
+    <script>
+        window.App = {!!
+         json_encode([
+                'signedIn' => \Illuminate\Support\Facades\Auth::check(),
+                'user' => \Illuminate\Support\Facades\Auth::user(),
+         ])
+         !!};
+    </script>
+
     <style>
         body {
             padding-bottom: 100px;
