@@ -73,7 +73,8 @@
             },
 
             canUpdate() {
-                return this.data.user_id == window.app.user.id;
+                return this.authorize(user => this.data.user_id == user.id);
+                // return this.data.user_id == window.App.user.id;
             }
 
         }
