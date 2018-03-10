@@ -33,3 +33,8 @@ Route::delete('/replies/{reply}', 'RepliesController@destroy');
 Route::patch('/replies/{reply}','RepliesController@update');
 
 Route::get('/profiles/{user}', 'ProfilesController@show')->name('profile');
+
+
+
+
+Route::get('test',function (){});

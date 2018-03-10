@@ -28,8 +28,8 @@ class ParticipateInForumTest extends TestCase
         $thread = create('App\Thread');
         $reply = make('App\Reply');
         $this->post($thread->path() . '/replies', $reply->toArray());
-        $response = $this->get($thread->path());
-        $response->assertSee($reply->body);
+//        $this->assertDatabaseHas('replies', ['body' => $reply->body]);
+        $this->assertEquals(1, $thread->fresh()->replies_count);
     }
 
 
@@ -53,6 +53,7 @@ class ParticipateInForumTest extends TestCase
         $this->expectException('Illuminate\Auth\AuthenticationException');
         $reply = create('App\Reply');
         $this->delete("/replies/{$reply->id}");
+        $this->assertEquals(0,$reply->thread->replies_count);
 
     }
 
