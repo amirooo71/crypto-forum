@@ -41,4 +41,7 @@ Route::delete('/threads/{channel}/{thread}/subscriptions', 'ThreadSubscriptionsC
 
 
 Route::get('test', function () {
+
+    dd(auth()->user()->unreadNotifications);
+
 });
