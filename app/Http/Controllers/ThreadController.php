@@ -6,6 +6,7 @@ use App\Channel;
 use App\Filters\ThreadFilters;
 use App\Thread;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ThreadController extends Controller
@@ -36,15 +37,17 @@ class ThreadController extends Controller
      * @param $channel
      * @param Thread $thread
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \Exception
      */
     public function show($channel, Thread $thread)
     {
 //        return $thread->load('replies');
 //        return Thread::withCount('replies')->first();
 //        return Thread::withCount('replies')->find(52);
-
-
-        return view('threads.show',compact('thread'));
+        if (auth()->check()) {
+            auth()->user()->read($thread);
+        }
+        return view('threads.show', compact('thread'));
     }
 
     /**

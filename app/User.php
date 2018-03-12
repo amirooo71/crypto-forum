@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -24,7 +25,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token','email',
+        'password', 'remember_token', 'email',
     ];
 
     /**
@@ -50,4 +51,25 @@ class User extends Authenticatable
     {
         return $this->hasMany(Activity::class);
     }
+
+    /**
+     * @param $thread
+     * @return string
+     */
+    public function visitedThreadCacheKey($thread)
+    {
+        return sprintf("users.%s.visists.%s", $this->id, $thread->id);
+    }
+
+    /**
+     * @param $thread
+     * @throws \Exception
+     */
+    public function read($thread)
+    {
+        // Simulate that the user visisted the thread
+        cache()->forever($this->visitedThreadCacheKey($thread), Carbon::now());
+    }
+
+
 }
