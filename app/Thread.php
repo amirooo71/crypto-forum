@@ -62,7 +62,8 @@ class Thread extends Model
     public function addReply($reply)
     {
         $reply = $this->replies()->create($reply);
-        event(new ThreadHasNewReply($this, $reply));
+//        event(new ThreadHasNewReply($this, $reply));
+        $this->notifySubscribers($reply);
         return $reply;
     }
 
@@ -76,7 +77,7 @@ class Thread extends Model
             ->each
             ->notify($reply);
     }
-    
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
