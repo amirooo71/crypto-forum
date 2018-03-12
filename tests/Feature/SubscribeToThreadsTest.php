@@ -19,11 +19,7 @@ class SubscribeToThreadsTest extends TestCase
         $this->signIn();
         $thread = create('App\Thread');
         $this->post($thread->path() . '/subscriptions');
-
-        $thread->addReply([
-            'user_id' => auth()->id(),
-            'body' => 'Some reply here'
-        ]);
+        $this->assertCount(1, $thread->fresh()->subscriptions);
     }
 
     /**
