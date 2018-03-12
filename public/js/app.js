@@ -61492,7 +61492,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -61526,6 +61526,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     computed: {
         classes: function classes() {
             return ['btn', this.isActive ? 'btn-primary' : 'btn-default'];
+        },
+        labels: function labels() {
+            return this.isActive ? 'unsubscribe' : 'subscribe';
         }
     },
 
@@ -61552,7 +61555,7 @@ var render = function() {
       class: _vm.classes,
       on: { click: _vm.subscribe }
     },
-    [_vm._v("Subscribe\n")]
+    [_vm._v(_vm._s(_vm.labels) + "\n")]
   )
 }
 var staticRenderFns = []

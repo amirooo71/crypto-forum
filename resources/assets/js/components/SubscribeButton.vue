@@ -1,7 +1,7 @@
 <template>
     <button class="btn btn-default btn-block"
             :class="classes"
-            @click="subscribe">Subscribe
+            @click="subscribe">{{labels}}
     </button>
 </template>
 
@@ -19,9 +19,14 @@
         },
 
         computed: {
+
             classes() {
                 return ['btn', this.isActive ? 'btn-primary' : 'btn-default'];
-            }
+            },
+
+            labels() {
+                return this.isActive ? 'unsubscribe' : 'subscribe';
+            },
         },
 
         methods: {
