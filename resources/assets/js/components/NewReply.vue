@@ -36,7 +36,11 @@
                         this.body = '';
                         flash('Your Reply has been posted');
                         this.$emit('created', response.data);
-                    });
+                    })
+                    .catch(error => {
+                        flash(error.response.data, 'danger');
+                    })
+                ;
             },
 
         },

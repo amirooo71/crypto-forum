@@ -25,36 +25,43 @@ class RepliesController extends Controller
     /**
      * @param $channelId
      * @param Thread $thread
-     * @param Request $request
-     * @return $this|\Illuminate\Http\RedirectResponse
+     * @return $this|\Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function store($channelId, Thread $thread, Request $request)
+    public function store($channelId, Thread $thread)
     {
-        $this->validateReply();
-        
-        $reply = $thread->addReply(
-            [
-                'body' => \request('body'),
-                'user_id' => auth()->id(),
-            ]
-        );
 
-        if ($request->expectsJson()) {
-            return $reply->load('owner');
+        try {
+
+            $this->validateReply();
+            $reply = $thread->addReply(
+                [
+                    'body' => \request('body'),
+                    'user_id' => auth()->id(),
+                ]
+            );
+
+        } catch (\Exception $e) {
+            return response('Sorry, your reply could not be saved at this time.', 422);
         }
 
-        return back();
+        return $reply->load('owner');
+
     }
 
     /**
      * @param Reply $reply
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(Reply $reply)
     {
         $this->authorize('update', $reply);
-        $this->validateReply();
-        $reply->update(\request(['body']));
+        try {
+            $this->validateReply();
+            $reply->update(\request(['body']));
+        } catch (\Exception $e) {
+            return response('Sorry, your reply could not be saved at this time.', 422);
+        }
     }
 
 
