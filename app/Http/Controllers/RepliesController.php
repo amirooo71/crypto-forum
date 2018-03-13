@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePostRequest;
+use App\Notifications\YouWereMentioned;
 use App\Reply;
 use App\Thread;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -29,9 +31,24 @@ class RepliesController extends Controller
      * @param CreatePostRequest $form
      * @return mixed
      */
-    public function store($channelId, Thread $thread,CreatePostRequest $form)
+    public function store($channelId, Thread $thread, CreatePostRequest $form)
     {
         $reply = $form->persist($thread);
+
+        preg_match_all('/\@([^\s\.]+)/', $reply->body, $matches);
+
+        $names = $matches[1];
+
+        foreach ($names as $name) {
+            
+            $user = User::whereName($name)->first();
+
+            if ($user) {
+                $user->notify(new YouWereMentioned($reply));
+            }
+
+        }
+
         return $reply->load('owner');
 
     }
