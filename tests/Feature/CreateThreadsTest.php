@@ -47,8 +47,8 @@ class CreateThreadsTest extends TestCase
      */
     function a_thread_requires_a_title()
     {
-        $this->expectException('Illuminate\Validation\ValidationException');
-        $this->publishThread(['title' => null]);
+       $response = $this->publishThread(['title' => null]);
+       $response->assertStatus(422);
     }
 
     /**
@@ -56,8 +56,8 @@ class CreateThreadsTest extends TestCase
      */
     function a_thread_requires_a_body()
     {
-        $this->expectException('Illuminate\Validation\ValidationException');
-        $this->publishThread(['body' => null]);
+        $response = $this->publishThread(['body' => null]);
+        $response->assertStatus(422);
     }
 
     /**
@@ -66,9 +66,10 @@ class CreateThreadsTest extends TestCase
     function a_thread_requires_a_valid_channel()
     {
         factory('App\Channel', 2)->create();
-        $this->expectException('Illuminate\Validation\ValidationException');
-        $this->publishThread(['channel_id' => null]);
-        $this->publishThread(['channel_id' => 999]);
+        $response = $this->publishThread(['channel_id' => null]);
+        $response->assertStatus(422);
+        $response = $this->publishThread(['channel_id' => 999]);
+        $response->assertStatus(422);
     }
 
     /**
@@ -101,12 +102,13 @@ class CreateThreadsTest extends TestCase
 
     /**
      * @param array $overrides
+     * @return \Illuminate\Foundation\Testing\TestResponse
      */
     private function publishThread($overrides = [])
     {
         $this->signIn();
         $thread = make('App\Thread', $overrides);
-        $this->post('/threads', $thread->toArray());
+        return $this->post('/threads', $thread->toArray());
     }
 
 

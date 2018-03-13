@@ -26,7 +26,9 @@ Route::delete('threads/{channel}/{thread}', 'ThreadController@destroy');
 Route::post('threads', 'ThreadController@store');
 Route::get('threads/{channel}', 'ThreadController@index');
 Route::get('/threads/{channel}/{thread}/replies', 'RepliesController@index');
+
 Route::post('/threads/{channel}/{thread}/replies', 'RepliesController@store');
+
 Route::post('/replies/{reply}/favorites', 'FavoritesController@store');
 Route::delete('/replies/{reply}/favorites', 'FavoritesController@destroy');
 Route::delete('/replies/{reply}', 'RepliesController@destroy');
@@ -42,6 +44,6 @@ Route::delete('/threads/{channel}/{thread}/subscriptions', 'ThreadSubscriptionsC
 
 Route::get('test', function () {
 
-    dd(auth()->user()->unreadNotifications);
+   auth()->loginUsingId(51);
 
 });

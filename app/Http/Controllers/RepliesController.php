@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreatePostRequest;
 use App\Reply;
 use App\Thread;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class RepliesController extends Controller
 {
@@ -24,24 +26,12 @@ class RepliesController extends Controller
     /**
      * @param $channelId
      * @param Thread $thread
-     * @return $this|\Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     * @param CreatePostRequest $form
+     * @return mixed
      */
-    public function store($channelId, Thread $thread)
+    public function store($channelId, Thread $thread,CreatePostRequest $form)
     {
-
-        try {
-            $this->validate(\request(), ['body' => 'required|spamfree']);
-            $reply = $thread->addReply(
-                [
-                    'body' => \request('body'),
-                    'user_id' => auth()->id(),
-                ]
-            );
-
-        } catch (\Exception $e) {
-            return response('Sorry, your reply could not be saved at this time.', 422);
-        }
-
+        $reply = $form->persist($thread);
         return $reply->load('owner');
 
     }
