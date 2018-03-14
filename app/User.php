@@ -79,5 +79,13 @@ class User extends Authenticatable
         cache()->forever($this->visitedThreadCacheKey($thread), Carbon::now());
     }
 
+    /**
+     * @return string
+     */
+    public function getAvatarPathAttribute($avatar)
+    {
+        return asset($avatar ? '/storage/' . $avatar : '/storage/avatars/default.jpg');
+    }
+
 
 }

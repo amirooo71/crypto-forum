@@ -17630,6 +17630,7 @@ Vue.component('flash', __webpack_require__(164));
 Vue.component('paginator', __webpack_require__(170));
 Vue.component('user-notifications', __webpack_require__(175));
 Vue.component('thread-view', __webpack_require__(180));
+Vue.component('avatar-form', __webpack_require__(221));
 
 var app = new Vue({
   el: '#app'
@@ -63470,6 +63471,201 @@ $.fn.caret.apis = methods;
 
 }));
 
+
+/***/ }),
+/* 221 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(222)
+}
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(224)
+/* template */
+var __vue_template__ = __webpack_require__(225)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = "data-v-78f014b4"
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/AvatarForm.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-78f014b4", Component.options)
+  } else {
+    hotAPI.reload("data-v-78f014b4", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 222 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(223);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(4)("5cb08626", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-78f014b4\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./AvatarForm.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-78f014b4\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./AvatarForm.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 223 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(3)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 224 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    name: "avatar-form",
+
+    props: ['user'],
+
+    data: function data() {
+        return {
+            avatar: ''
+        };
+    },
+
+
+    methods: {
+        onChange: function onChange(e) {
+            var _this = this;
+
+            if (!e.target.files.length) return;
+            var avatar = e.target.files[0];
+            var reader = new FileReader();
+            reader.readAsDataURL(avatar);
+
+            reader.onload = function (e) {
+                _this.avatar = e.target.result;
+            };
+
+            this.persist(avatar);
+        },
+        persist: function persist(avatar) {
+            var data = new FormData();
+            data.append('avatar', avatar);
+            axios.post('/api/users/' + this.user.name + '/avatar', data);
+        }
+    },
+
+    computed: {
+        canUpdate: function canUpdate() {
+            var _this2 = this;
+
+            return this.authorize(function (user) {
+                return user.id === _this2.user.id;
+            });
+        }
+    }
+
+});
+
+/***/ }),
+/* 225 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("h1", [_vm._v("\n        " + _vm._s(_vm.user.name) + "\n    ")]),
+    _vm._v(" "),
+    _vm.canUpdate
+      ? _c(
+          "form",
+          { attrs: { method: "POST", enctype: "multipart/form-data" } },
+          [
+            _c("input", {
+              attrs: { type: "file", name: "avatar", accept: "image/*" },
+              on: { change: _vm.onChange }
+            })
+          ]
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    _c("img", {
+      attrs: { src: _vm.avatar, alt: "", width: "50", height: "50" }
+    })
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-78f014b4", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);
