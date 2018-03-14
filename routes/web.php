@@ -14,9 +14,9 @@ Route::get('/home', 'HomeController@index')->name('home');
  |--------------------------------------------------------
  */
 Route::get('threads', 'ThreadController@index');
+Route::get('threads/create', 'ThreadController@create');
 Route::post('threads', 'ThreadController@store');
 Route::get('threads/{channel}', 'ThreadController@index');
-Route::get('threads/create', 'ThreadController@create');
 Route::get('threads/{channel}/{thread}', 'ThreadController@show');
 Route::delete('threads/{channel}/{thread}', 'ThreadController@destroy');
 /*
@@ -66,11 +66,5 @@ Route::get('api/users', 'Api\UsersController@index');
  |         UsersAvatarController Controller Routes
  |--------------------------------------------------------
  */
-Route::post('api/users/{user}/avatar', 'Api\UsersAvatarController@store');
+Route::post('api/users/{user}/avatar', 'Api\UsersAvatarController@store')->middleware('auth')->name('avatar');
 
-
-Route::get('test', function () {
-
-    auth()->loginUsingId(51);
-
-});

@@ -7,13 +7,6 @@ use App\Http\Controllers\Controller;
 
 class UsersAvatarController extends Controller
 {
-    /**
-     * UsersAvatarController constructor.
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     public function store()
     {

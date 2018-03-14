@@ -24,6 +24,7 @@ class CreateThreadsTest extends TestCase
      */
     function guests_cannot_see_the_create_thread_page()
     {
+
         $this->expectException('Illuminate\Auth\AuthenticationException');
         $response = $this->get('/threads/create');
         $response->assertRedirect('/login');
@@ -47,8 +48,8 @@ class CreateThreadsTest extends TestCase
      */
     function a_thread_requires_a_title()
     {
-       $response = $this->publishThread(['title' => null]);
-       $response->assertStatus(422);
+        $response = $this->publishThread(['title' => null]);
+        $response->assertStatus(422);
     }
 
     /**

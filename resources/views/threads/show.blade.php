@@ -13,9 +13,11 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <div class="level">
-                            <span class="flex">
+                                <img src="/storage/{{$thread->owner->avatar_path}}" alt="{{$thread->owner->name}}"
+                                     width="25" height="25" class="mr-1">
+                                <span class="flex">
                                  <a href="/profiles/{{$thread->owner->name}}">{{$thread->owner->name}}</a> <i>posted : </i>
-                                {{$thread->title}}
+                                    {{$thread->title}}
                             </span>
                                 @can('update',$thread)
                                     <form action="{{$thread->path()}}" method="POST">
