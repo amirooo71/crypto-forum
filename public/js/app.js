@@ -48435,8 +48435,8 @@ module.exports = function spread(callback) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global, setImmediate) {/*!
- * Vue.js v2.5.13
- * (c) 2014-2017 Evan You
+ * Vue.js v2.5.14
+ * (c) 2014-2018 Evan You
  * Released under the MIT License.
  */
 
@@ -48617,9 +48617,15 @@ var hyphenate = cached(function (str) {
 });
 
 /**
- * Simple bind, faster than native
+ * Simple bind polyfill for environments that do not support it... e.g.
+ * PhantomJS 1.x. Technically we don't need this anymore since native bind is
+ * now more performant in most browsers, but removing it would be breaking for
+ * code that was able to run in PhantomJS 1.x, so this must be kept for
+ * backwards compatibility.
  */
-function bind (fn, ctx) {
+
+/* istanbul ignore next */
+function polyfillBind (fn, ctx) {
   function boundFn (a) {
     var l = arguments.length;
     return l
@@ -48628,10 +48634,18 @@ function bind (fn, ctx) {
         : fn.call(ctx, a)
       : fn.call(ctx)
   }
-  // record original fn length
+
   boundFn._length = fn.length;
   return boundFn
 }
+
+function nativeBind (fn, ctx) {
+  return fn.bind(ctx)
+}
+
+var bind = Function.prototype.bind
+  ? nativeBind
+  : polyfillBind;
 
 /**
  * Convert an Array-like object to a real Array.
@@ -48862,7 +48876,7 @@ var config = ({
    * Exposed for legacy reasons
    */
   _lifecycleHooks: LIFECYCLE_HOOKS
-});
+})
 
 /*  */
 
@@ -48906,7 +48920,6 @@ function parsePath (path) {
 
 /*  */
 
-
 // can we use __proto__?
 var hasProto = '__proto__' in {};
 
@@ -48945,7 +48958,7 @@ var _isServer;
 var isServerRendering = function () {
   if (_isServer === undefined) {
     /* istanbul ignore if */
-    if (!inBrowser && typeof global !== 'undefined') {
+    if (!inBrowser && !inWeex && typeof global !== 'undefined') {
       // detect presence of vue-server-renderer and avoid
       // Webpack shimming the process
       _isServer = global['process'].env.VUE_ENV === 'server';
@@ -49202,8 +49215,7 @@ function createTextVNode (val) {
 // used for static nodes and slot nodes because they may be reused across
 // multiple renders, cloning them avoids errors when DOM manipulations rely
 // on their elm reference.
-function cloneVNode (vnode, deep) {
-  var componentOptions = vnode.componentOptions;
+function cloneVNode (vnode) {
   var cloned = new VNode(
     vnode.tag,
     vnode.data,
@@ -49211,7 +49223,7 @@ function cloneVNode (vnode, deep) {
     vnode.text,
     vnode.elm,
     vnode.context,
-    componentOptions,
+    vnode.componentOptions,
     vnode.asyncFactory
   );
   cloned.ns = vnode.ns;
@@ -49222,24 +49234,7 @@ function cloneVNode (vnode, deep) {
   cloned.fnOptions = vnode.fnOptions;
   cloned.fnScopeId = vnode.fnScopeId;
   cloned.isCloned = true;
-  if (deep) {
-    if (vnode.children) {
-      cloned.children = cloneVNodes(vnode.children, true);
-    }
-    if (componentOptions && componentOptions.children) {
-      componentOptions.children = cloneVNodes(componentOptions.children, true);
-    }
-  }
   return cloned
-}
-
-function cloneVNodes (vnodes, deep) {
-  var len = vnodes.length;
-  var res = new Array(len);
-  for (var i = 0; i < len; i++) {
-    res[i] = cloneVNode(vnodes[i], deep);
-  }
-  return res
 }
 
 /*
@@ -49248,7 +49243,9 @@ function cloneVNodes (vnodes, deep) {
  */
 
 var arrayProto = Array.prototype;
-var arrayMethods = Object.create(arrayProto);[
+var arrayMethods = Object.create(arrayProto);
+
+var methodsToPatch = [
   'push',
   'pop',
   'shift',
@@ -49256,7 +49253,12 @@ var arrayMethods = Object.create(arrayProto);[
   'splice',
   'sort',
   'reverse'
-].forEach(function (method) {
+];
+
+/**
+ * Intercept mutating methods and emit events
+ */
+methodsToPatch.forEach(function (method) {
   // cache original method
   var original = arrayProto[method];
   def(arrayMethods, method, function mutator () {
@@ -49287,20 +49289,20 @@ var arrayMethods = Object.create(arrayProto);[
 var arrayKeys = Object.getOwnPropertyNames(arrayMethods);
 
 /**
- * By default, when a reactive property is set, the new value is
- * also converted to become reactive. However when passing down props,
- * we don't want to force conversion because the value may be a nested value
- * under a frozen data structure. Converting it would defeat the optimization.
+ * In some cases we may want to disable observation inside a component's
+ * update computation.
  */
-var observerState = {
-  shouldConvert: true
-};
+var shouldObserve = true;
+
+function toggleObserving (value) {
+  shouldObserve = value;
+}
 
 /**
- * Observer class that are attached to each observed
- * object. Once attached, the observer converts target
+ * Observer class that is attached to each observed
+ * object. Once attached, the observer converts the target
  * object's property keys into getter/setters that
- * collect dependencies and dispatches updates.
+ * collect dependencies and dispatch updates.
  */
 var Observer = function Observer (value) {
   this.value = value;
@@ -49326,7 +49328,7 @@ var Observer = function Observer (value) {
 Observer.prototype.walk = function walk (obj) {
   var keys = Object.keys(obj);
   for (var i = 0; i < keys.length; i++) {
-    defineReactive(obj, keys[i], obj[keys[i]]);
+    defineReactive(obj, keys[i]);
   }
 };
 
@@ -49376,7 +49378,7 @@ function observe (value, asRootData) {
   if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
     ob = value.__ob__;
   } else if (
-    observerState.shouldConvert &&
+    shouldObserve &&
     !isServerRendering() &&
     (Array.isArray(value) || isPlainObject(value)) &&
     Object.isExtensible(value) &&
@@ -49409,6 +49411,9 @@ function defineReactive (
 
   // cater for pre-defined getter/setters
   var getter = property && property.get;
+  if (!getter && arguments.length === 2) {
+    val = obj[key];
+  }
   var setter = property && property.set;
 
   var childOb = !shallow && observe(val);
@@ -49455,6 +49460,12 @@ function defineReactive (
  * already exist.
  */
 function set (target, key, val) {
+  if ("development" !== 'production' &&
+    !Array.isArray(target) &&
+    !isObject(target)
+  ) {
+    warn(("Cannot set reactive property on non-object/array value: " + target));
+  }
   if (Array.isArray(target) && isValidArrayIndex(key)) {
     target.length = Math.max(target.length, key);
     target.splice(key, 1, val);
@@ -49485,6 +49496,12 @@ function set (target, key, val) {
  * Delete a property and trigger change if necessary.
  */
 function del (target, key) {
+  if ("development" !== 'production' &&
+    !Array.isArray(target) &&
+    !isObject(target)
+  ) {
+    warn(("Cannot delete reactive property on non-object/array value: " + target));
+  }
   if (Array.isArray(target) && isValidArrayIndex(key)) {
     target.splice(key, 1);
     return
@@ -49951,12 +49968,18 @@ function validateProp (
   var prop = propOptions[key];
   var absent = !hasOwn(propsData, key);
   var value = propsData[key];
-  // handle boolean props
-  if (isType(Boolean, prop.type)) {
+  // boolean casting
+  var booleanIndex = getTypeIndex(Boolean, prop.type);
+  if (booleanIndex > -1) {
     if (absent && !hasOwn(prop, 'default')) {
       value = false;
-    } else if (!isType(String, prop.type) && (value === '' || value === hyphenate(key))) {
-      value = true;
+    } else if (value === '' || value === hyphenate(key)) {
+      // only cast empty string / same name to boolean if
+      // boolean has higher priority
+      var stringIndex = getTypeIndex(String, prop.type);
+      if (stringIndex < 0 || booleanIndex < stringIndex) {
+        value = true;
+      }
     }
   }
   // check default value
@@ -49964,10 +49987,10 @@ function validateProp (
     value = getPropDefaultValue(vm, prop, key);
     // since the default value is a fresh copy,
     // make sure to observe it.
-    var prevShouldConvert = observerState.shouldConvert;
-    observerState.shouldConvert = true;
+    var prevShouldObserve = shouldObserve;
+    toggleObserving(true);
     observe(value);
-    observerState.shouldConvert = prevShouldConvert;
+    toggleObserving(prevShouldObserve);
   }
   if (
     true
@@ -50098,17 +50121,20 @@ function getType (fn) {
   return match ? match[1] : ''
 }
 
-function isType (type, fn) {
-  if (!Array.isArray(fn)) {
-    return getType(fn) === getType(type)
+function isSameType (a, b) {
+  return getType(a) === getType(b)
+}
+
+function getTypeIndex (type, expectedTypes) {
+  if (!Array.isArray(expectedTypes)) {
+    return isSameType(expectedTypes, type) ? 0 : -1
   }
-  for (var i = 0, len = fn.length; i < len; i++) {
-    if (getType(fn[i]) === getType(type)) {
-      return true
+  for (var i = 0, len = expectedTypes.length; i < len; i++) {
+    if (isSameType(expectedTypes[i], type)) {
+      return i
     }
   }
-  /* istanbul ignore next */
-  return false
+  return -1
 }
 
 /*  */
@@ -50171,19 +50197,19 @@ function flushCallbacks () {
   }
 }
 
-// Here we have async deferring wrappers using both micro and macro tasks.
-// In < 2.4 we used micro tasks everywhere, but there are some scenarios where
-// micro tasks have too high a priority and fires in between supposedly
+// Here we have async deferring wrappers using both microtasks and (macro) tasks.
+// In < 2.4 we used microtasks everywhere, but there are some scenarios where
+// microtasks have too high a priority and fire in between supposedly
 // sequential events (e.g. #4521, #6690) or even between bubbling of the same
-// event (#6566). However, using macro tasks everywhere also has subtle problems
+// event (#6566). However, using (macro) tasks everywhere also has subtle problems
 // when state is changed right before repaint (e.g. #6813, out-in transitions).
-// Here we use micro task by default, but expose a way to force macro task when
+// Here we use microtask by default, but expose a way to force (macro) task when
 // needed (e.g. in event handlers attached by v-on).
 var microTimerFunc;
 var macroTimerFunc;
 var useMacroTask = false;
 
-// Determine (macro) Task defer implementation.
+// Determine (macro) task defer implementation.
 // Technically setImmediate should be the ideal choice, but it's only available
 // in IE. The only polyfill that consistently queues the callback after all DOM
 // events triggered in the same loop is by using MessageChannel.
@@ -50210,7 +50236,7 @@ if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
   };
 }
 
-// Determine MicroTask defer implementation.
+// Determine microtask defer implementation.
 /* istanbul ignore next, $flow-disable-line */
 if (typeof Promise !== 'undefined' && isNative(Promise)) {
   var p = Promise.resolve();
@@ -50230,7 +50256,7 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
 
 /**
  * Wrap a function so that if any code inside triggers state change,
- * the changes are queued using a Task instead of a MicroTask.
+ * the changes are queued using a (macro) task instead of a microtask.
  */
 function withMacroTask (fn) {
   return fn._withTask || (fn._withTask = function () {
@@ -50319,8 +50345,7 @@ if (true) {
   };
 
   var hasProxy =
-    typeof Proxy !== 'undefined' &&
-    Proxy.toString().match(/native code/);
+    typeof Proxy !== 'undefined' && isNative(Proxy);
 
   if (hasProxy) {
     var isBuiltInModifier = makeMap('stop,prevent,self,ctrl,shift,alt,meta,exact');
@@ -51248,29 +51273,30 @@ function updateChildComponent (
   // update $attrs and $listeners hash
   // these are also reactive so they may trigger child update if the child
   // used them during render
-  vm.$attrs = (parentVnode.data && parentVnode.data.attrs) || emptyObject;
+  vm.$attrs = parentVnode.data.attrs || emptyObject;
   vm.$listeners = listeners || emptyObject;
 
   // update props
   if (propsData && vm.$options.props) {
-    observerState.shouldConvert = false;
+    toggleObserving(false);
     var props = vm._props;
     var propKeys = vm.$options._propKeys || [];
     for (var i = 0; i < propKeys.length; i++) {
       var key = propKeys[i];
-      props[key] = validateProp(key, vm.$options.props, propsData, vm);
+      var propOptions = vm.$options.props; // wtf flow?
+      props[key] = validateProp(key, propOptions, propsData, vm);
     }
-    observerState.shouldConvert = true;
+    toggleObserving(true);
     // keep a copy of raw propsData
     vm.$options.propsData = propsData;
   }
 
   // update listeners
-  if (listeners) {
-    var oldListeners = vm.$options._parentListeners;
-    vm.$options._parentListeners = listeners;
-    updateComponentListeners(vm, listeners, oldListeners);
-  }
+  listeners = listeners || emptyObject;
+  var oldListeners = vm.$options._parentListeners;
+  vm.$options._parentListeners = listeners;
+  updateComponentListeners(vm, listeners, oldListeners);
+
   // resolve slots + force update if has children
   if (hasChildren) {
     vm.$slots = resolveSlots(renderChildren, parentVnode.context);
@@ -51324,6 +51350,8 @@ function deactivateChildComponent (vm, direct) {
 }
 
 function callHook (vm, hook) {
+  // #7573 disable dep collection when invoking lifecycle hooks
+  pushTarget();
   var handlers = vm.$options[hook];
   if (handlers) {
     for (var i = 0, j = handlers.length; i < j; i++) {
@@ -51337,6 +51365,7 @@ function callHook (vm, hook) {
   if (vm._hasHookEvent) {
     vm.$emit('hook:' + hook);
   }
+  popTarget();
 }
 
 /*  */
@@ -51481,7 +51510,7 @@ function queueWatcher (watcher) {
 
 /*  */
 
-var uid$2 = 0;
+var uid$1 = 0;
 
 /**
  * A watcher parses an expression, collects dependencies,
@@ -51510,7 +51539,7 @@ var Watcher = function Watcher (
     this.deep = this.user = this.lazy = this.sync = false;
   }
   this.cb = cb;
-  this.id = ++uid$2; // uid for batching
+  this.id = ++uid$1; // uid for batching
   this.active = true;
   this.dirty = this.lazy; // for lazy watchers
   this.deps = [];
@@ -51735,7 +51764,9 @@ function initProps (vm, propsOptions) {
   var keys = vm.$options._propKeys = [];
   var isRoot = !vm.$parent;
   // root instance props should be converted
-  observerState.shouldConvert = isRoot;
+  if (!isRoot) {
+    toggleObserving(false);
+  }
   var loop = function ( key ) {
     keys.push(key);
     var value = validateProp(key, propsOptions, propsData, vm);
@@ -51772,7 +51803,7 @@ function initProps (vm, propsOptions) {
   };
 
   for (var key in propsOptions) loop( key );
-  observerState.shouldConvert = true;
+  toggleObserving(true);
 }
 
 function initData (vm) {
@@ -51818,11 +51849,15 @@ function initData (vm) {
 }
 
 function getData (data, vm) {
+  // #7573 disable dep collection when invoking data getters
+  pushTarget();
   try {
     return data.call(vm, vm)
   } catch (e) {
     handleError(e, vm, "data()");
     return {}
+  } finally {
+    popTarget();
   }
 }
 
@@ -51960,7 +51995,7 @@ function initWatch (vm, watch) {
 
 function createWatcher (
   vm,
-  keyOrFn,
+  expOrFn,
   handler,
   options
 ) {
@@ -51971,7 +52006,7 @@ function createWatcher (
   if (typeof handler === 'string') {
     handler = vm[handler];
   }
-  return vm.$watch(keyOrFn, handler, options)
+  return vm.$watch(expOrFn, handler, options)
 }
 
 function stateMixin (Vue) {
@@ -52035,7 +52070,7 @@ function initProvide (vm) {
 function initInjections (vm) {
   var result = resolveInject(vm.$options.inject, vm);
   if (result) {
-    observerState.shouldConvert = false;
+    toggleObserving(false);
     Object.keys(result).forEach(function (key) {
       /* istanbul ignore else */
       if (true) {
@@ -52051,7 +52086,7 @@ function initInjections (vm) {
         defineReactive(vm, key, result[key]);
       }
     });
-    observerState.shouldConvert = true;
+    toggleObserving(true);
   }
 }
 
@@ -52071,7 +52106,7 @@ function resolveInject (inject, vm) {
       var provideKey = inject[key].from;
       var source = vm;
       while (source) {
-        if (source._provided && provideKey in source._provided) {
+        if (source._provided && hasOwn(source._provided, provideKey)) {
           result[key] = source._provided[provideKey];
           break
         }
@@ -52186,6 +52221,14 @@ function resolveFilter (id) {
 
 /*  */
 
+function isKeyNotMatch (expect, actual) {
+  if (Array.isArray(expect)) {
+    return expect.indexOf(actual) === -1
+  } else {
+    return expect !== actual
+  }
+}
+
 /**
  * Runtime helper for checking keyCodes from config.
  * exposed as Vue.prototype._k
@@ -52194,16 +52237,15 @@ function resolveFilter (id) {
 function checkKeyCodes (
   eventKeyCode,
   key,
-  builtInAlias,
-  eventKeyName
+  builtInKeyCode,
+  eventKeyName,
+  builtInKeyName
 ) {
-  var keyCodes = config.keyCodes[key] || builtInAlias;
-  if (keyCodes) {
-    if (Array.isArray(keyCodes)) {
-      return keyCodes.indexOf(eventKeyCode) === -1
-    } else {
-      return keyCodes !== eventKeyCode
-    }
+  var mappedKeyCode = config.keyCodes[key] || builtInKeyCode;
+  if (builtInKeyName && eventKeyName && !config.keyCodes[key]) {
+    return isKeyNotMatch(builtInKeyName, eventKeyName)
+  } else if (mappedKeyCode) {
+    return isKeyNotMatch(mappedKeyCode, eventKeyCode)
   } else if (eventKeyName) {
     return hyphenate(eventKeyName) !== key
   }
@@ -52275,11 +52317,9 @@ function renderStatic (
   var cached = this._staticTrees || (this._staticTrees = []);
   var tree = cached[index];
   // if has already-rendered static tree and not inside v-for,
-  // we can reuse the same tree by doing a shallow clone.
+  // we can reuse the same tree.
   if (tree && !isInFor) {
-    return Array.isArray(tree)
-      ? cloneVNodes(tree)
-      : cloneVNode(tree)
+    return tree
   }
   // otherwise, render a fresh tree.
   tree = cached[index] = this.$options.staticRenderFns[index].call(
@@ -52403,7 +52443,7 @@ function FunctionalRenderContext (
   if (options._scopeId) {
     this._c = function (a, b, c, d) {
       var vnode = createElement(contextVm, a, b, c, d, needNormalization);
-      if (vnode) {
+      if (vnode && !Array.isArray(vnode)) {
         vnode.fnScopeId = options._scopeId;
         vnode.fnContext = parent;
       }
@@ -52446,14 +52486,23 @@ function createFunctionalComponent (
   var vnode = options.render.call(null, renderContext._c, renderContext);
 
   if (vnode instanceof VNode) {
-    vnode.fnContext = contextVm;
-    vnode.fnOptions = options;
-    if (data.slot) {
-      (vnode.data || (vnode.data = {})).slot = data.slot;
+    setFunctionalContextForVNode(vnode, data, contextVm, options);
+    return vnode
+  } else if (Array.isArray(vnode)) {
+    var vnodes = normalizeChildren(vnode) || [];
+    for (var i = 0; i < vnodes.length; i++) {
+      setFunctionalContextForVNode(vnodes[i], data, contextVm, options);
     }
+    return vnodes
   }
+}
 
-  return vnode
+function setFunctionalContextForVNode (vnode, data, vm, options) {
+  vnode.fnContext = vm;
+  vnode.fnOptions = options;
+  if (data.slot) {
+    (vnode.data || (vnode.data = {})).slot = data.slot;
+  }
 }
 
 function mergeProps (to, from) {
@@ -52491,7 +52540,15 @@ var componentVNodeHooks = {
     parentElm,
     refElm
   ) {
-    if (!vnode.componentInstance || vnode.componentInstance._isDestroyed) {
+    if (
+      vnode.componentInstance &&
+      !vnode.componentInstance._isDestroyed &&
+      vnode.data.keepAlive
+    ) {
+      // kept-alive components, treat as a patch
+      var mountedNode = vnode; // work around flow
+      componentVNodeHooks.prepatch(mountedNode, mountedNode);
+    } else {
       var child = vnode.componentInstance = createComponentInstanceForVnode(
         vnode,
         activeInstance,
@@ -52499,10 +52556,6 @@ var componentVNodeHooks = {
         refElm
       );
       child.$mount(hydrating ? vnode.elm : undefined, hydrating);
-    } else if (vnode.data.keepAlive) {
-      // kept-alive components, treat as a patch
-      var mountedNode = vnode; // work around flow
-      componentVNodeHooks.prepatch(mountedNode, mountedNode);
     }
   },
 
@@ -52810,8 +52863,11 @@ function _createElement (
     // direct component options / constructor
     vnode = createComponent(tag, data, context, children);
   }
-  if (isDef(vnode)) {
-    if (ns) { applyNS(vnode, ns); }
+  if (Array.isArray(vnode)) {
+    return vnode
+  } else if (isDef(vnode)) {
+    if (isDef(ns)) { applyNS(vnode, ns); }
+    if (isDef(data)) { registerDeepBindings(data); }
     return vnode
   } else {
     return createEmptyVNode()
@@ -52828,10 +52884,23 @@ function applyNS (vnode, ns, force) {
   if (isDef(vnode.children)) {
     for (var i = 0, l = vnode.children.length; i < l; i++) {
       var child = vnode.children[i];
-      if (isDef(child.tag) && (isUndef(child.ns) || isTrue(force))) {
+      if (isDef(child.tag) && (
+        isUndef(child.ns) || (isTrue(force) && child.tag !== 'svg'))) {
         applyNS(child, ns, force);
       }
     }
+  }
+}
+
+// ref #5318
+// necessary to ensure parent re-render when deep bindings like :style and
+// :class are used on slot nodes
+function registerDeepBindings (data) {
+  if (isObject(data.style)) {
+    traverse(data.style);
+  }
+  if (isObject(data.class)) {
+    traverse(data.class);
   }
 }
 
@@ -52886,20 +52955,17 @@ function renderMixin (Vue) {
     var render = ref.render;
     var _parentVnode = ref._parentVnode;
 
-    if (vm._isMounted) {
-      // if the parent didn't update, the slot nodes will be the ones from
-      // last render. They need to be cloned to ensure "freshness" for this render.
+    // reset _rendered flag on slots for duplicate slot check
+    if (true) {
       for (var key in vm.$slots) {
-        var slot = vm.$slots[key];
-        // _rendered is a flag added by renderSlot, but may not be present
-        // if the slot is passed from manually written render functions
-        if (slot._rendered || (slot[0] && slot[0].elm)) {
-          vm.$slots[key] = cloneVNodes(slot, true /* deep */);
-        }
+        // $flow-disable-line
+        vm.$slots[key]._rendered = false;
       }
     }
 
-    vm.$scopedSlots = (_parentVnode && _parentVnode.data.scopedSlots) || emptyObject;
+    if (_parentVnode) {
+      vm.$scopedSlots = _parentVnode.data.scopedSlots || emptyObject;
+    }
 
     // set parent vnode. this allows render functions to have access
     // to the data on the placeholder node.
@@ -52947,13 +53013,13 @@ function renderMixin (Vue) {
 
 /*  */
 
-var uid$1 = 0;
+var uid$3 = 0;
 
 function initMixin (Vue) {
   Vue.prototype._init = function (options) {
     var vm = this;
     // a uid
-    vm._uid = uid$1++;
+    vm._uid = uid$3++;
 
     var startTag, endTag;
     /* istanbul ignore if */
@@ -53086,20 +53152,20 @@ function dedupe (latest, extended, sealed) {
   }
 }
 
-function Vue$3 (options) {
+function Vue (options) {
   if ("development" !== 'production' &&
-    !(this instanceof Vue$3)
+    !(this instanceof Vue)
   ) {
     warn('Vue is a constructor and should be called with the `new` keyword');
   }
   this._init(options);
 }
 
-initMixin(Vue$3);
-stateMixin(Vue$3);
-eventsMixin(Vue$3);
-lifecycleMixin(Vue$3);
-renderMixin(Vue$3);
+initMixin(Vue);
+stateMixin(Vue);
+eventsMixin(Vue);
+lifecycleMixin(Vue);
+renderMixin(Vue);
 
 /*  */
 
@@ -53382,11 +53448,11 @@ var KeepAlive = {
     }
     return vnode || (slot && slot[0])
   }
-};
+}
 
 var builtInComponents = {
   KeepAlive: KeepAlive
-};
+}
 
 /*  */
 
@@ -53434,20 +53500,25 @@ function initGlobalAPI (Vue) {
   initAssetRegisters(Vue);
 }
 
-initGlobalAPI(Vue$3);
+initGlobalAPI(Vue);
 
-Object.defineProperty(Vue$3.prototype, '$isServer', {
+Object.defineProperty(Vue.prototype, '$isServer', {
   get: isServerRendering
 });
 
-Object.defineProperty(Vue$3.prototype, '$ssrContext', {
+Object.defineProperty(Vue.prototype, '$ssrContext', {
   get: function get () {
     /* istanbul ignore next */
     return this.$vnode && this.$vnode.ssrContext
   }
 });
 
-Vue$3.version = '2.5.13';
+// expose FunctionalRenderContext for ssr runtime helper installation
+Object.defineProperty(Vue, 'FunctionalRenderContext', {
+  value: FunctionalRenderContext
+});
+
+Vue.version = '2.5.14';
 
 /*  */
 
@@ -53721,8 +53792,8 @@ function setTextContent (node, text) {
   node.textContent = text;
 }
 
-function setAttribute (node, key, val) {
-  node.setAttribute(key, val);
+function setStyleScope (node, scopeId) {
+  node.setAttribute(scopeId, '');
 }
 
 
@@ -53738,7 +53809,7 @@ var nodeOps = Object.freeze({
 	nextSibling: nextSibling,
 	tagName: tagName,
 	setTextContent: setTextContent,
-	setAttribute: setAttribute
+	setStyleScope: setStyleScope
 });
 
 /*  */
@@ -53756,11 +53827,11 @@ var ref = {
   destroy: function destroy (vnode) {
     registerRef(vnode, true);
   }
-};
+}
 
 function registerRef (vnode, isRemoval) {
   var key = vnode.data.ref;
-  if (!key) { return }
+  if (!isDef(key)) { return }
 
   var vm = vnode.context;
   var ref = vnode.componentInstance || vnode.elm;
@@ -53891,7 +53962,25 @@ function createPatchFunction (backend) {
   }
 
   var creatingElmInVPre = 0;
-  function createElm (vnode, insertedVnodeQueue, parentElm, refElm, nested) {
+
+  function createElm (
+    vnode,
+    insertedVnodeQueue,
+    parentElm,
+    refElm,
+    nested,
+    ownerArray,
+    index
+  ) {
+    if (isDef(vnode.elm) && isDef(ownerArray)) {
+      // This vnode was used in a previous render!
+      // now it's used as a new node, overwriting its elm would cause
+      // potential patch errors down the road when it's used as an insertion
+      // reference node. Instead, we clone the node on-demand before creating
+      // associated DOM element for it.
+      vnode = ownerArray[index] = cloneVNode(vnode);
+    }
+
     vnode.isRootInsert = !nested; // for transition enter check
     if (createComponent(vnode, insertedVnodeQueue, parentElm, refElm)) {
       return
@@ -53914,6 +54003,7 @@ function createPatchFunction (backend) {
           );
         }
       }
+
       vnode.elm = vnode.ns
         ? nodeOps.createElementNS(vnode.ns, tag)
         : nodeOps.createElement(tag, vnode);
@@ -54019,7 +54109,7 @@ function createPatchFunction (backend) {
         checkDuplicateKeys(children);
       }
       for (var i = 0; i < children.length; ++i) {
-        createElm(children[i], insertedVnodeQueue, vnode.elm, null, true);
+        createElm(children[i], insertedVnodeQueue, vnode.elm, null, true, children, i);
       }
     } else if (isPrimitive(vnode.text)) {
       nodeOps.appendChild(vnode.elm, nodeOps.createTextNode(String(vnode.text)));
@@ -54050,12 +54140,12 @@ function createPatchFunction (backend) {
   function setScope (vnode) {
     var i;
     if (isDef(i = vnode.fnScopeId)) {
-      nodeOps.setAttribute(vnode.elm, i, '');
+      nodeOps.setStyleScope(vnode.elm, i);
     } else {
       var ancestor = vnode;
       while (ancestor) {
         if (isDef(i = ancestor.context) && isDef(i = i.$options._scopeId)) {
-          nodeOps.setAttribute(vnode.elm, i, '');
+          nodeOps.setStyleScope(vnode.elm, i);
         }
         ancestor = ancestor.parent;
       }
@@ -54066,13 +54156,13 @@ function createPatchFunction (backend) {
       i !== vnode.fnContext &&
       isDef(i = i.$options._scopeId)
     ) {
-      nodeOps.setAttribute(vnode.elm, i, '');
+      nodeOps.setStyleScope(vnode.elm, i);
     }
   }
 
   function addVnodes (parentElm, refElm, vnodes, startIdx, endIdx, insertedVnodeQueue) {
     for (; startIdx <= endIdx; ++startIdx) {
-      createElm(vnodes[startIdx], insertedVnodeQueue, parentElm, refElm);
+      createElm(vnodes[startIdx], insertedVnodeQueue, parentElm, refElm, false, vnodes, startIdx);
     }
   }
 
@@ -54182,7 +54272,7 @@ function createPatchFunction (backend) {
           ? oldKeyToIdx[newStartVnode.key]
           : findIdxInOld(newStartVnode, oldCh, oldStartIdx, oldEndIdx);
         if (isUndef(idxInOld)) { // New element
-          createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm);
+          createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm, false, newCh, newStartIdx);
         } else {
           vnodeToMove = oldCh[idxInOld];
           if (sameVnode(vnodeToMove, newStartVnode)) {
@@ -54191,7 +54281,7 @@ function createPatchFunction (backend) {
             canMove && nodeOps.insertBefore(parentElm, vnodeToMove.elm, oldStartVnode.elm);
           } else {
             // same key but different element. treat as new element
-            createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm);
+            createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm, false, newCh, newStartIdx);
           }
         }
         newStartVnode = newCh[++newStartIdx];
@@ -54529,7 +54619,7 @@ var directives = {
   destroy: function unbindDirectives (vnode) {
     updateDirectives(vnode, emptyNode);
   }
-};
+}
 
 function updateDirectives (oldVnode, vnode) {
   if (oldVnode.data.directives || vnode.data.directives) {
@@ -54640,7 +54730,7 @@ function callHook$1 (dir, hook, vnode, oldVnode, isDestroy) {
 var baseModules = [
   ref,
   directives
-];
+]
 
 /*  */
 
@@ -54686,7 +54776,9 @@ function updateAttrs (oldVnode, vnode) {
 }
 
 function setAttr (el, key, value) {
-  if (isBooleanAttr(key)) {
+  if (el.tagName.indexOf('-') > -1) {
+    baseSetAttr(el, key, value);
+  } else if (isBooleanAttr(key)) {
     // set attribute for blank value
     // e.g. <option disabled>Select one</option>
     if (isFalsyAttrValue(value)) {
@@ -54708,35 +54800,39 @@ function setAttr (el, key, value) {
       el.setAttributeNS(xlinkNS, key, value);
     }
   } else {
-    if (isFalsyAttrValue(value)) {
-      el.removeAttribute(key);
-    } else {
-      // #7138: IE10 & 11 fires input event when setting placeholder on
-      // <textarea>... block the first input event and remove the blocker
-      // immediately.
-      /* istanbul ignore if */
-      if (
-        isIE && !isIE9 &&
-        el.tagName === 'TEXTAREA' &&
-        key === 'placeholder' && !el.__ieph
-      ) {
-        var blocker = function (e) {
-          e.stopImmediatePropagation();
-          el.removeEventListener('input', blocker);
-        };
-        el.addEventListener('input', blocker);
-        // $flow-disable-line
-        el.__ieph = true; /* IE placeholder patched */
-      }
-      el.setAttribute(key, value);
+    baseSetAttr(el, key, value);
+  }
+}
+
+function baseSetAttr (el, key, value) {
+  if (isFalsyAttrValue(value)) {
+    el.removeAttribute(key);
+  } else {
+    // #7138: IE10 & 11 fires input event when setting placeholder on
+    // <textarea>... block the first input event and remove the blocker
+    // immediately.
+    /* istanbul ignore if */
+    if (
+      isIE && !isIE9 &&
+      el.tagName === 'TEXTAREA' &&
+      key === 'placeholder' && !el.__ieph
+    ) {
+      var blocker = function (e) {
+        e.stopImmediatePropagation();
+        el.removeEventListener('input', blocker);
+      };
+      el.addEventListener('input', blocker);
+      // $flow-disable-line
+      el.__ieph = true; /* IE placeholder patched */
     }
+    el.setAttribute(key, value);
   }
 }
 
 var attrs = {
   create: updateAttrs,
   update: updateAttrs
-};
+}
 
 /*  */
 
@@ -54774,7 +54870,7 @@ function updateClass (oldVnode, vnode) {
 var klass = {
   create: updateClass,
   update: updateClass
-};
+}
 
 /*  */
 
@@ -54870,7 +54966,7 @@ function wrapFilter (exp, filter) {
   } else {
     var name = filter.slice(0, i);
     var args = filter.slice(i + 1);
-    return ("_f(\"" + name + "\")(" + exp + "," + args)
+    return ("_f(\"" + name + "\")(" + exp + (args !== ')' ? ',' + args : args))
   }
 }
 
@@ -54973,7 +55069,9 @@ function addHandler (
     events = el.events || (el.events = {});
   }
 
-  var newHandler = { value: value };
+  var newHandler = {
+    value: value.trim()
+  };
   if (modifiers !== emptyObject) {
     newHandler.modifiers = modifiers;
   }
@@ -55053,8 +55151,8 @@ function genComponentModel (
   if (trim) {
     valueExpression =
       "(typeof " + baseValueExpression + " === 'string'" +
-        "? " + baseValueExpression + ".trim()" +
-        ": " + baseValueExpression + ")";
+      "? " + baseValueExpression + ".trim()" +
+      ": " + baseValueExpression + ")";
   }
   if (number) {
     valueExpression = "_n(" + valueExpression + ")";
@@ -55108,6 +55206,9 @@ var expressionEndPos;
 
 
 function parseModel (val) {
+  // Fix https://github.com/vuejs/vue/pull/7730
+  // allow v-model="obj.val " (trailing whitespace)
+  val = val.trim();
   len = val.length;
 
   if (val.indexOf('[') < 0 || val.lastIndexOf(']') < len - 1) {
@@ -55268,8 +55369,8 @@ function genCheckboxModel (
     'if(Array.isArray($$a)){' +
       "var $$v=" + (number ? '_n(' + valueBinding + ')' : valueBinding) + "," +
           '$$i=_i($$a,$$v);' +
-      "if($$el.checked){$$i<0&&(" + value + "=$$a.concat([$$v]))}" +
-      "else{$$i>-1&&(" + value + "=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}" +
+      "if($$el.checked){$$i<0&&(" + (genAssignmentCode(value, '$$a.concat([$$v])')) + ")}" +
+      "else{$$i>-1&&(" + (genAssignmentCode(value, '$$a.slice(0,$$i).concat($$a.slice($$i+1))')) + ")}" +
     "}else{" + (genAssignmentCode(value, '$$c')) + "}",
     null, true
   );
@@ -55312,9 +55413,11 @@ function genDefaultModel (
   var type = el.attrsMap.type;
 
   // warn if v-bind:value conflicts with v-model
+  // except for inputs with v-bind:type
   if (true) {
     var value$1 = el.attrsMap['v-bind:value'] || el.attrsMap[':value'];
-    if (value$1) {
+    var typeBinding = el.attrsMap['v-bind:type'] || el.attrsMap[':type'];
+    if (value$1 && !typeBinding) {
       var binding = el.attrsMap['v-bind:value'] ? 'v-bind:value' : ':value';
       warn$1(
         binding + "=\"" + value$1 + "\" conflicts with v-model on the same element " +
@@ -55435,7 +55538,7 @@ function updateDOMListeners (oldVnode, vnode) {
 var events = {
   create: updateDOMListeners,
   update: updateDOMListeners
-};
+}
 
 /*  */
 
@@ -55529,7 +55632,7 @@ function isDirtyWithModifiers (elm, newVal) {
 var domProps = {
   create: updateDOMProps,
   update: updateDOMProps
-};
+}
 
 /*  */
 
@@ -55690,7 +55793,7 @@ function updateStyle (oldVnode, vnode) {
 var style = {
   create: updateStyle,
   update: updateStyle
-};
+}
 
 /*  */
 
@@ -56063,13 +56166,15 @@ function enter (vnode, toggleDisplay) {
     addTransitionClass(el, startClass);
     addTransitionClass(el, activeClass);
     nextFrame(function () {
-      addTransitionClass(el, toClass);
       removeTransitionClass(el, startClass);
-      if (!cb.cancelled && !userWantsControl) {
-        if (isValidDuration(explicitEnterDuration)) {
-          setTimeout(cb, explicitEnterDuration);
-        } else {
-          whenTransitionEnds(el, type, cb);
+      if (!cb.cancelled) {
+        addTransitionClass(el, toClass);
+        if (!userWantsControl) {
+          if (isValidDuration(explicitEnterDuration)) {
+            setTimeout(cb, explicitEnterDuration);
+          } else {
+            whenTransitionEnds(el, type, cb);
+          }
         }
       }
     });
@@ -56169,13 +56274,15 @@ function leave (vnode, rm) {
       addTransitionClass(el, leaveClass);
       addTransitionClass(el, leaveActiveClass);
       nextFrame(function () {
-        addTransitionClass(el, leaveToClass);
         removeTransitionClass(el, leaveClass);
-        if (!cb.cancelled && !userWantsControl) {
-          if (isValidDuration(explicitLeaveDuration)) {
-            setTimeout(cb, explicitLeaveDuration);
-          } else {
-            whenTransitionEnds(el, type, cb);
+        if (!cb.cancelled) {
+          addTransitionClass(el, leaveToClass);
+          if (!userWantsControl) {
+            if (isValidDuration(explicitLeaveDuration)) {
+              setTimeout(cb, explicitLeaveDuration);
+            } else {
+              whenTransitionEnds(el, type, cb);
+            }
           }
         }
       });
@@ -56248,7 +56355,7 @@ var transition = inBrowser ? {
       rm();
     }
   }
-} : {};
+} : {}
 
 var platformModules = [
   attrs,
@@ -56257,7 +56364,7 @@ var platformModules = [
   domProps,
   style,
   transition
-];
+]
 
 /*  */
 
@@ -56298,15 +56405,13 @@ var directive = {
     } else if (vnode.tag === 'textarea' || isTextInputType(el.type)) {
       el._vModifiers = binding.modifiers;
       if (!binding.modifiers.lazy) {
+        el.addEventListener('compositionstart', onCompositionStart);
+        el.addEventListener('compositionend', onCompositionEnd);
         // Safari < 10.2 & UIWebView doesn't fire compositionend when
         // switching focus before confirming composition choice
         // this also fixes the issue where some browsers e.g. iOS Chrome
         // fires "change" instead of "input" on autocomplete.
         el.addEventListener('change', onCompositionEnd);
-        if (!isAndroid) {
-          el.addEventListener('compositionstart', onCompositionStart);
-          el.addEventListener('compositionend', onCompositionEnd);
-        }
         /* istanbul ignore if */
         if (isIE9) {
           el.vmodel = true;
@@ -56440,7 +56545,7 @@ var show = {
     var oldValue = ref.oldValue;
 
     /* istanbul ignore if */
-    if (value === oldValue) { return }
+    if (!value === !oldValue) { return }
     vnode = locateNode(vnode);
     var transition$$1 = vnode.data && vnode.data.transition;
     if (transition$$1) {
@@ -56470,12 +56575,12 @@ var show = {
       el.style.display = el.__vOriginalDisplay;
     }
   }
-};
+}
 
 var platformDirectives = {
   model: directive,
   show: show
-};
+}
 
 /*  */
 
@@ -56664,7 +56769,7 @@ var Transition = {
 
     return rawChild
   }
-};
+}
 
 /*  */
 
@@ -56738,7 +56843,7 @@ var TransitionGroup = {
       this._vnode,
       this.kept,
       false, // hydrating
-      true // removeOnly (!important avoids unnecessary moves)
+      true // removeOnly (!important, avoids unnecessary moves)
     );
     this._vnode = this.kept;
   },
@@ -56805,7 +56910,7 @@ var TransitionGroup = {
       return (this._hasMove = info.hasTransform)
     }
   }
-};
+}
 
 function callPendingCbs (c) {
   /* istanbul ignore if */
@@ -56838,26 +56943,26 @@ function applyTranslation (c) {
 var platformComponents = {
   Transition: Transition,
   TransitionGroup: TransitionGroup
-};
+}
 
 /*  */
 
 // install platform specific utils
-Vue$3.config.mustUseProp = mustUseProp;
-Vue$3.config.isReservedTag = isReservedTag;
-Vue$3.config.isReservedAttr = isReservedAttr;
-Vue$3.config.getTagNamespace = getTagNamespace;
-Vue$3.config.isUnknownElement = isUnknownElement;
+Vue.config.mustUseProp = mustUseProp;
+Vue.config.isReservedTag = isReservedTag;
+Vue.config.isReservedAttr = isReservedAttr;
+Vue.config.getTagNamespace = getTagNamespace;
+Vue.config.isUnknownElement = isUnknownElement;
 
 // install platform runtime directives & components
-extend(Vue$3.options.directives, platformDirectives);
-extend(Vue$3.options.components, platformComponents);
+extend(Vue.options.directives, platformDirectives);
+extend(Vue.options.components, platformComponents);
 
 // install platform patch function
-Vue$3.prototype.__patch__ = inBrowser ? patch : noop;
+Vue.prototype.__patch__ = inBrowser ? patch : noop;
 
 // public mount method
-Vue$3.prototype.$mount = function (
+Vue.prototype.$mount = function (
   el,
   hydrating
 ) {
@@ -56867,28 +56972,35 @@ Vue$3.prototype.$mount = function (
 
 // devtools global hook
 /* istanbul ignore next */
-Vue$3.nextTick(function () {
-  if (config.devtools) {
-    if (devtools) {
-      devtools.emit('init', Vue$3);
-    } else if ("development" !== 'production' && isChrome) {
+if (inBrowser) {
+  setTimeout(function () {
+    if (config.devtools) {
+      if (devtools) {
+        devtools.emit('init', Vue);
+      } else if (
+        "development" !== 'production' &&
+        "development" !== 'test' &&
+        isChrome
+      ) {
+        console[console.info ? 'info' : 'log'](
+          'Download the Vue Devtools extension for a better development experience:\n' +
+          'https://github.com/vuejs/vue-devtools'
+        );
+      }
+    }
+    if ("development" !== 'production' &&
+      "development" !== 'test' &&
+      config.productionTip !== false &&
+      typeof console !== 'undefined'
+    ) {
       console[console.info ? 'info' : 'log'](
-        'Download the Vue Devtools extension for a better development experience:\n' +
-        'https://github.com/vuejs/vue-devtools'
+        "You are running Vue in development mode.\n" +
+        "Make sure to turn on production mode when deploying for production.\n" +
+        "See more tips at https://vuejs.org/guide/deployment.html"
       );
     }
-  }
-  if ("development" !== 'production' &&
-    config.productionTip !== false &&
-    inBrowser && typeof console !== 'undefined'
-  ) {
-    console[console.info ? 'info' : 'log'](
-      "You are running Vue in development mode.\n" +
-      "Make sure to turn on production mode when deploying for production.\n" +
-      "See more tips at https://vuejs.org/guide/deployment.html"
-    );
-  }
-}, 0);
+  }, 0);
+}
 
 /*  */
 
@@ -56978,7 +57090,7 @@ var klass$1 = {
   staticKeys: ['staticClass'],
   transformNode: transformNode,
   genData: genData
-};
+}
 
 /*  */
 
@@ -57022,7 +57134,7 @@ var style$1 = {
   staticKeys: ['staticStyle'],
   transformNode: transformNode$1,
   genData: genData$1
-};
+}
 
 /*  */
 
@@ -57034,7 +57146,7 @@ var he = {
     decoder.innerHTML = html;
     return decoder.textContent
   }
-};
+}
 
 /*  */
 
@@ -57080,7 +57192,8 @@ var startTagOpen = new RegExp(("^<" + qnameCapture));
 var startTagClose = /^\s*(\/?)>/;
 var endTag = new RegExp(("^<\\/" + qnameCapture + "[^>]*>"));
 var doctype = /^<!DOCTYPE [^>]+>/i;
-var comment = /^<!--/;
+// #7298: escape - to avoid being pased as HTML comment when inlined in page
+var comment = /^<!\--/;
 var conditionalComment = /^<!\[/;
 
 var IS_REGEX_CAPTURING_BROKEN = false;
@@ -57210,7 +57323,7 @@ function parseHTML (html, options) {
         endTagLength = endTag.length;
         if (!isPlainTextElement(stackedTag) && stackedTag !== 'noscript') {
           text = text
-            .replace(/<!--([\s\S]*?)-->/g, '$1')
+            .replace(/<!\--([\s\S]*?)-->/g, '$1') // #7298
             .replace(/<!\[CDATA\[([\s\S]*?)]]>/g, '$1');
         }
         if (shouldIgnoreFirstNewline(stackedTag, text)) {
@@ -57708,6 +57821,8 @@ function processFor (el) {
   }
 }
 
+
+
 function parseFor (exp) {
   var inMatch = exp.match(forAliasRE);
   if (!inMatch) { return }
@@ -58030,8 +58145,19 @@ function checkForAliasModel (el, value) {
 function preTransformNode (el, options) {
   if (el.tag === 'input') {
     var map = el.attrsMap;
-    if (map['v-model'] && (map['v-bind:type'] || map[':type'])) {
-      var typeBinding = getBindingAttr(el, 'type');
+    if (!map['v-model']) {
+      return
+    }
+
+    var typeBinding;
+    if (map[':type'] || map['v-bind:type']) {
+      typeBinding = getBindingAttr(el, 'type');
+    }
+    if (!typeBinding && map['v-bind']) {
+      typeBinding = "(" + (map['v-bind']) + ").type";
+    }
+
+    if (typeBinding) {
       var ifCondition = getAndRemoveAttr(el, 'v-if', true);
       var ifConditionExtra = ifCondition ? ("&&(" + ifCondition + ")") : "";
       var hasElse = getAndRemoveAttr(el, 'v-else', true) != null;
@@ -58084,13 +58210,13 @@ function cloneASTElement (el) {
 
 var model$2 = {
   preTransformNode: preTransformNode
-};
+}
 
 var modules$1 = [
   klass$1,
   style$1,
   model$2
-];
+]
 
 /*  */
 
@@ -58112,7 +58238,7 @@ var directives$1 = {
   model: model,
   text: text,
   html: html
-};
+}
 
 /*  */
 
@@ -58258,10 +58384,10 @@ function isDirectChildOfTemplateFor (node) {
 
 /*  */
 
-var fnExpRE = /^\s*([\w$_]+|\([^)]*?\))\s*=>|^function\s*\(/;
-var simplePathRE = /^\s*[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['.*?']|\[".*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*\s*$/;
+var fnExpRE = /^([\w$_]+|\([^)]*?\))\s*=>|^function\s*\(/;
+var simplePathRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['[^']*?']|\["[^"]*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*$/;
 
-// keyCode aliases
+// KeyboardEvent.keyCode aliases
 var keyCodes = {
   esc: 27,
   tab: 9,
@@ -58272,6 +58398,19 @@ var keyCodes = {
   right: 39,
   down: 40,
   'delete': [8, 46]
+};
+
+// KeyboardEvent.key aliases
+var keyNames = {
+  esc: 'Escape',
+  tab: 'Tab',
+  enter: 'Enter',
+  space: ' ',
+  up: 'ArrowUp',
+  left: 'ArrowLeft',
+  right: 'ArrowRight',
+  down: 'ArrowDown',
+  'delete': ['Backspace', 'Delete']
 };
 
 // #4868: modifiers that prevent the execution of the listener
@@ -58356,9 +58495,9 @@ function genHandler (
       code += genModifierCode;
     }
     var handlerCode = isMethodPath
-      ? handler.value + '($event)'
+      ? ("return " + (handler.value) + "($event)")
       : isFunctionExpression
-        ? ("(" + (handler.value) + ")($event)")
+        ? ("return (" + (handler.value) + ")($event)")
         : handler.value;
     /* istanbul ignore if */
     return ("function($event){" + code + handlerCode + "}")
@@ -58374,12 +58513,15 @@ function genFilterCode (key) {
   if (keyVal) {
     return ("$event.keyCode!==" + keyVal)
   }
-  var code = keyCodes[key];
+  var keyCode = keyCodes[key];
+  var keyName = keyNames[key];
   return (
     "_k($event.keyCode," +
     (JSON.stringify(key)) + "," +
-    (JSON.stringify(code)) + "," +
-    "$event.key)"
+    (JSON.stringify(keyCode)) + "," +
+    "$event.key," +
+    "" + (JSON.stringify(keyName)) +
+    ")"
   )
 }
 
@@ -58406,7 +58548,7 @@ var baseDirectives = {
   on: on,
   bind: bind$1,
   cloak: noop
-};
+}
 
 /*  */
 
@@ -59157,8 +59299,8 @@ var idToTemplate = cached(function (id) {
   return el && el.innerHTML
 });
 
-var mount = Vue$3.prototype.$mount;
-Vue$3.prototype.$mount = function (
+var mount = Vue.prototype.$mount;
+Vue.prototype.$mount = function (
   el,
   hydrating
 ) {
@@ -59240,9 +59382,9 @@ function getOuterHTML (el) {
   }
 }
 
-Vue$3.compile = compileToFunctions;
+Vue.compile = compileToFunctions;
 
-module.exports = Vue$3;
+module.exports = Vue;
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(162).setImmediate))
 
@@ -61080,7 +61222,7 @@ var render = function() {
                   on: {
                     submit: function($event) {
                       $event.preventDefault()
-                      _vm.update($event)
+                      return _vm.update($event)
                     }
                   }
                 },
@@ -61256,7 +61398,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -61267,6 +61409,10 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_at_js__ = __webpack_require__(219);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_at_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_at_js__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery_caret__ = __webpack_require__(220);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery_caret___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery_caret__);
 //
 //
 //
@@ -61287,6 +61433,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+
+
+
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: "new-reply",
@@ -61295,6 +61445,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return {
             body: ''
         };
+    },
+    mounted: function mounted() {
+        $('#body').atwho({
+            at: "@",
+            delay: 750,
+            callbacks: {
+                remoteFilter: function remoteFilter(query, callback) {
+                    console.log('called');
+                    $.getJSON("/api/users", { name: query }, function (usernames) {
+                        callback(usernames);
+                    });
+                }
+            }
+        });
     },
 
 
@@ -61640,6 +61804,1672 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 210 */,
+/* 211 */,
+/* 212 */,
+/* 213 */,
+/* 214 */,
+/* 215 */,
+/* 216 */,
+/* 217 */,
+/* 218 */,
+/* 219 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * at.js - 1.5.3
+ * Copyright (c) 2017 chord.luo <chord.luo@gmail.com>;
+ * Homepage: http://ichord.github.com/At.js
+ * License: MIT
+ */
+(function (root, factory) {
+  if (true) {
+    // AMD. Register as an anonymous module unless amdModuleId is set
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(140)], __WEBPACK_AMD_DEFINE_RESULT__ = (function (a0) {
+      return (factory(a0));
+    }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports === 'object') {
+    // Node. Does not work with strict CommonJS, but
+    // only CommonJS-like environments that support module.exports,
+    // like Node.
+    module.exports = factory(require("jquery"));
+  } else {
+    factory(jQuery);
+  }
+}(this, function ($) {
+var DEFAULT_CALLBACKS, KEY_CODE;
+
+KEY_CODE = {
+  ESC: 27,
+  TAB: 9,
+  ENTER: 13,
+  CTRL: 17,
+  A: 65,
+  P: 80,
+  N: 78,
+  LEFT: 37,
+  UP: 38,
+  RIGHT: 39,
+  DOWN: 40,
+  BACKSPACE: 8,
+  SPACE: 32
+};
+
+DEFAULT_CALLBACKS = {
+  beforeSave: function(data) {
+    return Controller.arrayToDefaultHash(data);
+  },
+  matcher: function(flag, subtext, should_startWithSpace, acceptSpaceBar) {
+    var _a, _y, match, regexp, space;
+    flag = flag.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    if (should_startWithSpace) {
+      flag = '(?:^|\\s)' + flag;
+    }
+    _a = decodeURI("%C3%80");
+    _y = decodeURI("%C3%BF");
+    space = acceptSpaceBar ? "\ " : "";
+    regexp = new RegExp(flag + "([A-Za-z" + _a + "-" + _y + "0-9_" + space + "\'\.\+\-]*)$|" + flag + "([^\\x00-\\xff]*)$", 'gi');
+    match = regexp.exec(subtext);
+    if (match) {
+      return match[2] || match[1];
+    } else {
+      return null;
+    }
+  },
+  filter: function(query, data, searchKey) {
+    var _results, i, item, len;
+    _results = [];
+    for (i = 0, len = data.length; i < len; i++) {
+      item = data[i];
+      if (~new String(item[searchKey]).toLowerCase().indexOf(query.toLowerCase())) {
+        _results.push(item);
+      }
+    }
+    return _results;
+  },
+  remoteFilter: null,
+  sorter: function(query, items, searchKey) {
+    var _results, i, item, len;
+    if (!query) {
+      return items;
+    }
+    _results = [];
+    for (i = 0, len = items.length; i < len; i++) {
+      item = items[i];
+      item.atwho_order = new String(item[searchKey]).toLowerCase().indexOf(query.toLowerCase());
+      if (item.atwho_order > -1) {
+        _results.push(item);
+      }
+    }
+    return _results.sort(function(a, b) {
+      return a.atwho_order - b.atwho_order;
+    });
+  },
+  tplEval: function(tpl, map) {
+    var error, error1, template;
+    template = tpl;
+    try {
+      if (typeof tpl !== 'string') {
+        template = tpl(map);
+      }
+      return template.replace(/\$\{([^\}]*)\}/g, function(tag, key, pos) {
+        return map[key];
+      });
+    } catch (error1) {
+      error = error1;
+      return "";
+    }
+  },
+  highlighter: function(li, query) {
+    var regexp;
+    if (!query) {
+      return li;
+    }
+    regexp = new RegExp(">\\s*([^\<]*?)(" + query.replace("+", "\\+") + ")([^\<]*)\\s*<", 'ig');
+    return li.replace(regexp, function(str, $1, $2, $3) {
+      return '> ' + $1 + '<strong>' + $2 + '</strong>' + $3 + ' <';
+    });
+  },
+  beforeInsert: function(value, $li, e) {
+    return value;
+  },
+  beforeReposition: function(offset) {
+    return offset;
+  },
+  afterMatchFailed: function(at, el) {}
+};
+
+var App;
+
+App = (function() {
+  function App(inputor) {
+    this.currentFlag = null;
+    this.controllers = {};
+    this.aliasMaps = {};
+    this.$inputor = $(inputor);
+    this.setupRootElement();
+    this.listen();
+  }
+
+  App.prototype.createContainer = function(doc) {
+    var ref;
+    if ((ref = this.$el) != null) {
+      ref.remove();
+    }
+    return $(doc.body).append(this.$el = $("<div class='atwho-container'></div>"));
+  };
+
+  App.prototype.setupRootElement = function(iframe, asRoot) {
+    var error, error1;
+    if (asRoot == null) {
+      asRoot = false;
+    }
+    if (iframe) {
+      this.window = iframe.contentWindow;
+      this.document = iframe.contentDocument || this.window.document;
+      this.iframe = iframe;
+    } else {
+      this.document = this.$inputor[0].ownerDocument;
+      this.window = this.document.defaultView || this.document.parentWindow;
+      try {
+        this.iframe = this.window.frameElement;
+      } catch (error1) {
+        error = error1;
+        this.iframe = null;
+        if ($.fn.atwho.debug) {
+          throw new Error("iframe auto-discovery is failed.\nPlease use `setIframe` to set the target iframe manually.\n" + error);
+        }
+      }
+    }
+    return this.createContainer((this.iframeAsRoot = asRoot) ? this.document : document);
+  };
+
+  App.prototype.controller = function(at) {
+    var c, current, currentFlag, ref;
+    if (this.aliasMaps[at]) {
+      current = this.controllers[this.aliasMaps[at]];
+    } else {
+      ref = this.controllers;
+      for (currentFlag in ref) {
+        c = ref[currentFlag];
+        if (currentFlag === at) {
+          current = c;
+          break;
+        }
+      }
+    }
+    if (current) {
+      return current;
+    } else {
+      return this.controllers[this.currentFlag];
+    }
+  };
+
+  App.prototype.setContextFor = function(at) {
+    this.currentFlag = at;
+    return this;
+  };
+
+  App.prototype.reg = function(flag, setting) {
+    var base, controller;
+    controller = (base = this.controllers)[flag] || (base[flag] = this.$inputor.is('[contentEditable]') ? new EditableController(this, flag) : new TextareaController(this, flag));
+    if (setting.alias) {
+      this.aliasMaps[setting.alias] = flag;
+    }
+    controller.init(setting);
+    return this;
+  };
+
+  App.prototype.listen = function() {
+    return this.$inputor.on('compositionstart', (function(_this) {
+      return function(e) {
+        var ref;
+        if ((ref = _this.controller()) != null) {
+          ref.view.hide();
+        }
+        _this.isComposing = true;
+        return null;
+      };
+    })(this)).on('compositionend', (function(_this) {
+      return function(e) {
+        _this.isComposing = false;
+        setTimeout(function(e) {
+          return _this.dispatch(e);
+        });
+        return null;
+      };
+    })(this)).on('keyup.atwhoInner', (function(_this) {
+      return function(e) {
+        return _this.onKeyup(e);
+      };
+    })(this)).on('keydown.atwhoInner', (function(_this) {
+      return function(e) {
+        return _this.onKeydown(e);
+      };
+    })(this)).on('blur.atwhoInner', (function(_this) {
+      return function(e) {
+        var c;
+        if (c = _this.controller()) {
+          c.expectedQueryCBId = null;
+          return c.view.hide(e, c.getOpt("displayTimeout"));
+        }
+      };
+    })(this)).on('click.atwhoInner', (function(_this) {
+      return function(e) {
+        return _this.dispatch(e);
+      };
+    })(this)).on('scroll.atwhoInner', (function(_this) {
+      return function() {
+        var lastScrollTop;
+        lastScrollTop = _this.$inputor.scrollTop();
+        return function(e) {
+          var currentScrollTop, ref;
+          currentScrollTop = e.target.scrollTop;
+          if (lastScrollTop !== currentScrollTop) {
+            if ((ref = _this.controller()) != null) {
+              ref.view.hide(e);
+            }
+          }
+          lastScrollTop = currentScrollTop;
+          return true;
+        };
+      };
+    })(this)());
+  };
+
+  App.prototype.shutdown = function() {
+    var _, c, ref;
+    ref = this.controllers;
+    for (_ in ref) {
+      c = ref[_];
+      c.destroy();
+      delete this.controllers[_];
+    }
+    this.$inputor.off('.atwhoInner');
+    return this.$el.remove();
+  };
+
+  App.prototype.dispatch = function(e) {
+    var _, c, ref, results;
+    ref = this.controllers;
+    results = [];
+    for (_ in ref) {
+      c = ref[_];
+      results.push(c.lookUp(e));
+    }
+    return results;
+  };
+
+  App.prototype.onKeyup = function(e) {
+    var ref;
+    switch (e.keyCode) {
+      case KEY_CODE.ESC:
+        e.preventDefault();
+        if ((ref = this.controller()) != null) {
+          ref.view.hide();
+        }
+        break;
+      case KEY_CODE.DOWN:
+      case KEY_CODE.UP:
+      case KEY_CODE.CTRL:
+      case KEY_CODE.ENTER:
+        $.noop();
+        break;
+      case KEY_CODE.P:
+      case KEY_CODE.N:
+        if (!e.ctrlKey) {
+          this.dispatch(e);
+        }
+        break;
+      default:
+        this.dispatch(e);
+    }
+  };
+
+  App.prototype.onKeydown = function(e) {
+    var ref, view;
+    view = (ref = this.controller()) != null ? ref.view : void 0;
+    if (!(view && view.visible())) {
+      return;
+    }
+    switch (e.keyCode) {
+      case KEY_CODE.ESC:
+        e.preventDefault();
+        view.hide(e);
+        break;
+      case KEY_CODE.UP:
+        e.preventDefault();
+        view.prev();
+        break;
+      case KEY_CODE.DOWN:
+        e.preventDefault();
+        view.next();
+        break;
+      case KEY_CODE.P:
+        if (!e.ctrlKey) {
+          return;
+        }
+        e.preventDefault();
+        view.prev();
+        break;
+      case KEY_CODE.N:
+        if (!e.ctrlKey) {
+          return;
+        }
+        e.preventDefault();
+        view.next();
+        break;
+      case KEY_CODE.TAB:
+      case KEY_CODE.ENTER:
+      case KEY_CODE.SPACE:
+        if (!view.visible()) {
+          return;
+        }
+        if (!this.controller().getOpt('spaceSelectsMatch') && e.keyCode === KEY_CODE.SPACE) {
+          return;
+        }
+        if (!this.controller().getOpt('tabSelectsMatch') && e.keyCode === KEY_CODE.TAB) {
+          return;
+        }
+        if (view.highlighted()) {
+          e.preventDefault();
+          view.choose(e);
+        } else {
+          view.hide(e);
+        }
+        break;
+      default:
+        $.noop();
+    }
+  };
+
+  return App;
+
+})();
+
+var Controller,
+  slice = [].slice;
+
+Controller = (function() {
+  Controller.prototype.uid = function() {
+    return (Math.random().toString(16) + "000000000").substr(2, 8) + (new Date().getTime());
+  };
+
+  function Controller(app, at1) {
+    this.app = app;
+    this.at = at1;
+    this.$inputor = this.app.$inputor;
+    this.id = this.$inputor[0].id || this.uid();
+    this.expectedQueryCBId = null;
+    this.setting = null;
+    this.query = null;
+    this.pos = 0;
+    this.range = null;
+    if ((this.$el = $("#atwho-ground-" + this.id, this.app.$el)).length === 0) {
+      this.app.$el.append(this.$el = $("<div id='atwho-ground-" + this.id + "'></div>"));
+    }
+    this.model = new Model(this);
+    this.view = new View(this);
+  }
+
+  Controller.prototype.init = function(setting) {
+    this.setting = $.extend({}, this.setting || $.fn.atwho["default"], setting);
+    this.view.init();
+    return this.model.reload(this.setting.data);
+  };
+
+  Controller.prototype.destroy = function() {
+    this.trigger('beforeDestroy');
+    this.model.destroy();
+    this.view.destroy();
+    return this.$el.remove();
+  };
+
+  Controller.prototype.callDefault = function() {
+    var args, error, error1, funcName;
+    funcName = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+    try {
+      return DEFAULT_CALLBACKS[funcName].apply(this, args);
+    } catch (error1) {
+      error = error1;
+      return $.error(error + " Or maybe At.js doesn't have function " + funcName);
+    }
+  };
+
+  Controller.prototype.trigger = function(name, data) {
+    var alias, eventName;
+    if (data == null) {
+      data = [];
+    }
+    data.push(this);
+    alias = this.getOpt('alias');
+    eventName = alias ? name + "-" + alias + ".atwho" : name + ".atwho";
+    return this.$inputor.trigger(eventName, data);
+  };
+
+  Controller.prototype.callbacks = function(funcName) {
+    return this.getOpt("callbacks")[funcName] || DEFAULT_CALLBACKS[funcName];
+  };
+
+  Controller.prototype.getOpt = function(at, default_value) {
+    var e, error1;
+    try {
+      return this.setting[at];
+    } catch (error1) {
+      e = error1;
+      return null;
+    }
+  };
+
+  Controller.prototype.insertContentFor = function($li) {
+    var data, tpl;
+    tpl = this.getOpt('insertTpl');
+    data = $.extend({}, $li.data('item-data'), {
+      'atwho-at': this.at
+    });
+    return this.callbacks("tplEval").call(this, tpl, data, "onInsert");
+  };
+
+  Controller.prototype.renderView = function(data) {
+    var searchKey;
+    searchKey = this.getOpt("searchKey");
+    data = this.callbacks("sorter").call(this, this.query.text, data.slice(0, 1001), searchKey);
+    return this.view.render(data.slice(0, this.getOpt('limit')));
+  };
+
+  Controller.arrayToDefaultHash = function(data) {
+    var i, item, len, results;
+    if (!$.isArray(data)) {
+      return data;
+    }
+    results = [];
+    for (i = 0, len = data.length; i < len; i++) {
+      item = data[i];
+      if ($.isPlainObject(item)) {
+        results.push(item);
+      } else {
+        results.push({
+          name: item
+        });
+      }
+    }
+    return results;
+  };
+
+  Controller.prototype.lookUp = function(e) {
+    var query, wait;
+    if (e && e.type === 'click' && !this.getOpt('lookUpOnClick')) {
+      return;
+    }
+    if (this.getOpt('suspendOnComposing') && this.app.isComposing) {
+      return;
+    }
+    query = this.catchQuery(e);
+    if (!query) {
+      this.expectedQueryCBId = null;
+      return query;
+    }
+    this.app.setContextFor(this.at);
+    if (wait = this.getOpt('delay')) {
+      this._delayLookUp(query, wait);
+    } else {
+      this._lookUp(query);
+    }
+    return query;
+  };
+
+  Controller.prototype._delayLookUp = function(query, wait) {
+    var now, remaining;
+    now = Date.now ? Date.now() : new Date().getTime();
+    this.previousCallTime || (this.previousCallTime = now);
+    remaining = wait - (now - this.previousCallTime);
+    if ((0 < remaining && remaining < wait)) {
+      this.previousCallTime = now;
+      this._stopDelayedCall();
+      return this.delayedCallTimeout = setTimeout((function(_this) {
+        return function() {
+          _this.previousCallTime = 0;
+          _this.delayedCallTimeout = null;
+          return _this._lookUp(query);
+        };
+      })(this), wait);
+    } else {
+      this._stopDelayedCall();
+      if (this.previousCallTime !== now) {
+        this.previousCallTime = 0;
+      }
+      return this._lookUp(query);
+    }
+  };
+
+  Controller.prototype._stopDelayedCall = function() {
+    if (this.delayedCallTimeout) {
+      clearTimeout(this.delayedCallTimeout);
+      return this.delayedCallTimeout = null;
+    }
+  };
+
+  Controller.prototype._generateQueryCBId = function() {
+    return {};
+  };
+
+  Controller.prototype._lookUp = function(query) {
+    var _callback;
+    _callback = function(queryCBId, data) {
+      if (queryCBId !== this.expectedQueryCBId) {
+        return;
+      }
+      if (data && data.length > 0) {
+        return this.renderView(this.constructor.arrayToDefaultHash(data));
+      } else {
+        return this.view.hide();
+      }
+    };
+    this.expectedQueryCBId = this._generateQueryCBId();
+    return this.model.query(query.text, $.proxy(_callback, this, this.expectedQueryCBId));
+  };
+
+  return Controller;
+
+})();
+
+var TextareaController,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+TextareaController = (function(superClass) {
+  extend(TextareaController, superClass);
+
+  function TextareaController() {
+    return TextareaController.__super__.constructor.apply(this, arguments);
+  }
+
+  TextareaController.prototype.catchQuery = function() {
+    var caretPos, content, end, isString, query, start, subtext;
+    content = this.$inputor.val();
+    caretPos = this.$inputor.caret('pos', {
+      iframe: this.app.iframe
+    });
+    subtext = content.slice(0, caretPos);
+    query = this.callbacks("matcher").call(this, this.at, subtext, this.getOpt('startWithSpace'), this.getOpt("acceptSpaceBar"));
+    isString = typeof query === 'string';
+    if (isString && query.length < this.getOpt('minLen', 0)) {
+      return;
+    }
+    if (isString && query.length <= this.getOpt('maxLen', 20)) {
+      start = caretPos - query.length;
+      end = start + query.length;
+      this.pos = start;
+      query = {
+        'text': query,
+        'headPos': start,
+        'endPos': end
+      };
+      this.trigger("matched", [this.at, query.text]);
+    } else {
+      query = null;
+      this.view.hide();
+    }
+    return this.query = query;
+  };
+
+  TextareaController.prototype.rect = function() {
+    var c, iframeOffset, scaleBottom;
+    if (!(c = this.$inputor.caret('offset', this.pos - 1, {
+      iframe: this.app.iframe
+    }))) {
+      return;
+    }
+    if (this.app.iframe && !this.app.iframeAsRoot) {
+      iframeOffset = $(this.app.iframe).offset();
+      c.left += iframeOffset.left;
+      c.top += iframeOffset.top;
+    }
+    scaleBottom = this.app.document.selection ? 0 : 2;
+    return {
+      left: c.left,
+      top: c.top,
+      bottom: c.top + c.height + scaleBottom
+    };
+  };
+
+  TextareaController.prototype.insert = function(content, $li) {
+    var $inputor, source, startStr, suffix, text;
+    $inputor = this.$inputor;
+    source = $inputor.val();
+    startStr = source.slice(0, Math.max(this.query.headPos - this.at.length, 0));
+    suffix = (suffix = this.getOpt('suffix')) === "" ? suffix : suffix || " ";
+    content += suffix;
+    text = "" + startStr + content + (source.slice(this.query['endPos'] || 0));
+    $inputor.val(text);
+    $inputor.caret('pos', startStr.length + content.length, {
+      iframe: this.app.iframe
+    });
+    if (!$inputor.is(':focus')) {
+      $inputor.focus();
+    }
+    return $inputor.change();
+  };
+
+  return TextareaController;
+
+})(Controller);
+
+var EditableController,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+EditableController = (function(superClass) {
+  extend(EditableController, superClass);
+
+  function EditableController() {
+    return EditableController.__super__.constructor.apply(this, arguments);
+  }
+
+  EditableController.prototype._getRange = function() {
+    var sel;
+    sel = this.app.window.getSelection();
+    if (sel.rangeCount > 0) {
+      return sel.getRangeAt(0);
+    }
+  };
+
+  EditableController.prototype._setRange = function(position, node, range) {
+    if (range == null) {
+      range = this._getRange();
+    }
+    if (!(range && node)) {
+      return;
+    }
+    node = $(node)[0];
+    if (position === 'after') {
+      range.setEndAfter(node);
+      range.setStartAfter(node);
+    } else {
+      range.setEndBefore(node);
+      range.setStartBefore(node);
+    }
+    range.collapse(false);
+    return this._clearRange(range);
+  };
+
+  EditableController.prototype._clearRange = function(range) {
+    var sel;
+    if (range == null) {
+      range = this._getRange();
+    }
+    sel = this.app.window.getSelection();
+    if (this.ctrl_a_pressed == null) {
+      sel.removeAllRanges();
+      return sel.addRange(range);
+    }
+  };
+
+  EditableController.prototype._movingEvent = function(e) {
+    var ref;
+    return e.type === 'click' || ((ref = e.which) === KEY_CODE.RIGHT || ref === KEY_CODE.LEFT || ref === KEY_CODE.UP || ref === KEY_CODE.DOWN);
+  };
+
+  EditableController.prototype._unwrap = function(node) {
+    var next;
+    node = $(node).unwrap().get(0);
+    if ((next = node.nextSibling) && next.nodeValue) {
+      node.nodeValue += next.nodeValue;
+      $(next).remove();
+    }
+    return node;
+  };
+
+  EditableController.prototype.catchQuery = function(e) {
+    var $inserted, $query, _range, index, inserted, isString, lastNode, matched, offset, query, query_content, range;
+    if (!(range = this._getRange())) {
+      return;
+    }
+    if (!range.collapsed) {
+      return;
+    }
+    if (e.which === KEY_CODE.ENTER) {
+      ($query = $(range.startContainer).closest('.atwho-query')).contents().unwrap();
+      if ($query.is(':empty')) {
+        $query.remove();
+      }
+      ($query = $(".atwho-query", this.app.document)).text($query.text()).contents().last().unwrap();
+      this._clearRange();
+      return;
+    }
+    if (/firefox/i.test(navigator.userAgent)) {
+      if ($(range.startContainer).is(this.$inputor)) {
+        this._clearRange();
+        return;
+      }
+      if (e.which === KEY_CODE.BACKSPACE && range.startContainer.nodeType === document.ELEMENT_NODE && (offset = range.startOffset - 1) >= 0) {
+        _range = range.cloneRange();
+        _range.setStart(range.startContainer, offset);
+        if ($(_range.cloneContents()).contents().last().is('.atwho-inserted')) {
+          inserted = $(range.startContainer).contents().get(offset);
+          this._setRange('after', $(inserted).contents().last());
+        }
+      } else if (e.which === KEY_CODE.LEFT && range.startContainer.nodeType === document.TEXT_NODE) {
+        $inserted = $(range.startContainer.previousSibling);
+        if ($inserted.is('.atwho-inserted') && range.startOffset === 0) {
+          this._setRange('after', $inserted.contents().last());
+        }
+      }
+    }
+    $(range.startContainer).closest('.atwho-inserted').addClass('atwho-query').siblings().removeClass('atwho-query');
+    if (($query = $(".atwho-query", this.app.document)).length > 0 && $query.is(':empty') && $query.text().length === 0) {
+      $query.remove();
+    }
+    if (!this._movingEvent(e)) {
+      $query.removeClass('atwho-inserted');
+    }
+    if ($query.length > 0) {
+      switch (e.which) {
+        case KEY_CODE.LEFT:
+          this._setRange('before', $query.get(0), range);
+          $query.removeClass('atwho-query');
+          return;
+        case KEY_CODE.RIGHT:
+          this._setRange('after', $query.get(0).nextSibling, range);
+          $query.removeClass('atwho-query');
+          return;
+      }
+    }
+    if ($query.length > 0 && (query_content = $query.attr('data-atwho-at-query'))) {
+      $query.empty().html(query_content).attr('data-atwho-at-query', null);
+      this._setRange('after', $query.get(0), range);
+    }
+    _range = range.cloneRange();
+    _range.setStart(range.startContainer, 0);
+    matched = this.callbacks("matcher").call(this, this.at, _range.toString(), this.getOpt('startWithSpace'), this.getOpt("acceptSpaceBar"));
+    isString = typeof matched === 'string';
+    if ($query.length === 0 && isString && (index = range.startOffset - this.at.length - matched.length) >= 0) {
+      range.setStart(range.startContainer, index);
+      $query = $('<span/>', this.app.document).attr(this.getOpt("editableAtwhoQueryAttrs")).addClass('atwho-query');
+      range.surroundContents($query.get(0));
+      lastNode = $query.contents().last().get(0);
+      if (lastNode) {
+        if (/firefox/i.test(navigator.userAgent)) {
+          range.setStart(lastNode, lastNode.length);
+          range.setEnd(lastNode, lastNode.length);
+          this._clearRange(range);
+        } else {
+          this._setRange('after', lastNode, range);
+        }
+      }
+    }
+    if (isString && matched.length < this.getOpt('minLen', 0)) {
+      return;
+    }
+    if (isString && matched.length <= this.getOpt('maxLen', 20)) {
+      query = {
+        text: matched,
+        el: $query
+      };
+      this.trigger("matched", [this.at, query.text]);
+      return this.query = query;
+    } else {
+      this.view.hide();
+      this.query = {
+        el: $query
+      };
+      if ($query.text().indexOf(this.at) >= 0) {
+        if (this._movingEvent(e) && $query.hasClass('atwho-inserted')) {
+          $query.removeClass('atwho-query');
+        } else if (false !== this.callbacks('afterMatchFailed').call(this, this.at, $query)) {
+          this._setRange("after", this._unwrap($query.text($query.text()).contents().first()));
+        }
+      }
+      return null;
+    }
+  };
+
+  EditableController.prototype.rect = function() {
+    var $iframe, iframeOffset, rect;
+    rect = this.query.el.offset();
+    if (!rect) {
+      return;
+    }
+    if (this.app.iframe && !this.app.iframeAsRoot) {
+      iframeOffset = ($iframe = $(this.app.iframe)).offset();
+      rect.left += iframeOffset.left - this.$inputor.scrollLeft();
+      rect.top += iframeOffset.top - this.$inputor.scrollTop();
+    }
+    rect.bottom = rect.top + this.query.el.height();
+    return rect;
+  };
+
+  EditableController.prototype.insert = function(content, $li) {
+    var data, range, suffix, suffixNode;
+    if (!this.$inputor.is(':focus')) {
+      this.$inputor.focus();
+    }
+    suffix = (suffix = this.getOpt('suffix')) === "" ? suffix : suffix || "\u00A0";
+    data = $li.data('item-data');
+    this.query.el.removeClass('atwho-query').addClass('atwho-inserted').html(content).attr('data-atwho-at-query', "" + data['atwho-at'] + this.query.text).attr('contenteditable', "false");
+    if (range = this._getRange()) {
+      if (this.query.el.length) {
+        range.setEndAfter(this.query.el[0]);
+      }
+      range.collapse(false);
+      range.insertNode(suffixNode = this.app.document.createTextNode("" + suffix));
+      this._setRange('after', suffixNode, range);
+    }
+    if (!this.$inputor.is(':focus')) {
+      this.$inputor.focus();
+    }
+    return this.$inputor.change();
+  };
+
+  return EditableController;
+
+})(Controller);
+
+var Model;
+
+Model = (function() {
+  function Model(context) {
+    this.context = context;
+    this.at = this.context.at;
+    this.storage = this.context.$inputor;
+  }
+
+  Model.prototype.destroy = function() {
+    return this.storage.data(this.at, null);
+  };
+
+  Model.prototype.saved = function() {
+    return this.fetch() > 0;
+  };
+
+  Model.prototype.query = function(query, callback) {
+    var _remoteFilter, data, searchKey;
+    data = this.fetch();
+    searchKey = this.context.getOpt("searchKey");
+    data = this.context.callbacks('filter').call(this.context, query, data, searchKey) || [];
+    _remoteFilter = this.context.callbacks('remoteFilter');
+    if (data.length > 0 || (!_remoteFilter && data.length === 0)) {
+      return callback(data);
+    } else {
+      return _remoteFilter.call(this.context, query, callback);
+    }
+  };
+
+  Model.prototype.fetch = function() {
+    return this.storage.data(this.at) || [];
+  };
+
+  Model.prototype.save = function(data) {
+    return this.storage.data(this.at, this.context.callbacks("beforeSave").call(this.context, data || []));
+  };
+
+  Model.prototype.load = function(data) {
+    if (!(this.saved() || !data)) {
+      return this._load(data);
+    }
+  };
+
+  Model.prototype.reload = function(data) {
+    return this._load(data);
+  };
+
+  Model.prototype._load = function(data) {
+    if (typeof data === "string") {
+      return $.ajax(data, {
+        dataType: "json"
+      }).done((function(_this) {
+        return function(data) {
+          return _this.save(data);
+        };
+      })(this));
+    } else {
+      return this.save(data);
+    }
+  };
+
+  return Model;
+
+})();
+
+var View;
+
+View = (function() {
+  function View(context) {
+    this.context = context;
+    this.$el = $("<div class='atwho-view'><ul class='atwho-view-ul'></ul></div>");
+    this.$elUl = this.$el.children();
+    this.timeoutID = null;
+    this.context.$el.append(this.$el);
+    this.bindEvent();
+  }
+
+  View.prototype.init = function() {
+    var header_tpl, id;
+    id = this.context.getOpt("alias") || this.context.at.charCodeAt(0);
+    header_tpl = this.context.getOpt("headerTpl");
+    if (header_tpl && this.$el.children().length === 1) {
+      this.$el.prepend(header_tpl);
+    }
+    return this.$el.attr({
+      'id': "at-view-" + id
+    });
+  };
+
+  View.prototype.destroy = function() {
+    return this.$el.remove();
+  };
+
+  View.prototype.bindEvent = function() {
+    var $menu, lastCoordX, lastCoordY;
+    $menu = this.$el.find('ul');
+    lastCoordX = 0;
+    lastCoordY = 0;
+    return $menu.on('mousemove.atwho-view', 'li', (function(_this) {
+      return function(e) {
+        var $cur;
+        if (lastCoordX === e.clientX && lastCoordY === e.clientY) {
+          return;
+        }
+        lastCoordX = e.clientX;
+        lastCoordY = e.clientY;
+        $cur = $(e.currentTarget);
+        if ($cur.hasClass('cur')) {
+          return;
+        }
+        $menu.find('.cur').removeClass('cur');
+        return $cur.addClass('cur');
+      };
+    })(this)).on('click.atwho-view', 'li', (function(_this) {
+      return function(e) {
+        $menu.find('.cur').removeClass('cur');
+        $(e.currentTarget).addClass('cur');
+        _this.choose(e);
+        return e.preventDefault();
+      };
+    })(this));
+  };
+
+  View.prototype.visible = function() {
+    return $.expr.filters.visible(this.$el[0]);
+  };
+
+  View.prototype.highlighted = function() {
+    return this.$el.find(".cur").length > 0;
+  };
+
+  View.prototype.choose = function(e) {
+    var $li, content;
+    if (($li = this.$el.find(".cur")).length) {
+      content = this.context.insertContentFor($li);
+      this.context._stopDelayedCall();
+      this.context.insert(this.context.callbacks("beforeInsert").call(this.context, content, $li, e), $li);
+      this.context.trigger("inserted", [$li, e]);
+      this.hide(e);
+    }
+    if (this.context.getOpt("hideWithoutSuffix")) {
+      return this.stopShowing = true;
+    }
+  };
+
+  View.prototype.reposition = function(rect) {
+    var _window, offset, overflowOffset, ref;
+    _window = this.context.app.iframeAsRoot ? this.context.app.window : window;
+    if (rect.bottom + this.$el.height() - $(_window).scrollTop() > $(_window).height()) {
+      rect.bottom = rect.top - this.$el.height();
+    }
+    if (rect.left > (overflowOffset = $(_window).width() - this.$el.width() - 5)) {
+      rect.left = overflowOffset;
+    }
+    offset = {
+      left: rect.left,
+      top: rect.bottom
+    };
+    if ((ref = this.context.callbacks("beforeReposition")) != null) {
+      ref.call(this.context, offset);
+    }
+    this.$el.offset(offset);
+    return this.context.trigger("reposition", [offset]);
+  };
+
+  View.prototype.next = function() {
+    var cur, next, nextEl, offset;
+    cur = this.$el.find('.cur').removeClass('cur');
+    next = cur.next();
+    if (!next.length) {
+      next = this.$el.find('li:first');
+    }
+    next.addClass('cur');
+    nextEl = next[0];
+    offset = nextEl.offsetTop + nextEl.offsetHeight + (nextEl.nextSibling ? nextEl.nextSibling.offsetHeight : 0);
+    return this.scrollTop(Math.max(0, offset - this.$el.height()));
+  };
+
+  View.prototype.prev = function() {
+    var cur, offset, prev, prevEl;
+    cur = this.$el.find('.cur').removeClass('cur');
+    prev = cur.prev();
+    if (!prev.length) {
+      prev = this.$el.find('li:last');
+    }
+    prev.addClass('cur');
+    prevEl = prev[0];
+    offset = prevEl.offsetTop + prevEl.offsetHeight + (prevEl.nextSibling ? prevEl.nextSibling.offsetHeight : 0);
+    return this.scrollTop(Math.max(0, offset - this.$el.height()));
+  };
+
+  View.prototype.scrollTop = function(scrollTop) {
+    var scrollDuration;
+    scrollDuration = this.context.getOpt('scrollDuration');
+    if (scrollDuration) {
+      return this.$elUl.animate({
+        scrollTop: scrollTop
+      }, scrollDuration);
+    } else {
+      return this.$elUl.scrollTop(scrollTop);
+    }
+  };
+
+  View.prototype.show = function() {
+    var rect;
+    if (this.stopShowing) {
+      this.stopShowing = false;
+      return;
+    }
+    if (!this.visible()) {
+      this.$el.show();
+      this.$el.scrollTop(0);
+      this.context.trigger('shown');
+    }
+    if (rect = this.context.rect()) {
+      return this.reposition(rect);
+    }
+  };
+
+  View.prototype.hide = function(e, time) {
+    var callback;
+    if (!this.visible()) {
+      return;
+    }
+    if (isNaN(time)) {
+      this.$el.hide();
+      return this.context.trigger('hidden', [e]);
+    } else {
+      callback = (function(_this) {
+        return function() {
+          return _this.hide();
+        };
+      })(this);
+      clearTimeout(this.timeoutID);
+      return this.timeoutID = setTimeout(callback, time);
+    }
+  };
+
+  View.prototype.render = function(list) {
+    var $li, $ul, i, item, len, li, tpl;
+    if (!($.isArray(list) && list.length > 0)) {
+      this.hide();
+      return;
+    }
+    this.$el.find('ul').empty();
+    $ul = this.$el.find('ul');
+    tpl = this.context.getOpt('displayTpl');
+    for (i = 0, len = list.length; i < len; i++) {
+      item = list[i];
+      item = $.extend({}, item, {
+        'atwho-at': this.context.at
+      });
+      li = this.context.callbacks("tplEval").call(this.context, tpl, item, "onDisplay");
+      $li = $(this.context.callbacks("highlighter").call(this.context, li, this.context.query.text));
+      $li.data("item-data", item);
+      $ul.append($li);
+    }
+    this.show();
+    if (this.context.getOpt('highlightFirst')) {
+      return $ul.find("li:first").addClass("cur");
+    }
+  };
+
+  return View;
+
+})();
+
+var Api;
+
+Api = {
+  load: function(at, data) {
+    var c;
+    if (c = this.controller(at)) {
+      return c.model.load(data);
+    }
+  },
+  isSelecting: function() {
+    var ref;
+    return !!((ref = this.controller()) != null ? ref.view.visible() : void 0);
+  },
+  hide: function() {
+    var ref;
+    return (ref = this.controller()) != null ? ref.view.hide() : void 0;
+  },
+  reposition: function() {
+    var c;
+    if (c = this.controller()) {
+      return c.view.reposition(c.rect());
+    }
+  },
+  setIframe: function(iframe, asRoot) {
+    this.setupRootElement(iframe, asRoot);
+    return null;
+  },
+  run: function() {
+    return this.dispatch();
+  },
+  destroy: function() {
+    this.shutdown();
+    return this.$inputor.data('atwho', null);
+  }
+};
+
+$.fn.atwho = function(method) {
+  var _args, result;
+  _args = arguments;
+  result = null;
+  this.filter('textarea, input, [contenteditable=""], [contenteditable=true]').each(function() {
+    var $this, app;
+    if (!(app = ($this = $(this)).data("atwho"))) {
+      $this.data('atwho', (app = new App(this)));
+    }
+    if (typeof method === 'object' || !method) {
+      return app.reg(method.at, method);
+    } else if (Api[method] && app) {
+      return result = Api[method].apply(app, Array.prototype.slice.call(_args, 1));
+    } else {
+      return $.error("Method " + method + " does not exist on jQuery.atwho");
+    }
+  });
+  if (result != null) {
+    return result;
+  } else {
+    return this;
+  }
+};
+
+$.fn.atwho["default"] = {
+  at: void 0,
+  alias: void 0,
+  data: null,
+  displayTpl: "<li>${name}</li>",
+  insertTpl: "${atwho-at}${name}",
+  headerTpl: null,
+  callbacks: DEFAULT_CALLBACKS,
+  searchKey: "name",
+  suffix: void 0,
+  hideWithoutSuffix: false,
+  startWithSpace: true,
+  acceptSpaceBar: false,
+  highlightFirst: true,
+  limit: 5,
+  maxLen: 20,
+  minLen: 0,
+  displayTimeout: 300,
+  delay: null,
+  spaceSelectsMatch: false,
+  tabSelectsMatch: true,
+  editableAtwhoQueryAttrs: {},
+  scrollDuration: 150,
+  suspendOnComposing: true,
+  lookUpOnClick: true
+};
+
+$.fn.atwho.debug = false;
+
+}));
+
+
+/***/ }),
+/* 220 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
+  if (true) {
+    // AMD. Register as an anonymous module.
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(140)], __WEBPACK_AMD_DEFINE_RESULT__ = (function ($) {
+      return (root.returnExportsGlobal = factory($));
+    }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports === 'object') {
+    // Node. Does not work with strict CommonJS, but
+    // only CommonJS-like enviroments that support module.exports,
+    // like Node.
+    module.exports = factory(require("jquery"));
+  } else {
+    factory(jQuery);
+  }
+}(this, function ($) {
+
+/*
+  Implement Github like autocomplete mentions
+  http://ichord.github.com/At.js
+
+  Copyright (c) 2013 chord.luo@gmail.com
+  Licensed under the MIT license.
+*/
+
+/*
+本插件操作 textarea 或者 input 内的插入符
+只实现了获得插入符在文本框中的位置，我设置
+插入符的位置.
+*/
+
+"use strict";
+var EditableCaret, InputCaret, Mirror, Utils, discoveryIframeOf, methods, oDocument, oFrame, oWindow, pluginName, setContextBy;
+
+pluginName = 'caret';
+
+EditableCaret = (function() {
+  function EditableCaret($inputor) {
+    this.$inputor = $inputor;
+    this.domInputor = this.$inputor[0];
+  }
+
+  EditableCaret.prototype.setPos = function(pos) {
+    var fn, found, offset, sel;
+    if (sel = oWindow.getSelection()) {
+      offset = 0;
+      found = false;
+      (fn = function(pos, parent) {
+        var node, range, _i, _len, _ref, _results;
+        _ref = parent.childNodes;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          node = _ref[_i];
+          if (found) {
+            break;
+          }
+          if (node.nodeType === 3) {
+            if (offset + node.length >= pos) {
+              found = true;
+              range = oDocument.createRange();
+              range.setStart(node, pos - offset);
+              sel.removeAllRanges();
+              sel.addRange(range);
+              break;
+            } else {
+              _results.push(offset += node.length);
+            }
+          } else {
+            _results.push(fn(pos, node));
+          }
+        }
+        return _results;
+      })(pos, this.domInputor);
+    }
+    return this.domInputor;
+  };
+
+  EditableCaret.prototype.getIEPosition = function() {
+    return this.getPosition();
+  };
+
+  EditableCaret.prototype.getPosition = function() {
+    var inputor_offset, offset;
+    offset = this.getOffset();
+    inputor_offset = this.$inputor.offset();
+    offset.left -= inputor_offset.left;
+    offset.top -= inputor_offset.top;
+    return offset;
+  };
+
+  EditableCaret.prototype.getOldIEPos = function() {
+    var preCaretTextRange, textRange;
+    textRange = oDocument.selection.createRange();
+    preCaretTextRange = oDocument.body.createTextRange();
+    preCaretTextRange.moveToElementText(this.domInputor);
+    preCaretTextRange.setEndPoint("EndToEnd", textRange);
+    return preCaretTextRange.text.length;
+  };
+
+  EditableCaret.prototype.getPos = function() {
+    var clonedRange, pos, range;
+    if (range = this.range()) {
+      clonedRange = range.cloneRange();
+      clonedRange.selectNodeContents(this.domInputor);
+      clonedRange.setEnd(range.endContainer, range.endOffset);
+      pos = clonedRange.toString().length;
+      clonedRange.detach();
+      return pos;
+    } else if (oDocument.selection) {
+      return this.getOldIEPos();
+    }
+  };
+
+  EditableCaret.prototype.getOldIEOffset = function() {
+    var range, rect;
+    range = oDocument.selection.createRange().duplicate();
+    range.moveStart("character", -1);
+    rect = range.getBoundingClientRect();
+    return {
+      height: rect.bottom - rect.top,
+      left: rect.left,
+      top: rect.top
+    };
+  };
+
+  EditableCaret.prototype.getOffset = function(pos) {
+    var clonedRange, offset, range, rect, shadowCaret;
+    if (oWindow.getSelection && (range = this.range())) {
+      if (range.endOffset - 1 > 0 && range.endContainer !== this.domInputor) {
+        clonedRange = range.cloneRange();
+        clonedRange.setStart(range.endContainer, range.endOffset - 1);
+        clonedRange.setEnd(range.endContainer, range.endOffset);
+        rect = clonedRange.getBoundingClientRect();
+        offset = {
+          height: rect.height,
+          left: rect.left + rect.width,
+          top: rect.top
+        };
+        clonedRange.detach();
+      }
+      if (!offset || (offset != null ? offset.height : void 0) === 0) {
+        clonedRange = range.cloneRange();
+        shadowCaret = $(oDocument.createTextNode("|"));
+        clonedRange.insertNode(shadowCaret[0]);
+        clonedRange.selectNode(shadowCaret[0]);
+        rect = clonedRange.getBoundingClientRect();
+        offset = {
+          height: rect.height,
+          left: rect.left,
+          top: rect.top
+        };
+        shadowCaret.remove();
+        clonedRange.detach();
+      }
+    } else if (oDocument.selection) {
+      offset = this.getOldIEOffset();
+    }
+    if (offset) {
+      offset.top += $(oWindow).scrollTop();
+      offset.left += $(oWindow).scrollLeft();
+    }
+    return offset;
+  };
+
+  EditableCaret.prototype.range = function() {
+    var sel;
+    if (!oWindow.getSelection) {
+      return;
+    }
+    sel = oWindow.getSelection();
+    if (sel.rangeCount > 0) {
+      return sel.getRangeAt(0);
+    } else {
+      return null;
+    }
+  };
+
+  return EditableCaret;
+
+})();
+
+InputCaret = (function() {
+  function InputCaret($inputor) {
+    this.$inputor = $inputor;
+    this.domInputor = this.$inputor[0];
+  }
+
+  InputCaret.prototype.getIEPos = function() {
+    var endRange, inputor, len, normalizedValue, pos, range, textInputRange;
+    inputor = this.domInputor;
+    range = oDocument.selection.createRange();
+    pos = 0;
+    if (range && range.parentElement() === inputor) {
+      normalizedValue = inputor.value.replace(/\r\n/g, "\n");
+      len = normalizedValue.length;
+      textInputRange = inputor.createTextRange();
+      textInputRange.moveToBookmark(range.getBookmark());
+      endRange = inputor.createTextRange();
+      endRange.collapse(false);
+      if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) {
+        pos = len;
+      } else {
+        pos = -textInputRange.moveStart("character", -len);
+      }
+    }
+    return pos;
+  };
+
+  InputCaret.prototype.getPos = function() {
+    if (oDocument.selection) {
+      return this.getIEPos();
+    } else {
+      return this.domInputor.selectionStart;
+    }
+  };
+
+  InputCaret.prototype.setPos = function(pos) {
+    var inputor, range;
+    inputor = this.domInputor;
+    if (oDocument.selection) {
+      range = inputor.createTextRange();
+      range.move("character", pos);
+      range.select();
+    } else if (inputor.setSelectionRange) {
+      inputor.setSelectionRange(pos, pos);
+    }
+    return inputor;
+  };
+
+  InputCaret.prototype.getIEOffset = function(pos) {
+    var h, textRange, x, y;
+    textRange = this.domInputor.createTextRange();
+    pos || (pos = this.getPos());
+    textRange.move('character', pos);
+    x = textRange.boundingLeft;
+    y = textRange.boundingTop;
+    h = textRange.boundingHeight;
+    return {
+      left: x,
+      top: y,
+      height: h
+    };
+  };
+
+  InputCaret.prototype.getOffset = function(pos) {
+    var $inputor, offset, position;
+    $inputor = this.$inputor;
+    if (oDocument.selection) {
+      offset = this.getIEOffset(pos);
+      offset.top += $(oWindow).scrollTop() + $inputor.scrollTop();
+      offset.left += $(oWindow).scrollLeft() + $inputor.scrollLeft();
+      return offset;
+    } else {
+      offset = $inputor.offset();
+      position = this.getPosition(pos);
+      return offset = {
+        left: offset.left + position.left - $inputor.scrollLeft(),
+        top: offset.top + position.top - $inputor.scrollTop(),
+        height: position.height
+      };
+    }
+  };
+
+  InputCaret.prototype.getPosition = function(pos) {
+    var $inputor, at_rect, end_range, format, html, mirror, start_range;
+    $inputor = this.$inputor;
+    format = function(value) {
+      value = value.replace(/<|>|`|"|&/g, '?').replace(/\r\n|\r|\n/g, "<br/>");
+      if (/firefox/i.test(navigator.userAgent)) {
+        value = value.replace(/\s/g, '&nbsp;');
+      }
+      return value;
+    };
+    if (pos === void 0) {
+      pos = this.getPos();
+    }
+    start_range = $inputor.val().slice(0, pos);
+    end_range = $inputor.val().slice(pos);
+    html = "<span style='position: relative; display: inline;'>" + format(start_range) + "</span>";
+    html += "<span id='caret' style='position: relative; display: inline;'>|</span>";
+    html += "<span style='position: relative; display: inline;'>" + format(end_range) + "</span>";
+    mirror = new Mirror($inputor);
+    return at_rect = mirror.create(html).rect();
+  };
+
+  InputCaret.prototype.getIEPosition = function(pos) {
+    var h, inputorOffset, offset, x, y;
+    offset = this.getIEOffset(pos);
+    inputorOffset = this.$inputor.offset();
+    x = offset.left - inputorOffset.left;
+    y = offset.top - inputorOffset.top;
+    h = offset.height;
+    return {
+      left: x,
+      top: y,
+      height: h
+    };
+  };
+
+  return InputCaret;
+
+})();
+
+Mirror = (function() {
+  Mirror.prototype.css_attr = ["borderBottomWidth", "borderLeftWidth", "borderRightWidth", "borderTopStyle", "borderRightStyle", "borderBottomStyle", "borderLeftStyle", "borderTopWidth", "boxSizing", "fontFamily", "fontSize", "fontWeight", "height", "letterSpacing", "lineHeight", "marginBottom", "marginLeft", "marginRight", "marginTop", "outlineWidth", "overflow", "overflowX", "overflowY", "paddingBottom", "paddingLeft", "paddingRight", "paddingTop", "textAlign", "textOverflow", "textTransform", "whiteSpace", "wordBreak", "wordWrap"];
+
+  function Mirror($inputor) {
+    this.$inputor = $inputor;
+  }
+
+  Mirror.prototype.mirrorCss = function() {
+    var css,
+      _this = this;
+    css = {
+      position: 'absolute',
+      left: -9999,
+      top: 0,
+      zIndex: -20000
+    };
+    if (this.$inputor.prop('tagName') === 'TEXTAREA') {
+      this.css_attr.push('width');
+    }
+    $.each(this.css_attr, function(i, p) {
+      return css[p] = _this.$inputor.css(p);
+    });
+    return css;
+  };
+
+  Mirror.prototype.create = function(html) {
+    this.$mirror = $('<div></div>');
+    this.$mirror.css(this.mirrorCss());
+    this.$mirror.html(html);
+    this.$inputor.after(this.$mirror);
+    return this;
+  };
+
+  Mirror.prototype.rect = function() {
+    var $flag, pos, rect;
+    $flag = this.$mirror.find("#caret");
+    pos = $flag.position();
+    rect = {
+      left: pos.left,
+      top: pos.top,
+      height: $flag.height()
+    };
+    this.$mirror.remove();
+    return rect;
+  };
+
+  return Mirror;
+
+})();
+
+Utils = {
+  contentEditable: function($inputor) {
+    return !!($inputor[0].contentEditable && $inputor[0].contentEditable === 'true');
+  }
+};
+
+methods = {
+  pos: function(pos) {
+    if (pos || pos === 0) {
+      return this.setPos(pos);
+    } else {
+      return this.getPos();
+    }
+  },
+  position: function(pos) {
+    if (oDocument.selection) {
+      return this.getIEPosition(pos);
+    } else {
+      return this.getPosition(pos);
+    }
+  },
+  offset: function(pos) {
+    var offset;
+    offset = this.getOffset(pos);
+    return offset;
+  }
+};
+
+oDocument = null;
+
+oWindow = null;
+
+oFrame = null;
+
+setContextBy = function(settings) {
+  var iframe;
+  if (iframe = settings != null ? settings.iframe : void 0) {
+    oFrame = iframe;
+    oWindow = iframe.contentWindow;
+    return oDocument = iframe.contentDocument || oWindow.document;
+  } else {
+    oFrame = void 0;
+    oWindow = window;
+    return oDocument = document;
+  }
+};
+
+discoveryIframeOf = function($dom) {
+  var error;
+  oDocument = $dom[0].ownerDocument;
+  oWindow = oDocument.defaultView || oDocument.parentWindow;
+  try {
+    return oFrame = oWindow.frameElement;
+  } catch (_error) {
+    error = _error;
+  }
+};
+
+$.fn.caret = function(method, value, settings) {
+  var caret;
+  if (methods[method]) {
+    if ($.isPlainObject(value)) {
+      setContextBy(value);
+      value = void 0;
+    } else {
+      setContextBy(settings);
+    }
+    caret = Utils.contentEditable(this) ? new EditableCaret(this) : new InputCaret(this);
+    return methods[method].apply(caret, [value]);
+  } else {
+    return $.error("Method " + method + " does not exist on jQuery.caret");
+  }
+};
+
+$.fn.caret.EditableCaret = EditableCaret;
+
+$.fn.caret.InputCaret = InputCaret;
+
+$.fn.caret.Utils = Utils;
+
+$.fn.caret.apis = methods;
+
+
+}));
+
 
 /***/ })
 /******/ ]);

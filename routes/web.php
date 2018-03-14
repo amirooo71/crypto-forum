@@ -41,9 +41,10 @@ Route::get('/profiles/{user}/notifications', 'UserNotificationsController@index'
 Route::post('/threads/{channel}/{thread}/subscriptions', 'ThreadSubscriptionsController@store')->middleware('auth');
 Route::delete('/threads/{channel}/{thread}/subscriptions', 'ThreadSubscriptionsController@destroy')->middleware('auth');
 
+Route::get('api/users', 'Api\UsersController@index');
 
 Route::get('test', function () {
 
-   auth()->loginUsingId(51);
+    auth()->loginUsingId(51);
 
 });
