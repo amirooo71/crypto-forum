@@ -13,7 +13,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <div class="level">
-                                <img src="{{$thread->owner->avatar()}}" alt="{{$thread->owner->name}}"
+                                <img src="{{$thread->owner->avatar_path}}" alt="{{$thread->owner->name}}"
                                      width="25" height="25" class="mr-1">
                                 <span class="flex">
                                  <a href="/profiles/{{$thread->owner->name}}">{{$thread->owner->name}}</a> <i>posted : </i>

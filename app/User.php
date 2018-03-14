@@ -80,11 +80,12 @@ class User extends Authenticatable
     }
 
     /**
+     * @param $avatar
      * @return string
      */
     public function getAvatarPathAttribute($avatar)
     {
-        return asset($avatar ? '/storage/' . $avatar : '/storage/avatars/default.jpg');
+        return asset($avatar ? '/storage/' . $avatar : '/images/avatar.jpg');
     }
 
 

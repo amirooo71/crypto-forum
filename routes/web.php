@@ -71,6 +71,5 @@ Route::post('api/users/{user}/avatar', 'Api\UsersAvatarController@store')->middl
 
 Route::get('/test', function () {
 
-    auth()->loginUsingId(1);
 
 });
