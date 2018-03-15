@@ -28,6 +28,10 @@ class User extends Authenticatable
         'password', 'remember_token', 'email',
     ];
 
+    protected $casts = [
+        'confirmed' => 'boolean',
+    ];
+
     /**
      * @return string
      */
@@ -86,6 +90,12 @@ class User extends Authenticatable
     public function getAvatarPathAttribute($avatar)
     {
         return asset($avatar ? '/storage/' . $avatar : '/images/avatar.jpg');
+    }
+
+    public function confirm()
+    {
+        $this->confirmed = true;
+        $this->save();
     }
 
 

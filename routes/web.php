@@ -13,9 +13,9 @@ Route::get('/home', 'HomeController@index')->name('home');
  |                Thread Controller Routes
  |--------------------------------------------------------
  */
-Route::get('threads', 'ThreadController@index');
+Route::get('threads', 'ThreadController@index')->name('threads');
 Route::get('threads/create', 'ThreadController@create');
-Route::post('threads', 'ThreadController@store');
+Route::post('threads', 'ThreadController@store')->middleware('must-be-confirmed');
 Route::get('threads/{channel}', 'ThreadController@index');
 Route::get('threads/{channel}/{thread}', 'ThreadController@show');
 Route::delete('threads/{channel}/{thread}', 'ThreadController@destroy');
@@ -67,7 +67,12 @@ Route::get('api/users', 'Api\UsersController@index');
  |--------------------------------------------------------
  */
 Route::post('api/users/{user}/avatar', 'Api\UsersAvatarController@store')->middleware('auth')->name('avatar');
-
+/*
+ |--------------------------------------------------------
+ |                RegistrationConfirm
+ |--------------------------------------------------------
+ */
+Route::get('/register/confirm', 'Auth\RegisterConfirmationController@index')->name('register.confirm');
 
 Route::get('/test', function () {
 

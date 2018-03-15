@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Laravel\Dusk\DuskServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -42,6 +43,10 @@ class AppServiceProvider extends ServiceProvider
     {
         if ($this->app->isLocal()) {
             $this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
+        }
+
+        if ($this->app->environment('local', 'testing')) {
+            $this->app->register(DuskServiceProvider::class);
         }
     }
 }
