@@ -13,6 +13,7 @@
             return {
                 repliesCount: this.dataRepliesCount,
                 locked: this.thread.locked,
+                editing: false,
             }
         },
 
