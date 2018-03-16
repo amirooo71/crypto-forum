@@ -3,13 +3,13 @@
         <div class="panel-heading">
             <div class="level">
                 <h5 class="flex">
-                    <a :href="'/profiles/'+data.owner.name">
-                        {{data.owner.name}}
+                    <a :href="'/profiles/'+reply.owner.name">
+                        {{reply.owner.name}}
                     </a>
                     said <span v-text="ago"></span>
                 </h5>
                 <div v-if="signedIn">
-                    <favorite :reply="data"></favorite>
+                    <favorite :reply="reply"></favorite>
                 </div>
             </div>
         </div>
@@ -25,12 +25,13 @@
             </div>
             <div v-else v-html="body"></div>
         </div>
-        <div class="panel-footer level">
-            <div v-if="authorize('updateReply',reply)">
+        <div class="panel-footer level" v-if="authorize('owns',reply) || authorize('owns',reply.thread)">
+            <div v-if="authorize('owns',reply)">
                 <button class="btn btn-xs mr-1" @click="editing = true">Edit</button>
                 <button class="btn btn-xs mr-1 btn-danger" @click="destroy">Delete</button>
             </div>
-            <button class="btn btn-xs mr-1 btn-default ml-a" @click="markBestReply" v-show="! isBest">Best Reply?
+            <button class="btn btn-xs mr-1 btn-default ml-a" @click="markBestReply"
+                   v-show="!isBest" v-if="authorize('owns',reply.thread)">Best Reply?
             </button>
         </div>
     </div>
@@ -43,16 +44,15 @@
 
     export default {
         name: "reply",
-        props: ['data'],
+        props: ['reply'],
         components: {Favorite},
 
         data() {
             return {
                 editing: false,
-                id: this.data.id,
-                body: this.data.body,
-                isBest: this.data.isBest,
-                reply: this.data,
+                id: this.reply.id,
+                body: this.reply.body,
+                isBest: this.reply.isBest,
             }
         },
 
@@ -64,7 +64,7 @@
 
         methods: {
             update() {
-                axios.patch('/replies/' + this.data.id, {
+                axios.patch('/replies/' + this.id, {
                     body: this.body,
                 }).catch(error => {
                     flash(error.response.data, 'danger');
@@ -74,8 +74,8 @@
             },
 
             destroy() {
-                axios.delete('/replies/' + this.data.id);
-                this.$emit('deleted', this.data.id);
+                axios.delete('/replies/' + this.id);
+                this.$emit('deleted', this.id);
 
                 // $(this.$el).fadeOut(300, () => {
                 //     flash('Your reply has been deleted.');
@@ -86,16 +86,16 @@
 
                 this.isBest = true;
 
-                axios.post(`/replies/${this.data.id}/best`);
+                axios.post(`/replies/${this.id}/best`);
 
-                window.events.$emit('best-reply-selected', this.data.id);
+                window.events.$emit('best-reply-selected', this.id);
             }
         },
 
         computed: {
-            
+
             ago() {
-                return moment(this.data.created_at).fromNow();
+                return moment(this.reply.created_at).fromNow();
             },
         }
     }
