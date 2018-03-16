@@ -6,4 +6,8 @@ module.exports = {
         return model[prop] === user.id;
     },
 
+    isAdmin() {
+        return ['amir'].includes(user.name);
+    },
+
 };
