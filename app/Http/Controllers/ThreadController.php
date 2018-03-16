@@ -57,6 +57,11 @@ class ThreadController extends Controller
         return view('threads.show', compact('thread'));
     }
 
+    public function create()
+    {
+        return view('threads.create');
+    }
+
     /**
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
@@ -64,11 +69,11 @@ class ThreadController extends Controller
     public function store(Request $request)
     {
 
-       $this->validate($request, [
+        $this->validate($request, [
             'title' => 'required|spamfree',
             'body' => 'required|spamfree',
             'channel_id' => 'required|exists:channels,id',
-            'g-recaptcha-response' => ['required',new Recaptcha()],
+            'g-recaptcha-response' => ['required', new Recaptcha()],
         ]);
 
 
@@ -86,18 +91,17 @@ class ThreadController extends Controller
             ->with('flash', 'Your Thread Has been published');
     }
 
-    /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function create()
-    {
-        return view('threads.create');
-    }
-
-
     public function update($channel, Thread $thread)
     {
 
+        $this->authorize('update', $thread);
+
+        $thread->update(\request()->validate([
+            'title' => 'required|spamfree',
+            'body' => 'required|spamfree',
+        ]));
+
+        return $thread;
     }
 
     /**
