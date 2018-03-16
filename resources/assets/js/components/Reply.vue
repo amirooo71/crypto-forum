@@ -26,7 +26,7 @@
             <div v-else v-html="body"></div>
         </div>
         <div class="panel-footer level">
-            <div v-if="canUpdate">
+            <div v-if="authorize('updateReply',reply)">
                 <button class="btn btn-xs mr-1" @click="editing = true">Edit</button>
                 <button class="btn btn-xs mr-1 btn-danger" @click="destroy">Delete</button>
             </div>
@@ -52,6 +52,7 @@
                 id: this.data.id,
                 body: this.data.body,
                 isBest: false,
+                reply: this.data,
             }
         },
 
@@ -86,16 +87,6 @@
             ago() {
                 return moment(this.data.created_at).fromNow();
             },
-
-            signedIn() {
-                return window.App.signedIn;
-            },
-
-            canUpdate() {
-                return this.authorize(user => this.data.user_id == user.id);
-                // return this.data.user_id == window.App.user.id;
-            }
-
         }
     }
 </script>

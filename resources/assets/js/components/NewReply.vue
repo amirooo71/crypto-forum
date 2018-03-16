@@ -63,15 +63,6 @@
             },
 
         },
-
-        computed: {
-
-            signedIn() {
-                return window.App.signedIn;
-            }
-
-        },
-
     }
 </script>
 
