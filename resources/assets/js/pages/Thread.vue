@@ -7,14 +7,25 @@
 
         components: {Replies, SubscribeButton},
 
-        props: ['dataRepliesCount', 'dataLocked'],
+        props: ['dataRepliesCount', 'thread'],
 
         data() {
             return {
                 repliesCount: this.dataRepliesCount,
-                locked: this.dataLocked,
+                locked: this.thread.locked,
             }
+        },
+
+        methods: {
+
+            toggleLock() {
+                axios[this.locked ? 'delete' : 'post'](`/lock-threads/${this.thread.slug}`);
+                this.locked = !this.locked;
+            }
+
         }
+
+
     }
 
 </script>

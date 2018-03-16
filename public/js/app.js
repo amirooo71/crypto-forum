@@ -60271,7 +60271,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -60295,14 +60295,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     components: { Replies: __WEBPACK_IMPORTED_MODULE_0__components_Replies_vue___default.a, SubscribeButton: __WEBPACK_IMPORTED_MODULE_1__components_SubscribeButton_vue___default.a },
 
-    props: ['dataRepliesCount', 'dataLocked'],
+    props: ['dataRepliesCount', 'thread'],
 
     data: function data() {
         return {
             repliesCount: this.dataRepliesCount,
-            locked: this.dataLocked
+            locked: this.thread.locked
         };
+    },
+
+
+    methods: {
+        toggleLock: function toggleLock() {
+            axios[this.locked ? 'delete' : 'post']('/lock-threads/' + this.thread.slug);
+            this.locked = !this.locked;
+        }
     }
+
 });
 
 /***/ }),

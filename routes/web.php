@@ -86,6 +86,7 @@ Route::get('/register/confirm', 'Auth\RegisterConfirmationController@index')->na
  |--------------------------------------------------------
  */
 Route::post('/lock-threads/{thread}', 'LockedThreadsController@store')->name('locked-threads.store')->middleware('admin');
+Route::delete('/lock-threads/{thread}', 'LockedThreadsController@destroy')->name('locked-threads.destroy')->middleware('admin');
 
 
 Route::get('/test', function () {
