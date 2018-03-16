@@ -61369,7 +61369,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -61384,7 +61384,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_at_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_at_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery_caret__ = __webpack_require__(203);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery_caret___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery_caret__);
-//
 //
 //
 //
@@ -63116,35 +63115,23 @@ var render = function() {
   return _c("div", [
     _vm.signedIn
       ? _c("div", [
-          _c("div", { staticClass: "form-group" }, [
-            _c("textarea", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
+          _c(
+            "div",
+            { staticClass: "form-group" },
+            [
+              _c("wysiwyg", {
+                attrs: { name: "body", placeholder: "Have something to say?" },
+                model: {
                   value: _vm.body,
+                  callback: function($$v) {
+                    _vm.body = $$v
+                  },
                   expression: "body"
                 }
-              ],
-              staticClass: "form-control",
-              attrs: {
-                name: "body",
-                id: "body",
-                cols: "30",
-                rows: "10",
-                placeholder: "Have you somthing to say?"
-              },
-              domProps: { value: _vm.body },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.body = $event.target.value
-                }
-              }
-            })
-          ]),
+              })
+            ],
+            1
+          ),
           _vm._v(" "),
           _c("div", { staticClass: "form-group" }, [
             _c(
@@ -63905,7 +63892,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: "wysiwyg",
 
-    props: ['name', 'value'],
+    props: ['name', 'value', 'placeholder'],
 
     mounted: function mounted() {
         var _this = this;
@@ -63932,7 +63919,10 @@ var render = function() {
         domProps: { value: _vm.value }
       }),
       _vm._v(" "),
-      _c("trix-editor", { ref: "trix", attrs: { input: "trix" } })
+      _c("trix-editor", {
+        ref: "trix",
+        attrs: { input: "trix", placeholder: _vm.placeholder }
+      })
     ],
     1
   )

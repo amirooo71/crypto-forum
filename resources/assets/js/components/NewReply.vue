@@ -2,8 +2,7 @@
     <div>
         <div v-if="signedIn">
             <div class="form-group">
-            <textarea name="body" id="body" v-model="body" cols="30" rows="10" class="form-control"
-                      placeholder="Have you somthing to say?"></textarea>
+                <wysiwyg name="body" v-model="body" placeholder="Have something to say?"></wysiwyg>
             </div>
             <div class="form-group">
                 <button type="submit" class="btn" @click="addReply">Post</button>
