@@ -30,7 +30,7 @@ Route::get('/threads/{channel}/{thread}/replies', 'RepliesController@index');
 Route::post('/threads/{channel}/{thread}/replies', 'RepliesController@store');
 /*
  |--------------------------------------------------------
- |                Replies Controller Routes
+ |               Best Replies Controller Routes
  |--------------------------------------------------------
  */
 Route::post('/replies/{reply}/best', 'BestRepliesController@store')->name('best-replies.store');

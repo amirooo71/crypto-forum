@@ -60508,7 +60508,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -60576,9 +60576,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             editing: false,
             id: this.data.id,
             body: this.data.body,
-            isBest: false,
+            isBest: this.data.isBest,
             reply: this.data
         };
+    },
+    created: function created() {
+        var _this = this;
+
+        window.events.$on('best-reply-selected', function (id) {
+            _this.isBest = id === _this.id;
+        });
     },
 
 
@@ -60603,6 +60610,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         markBestReply: function markBestReply() {
 
             this.isBest = true;
+
+            axios.post('/replies/' + this.data.id + '/best');
+
+            window.events.$emit('best-reply-selected', this.data.id);
         }
     },
 
