@@ -8,16 +8,13 @@ use Illuminate\Support\Facades\Auth;
 class RedirectIfAuthenticated
 {
     /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \Closure $next
-     * @param  string|null $guard
-     * @return mixed
+     * @param $request
+     * @param Closure $next
+     * @return \Illuminate\Http\RedirectResponse|mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle($request, Closure $next)
     {
-        if ($request->user() && ($request->user()->confirmed == false)) {
+        if (\auth()->check() && ($request->user()->confirmed == false)) {
             return redirect('/threads')->with('flash', 'You must first confirm your email address.');
         }
 

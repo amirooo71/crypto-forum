@@ -18,6 +18,7 @@ Route::get('threads/create', 'ThreadController@create');
 Route::post('threads', 'ThreadController@store')->middleware('must-be-confirmed');
 Route::get('threads/{channel}', 'ThreadController@index');
 Route::get('threads/{channel}/{thread}', 'ThreadController@show');
+Route::patch('threads/{channel}/{thread}', 'ThreadController@update')->name('threads.update');
 Route::delete('threads/{channel}/{thread}', 'ThreadController@destroy');
 /*
  |--------------------------------------------------------
@@ -79,6 +80,13 @@ Route::post('api/users/{user}/avatar', 'Api\UsersAvatarController@store')->middl
  |--------------------------------------------------------
  */
 Route::get('/register/confirm', 'Auth\RegisterConfirmationController@index')->name('register.confirm');
+/*
+ |--------------------------------------------------------
+ |           LockedThreadsController Controller
+ |--------------------------------------------------------
+ */
+Route::post('/lock-threads/{thread}', 'LockedThreadsController@store')->name('locked-threads.store')->middleware('admin');
+
 
 Route::get('/test', function () {
 

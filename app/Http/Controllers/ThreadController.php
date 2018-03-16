@@ -95,6 +95,12 @@ class ThreadController extends Controller
         return view('threads.create');
     }
 
+
+    public function update($channel, Thread $thread)
+    {
+
+    }
+
     /**
      * @param $channel
      * @param Thread $thread
