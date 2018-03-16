@@ -42,9 +42,14 @@ class CreatePostRequest extends FormRequest
     /**
      * @param $thread
      * @return mixed
+     * @throws \Exception
      */
     public function persist($thread)
     {
+        if ($thread->locked) {
+            throw new \Exception('Thread is locked');
+        }
+
         return $thread->addReply(
             [
                 'body' => \request('body'),
