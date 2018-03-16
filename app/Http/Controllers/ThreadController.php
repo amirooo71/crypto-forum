@@ -7,6 +7,7 @@ use App\Filters\ThreadFilters;
 use App\Thread;
 use App\Trending;
 use Illuminate\Http\Request;
+use Zttp\Zttp;
 
 class ThreadController extends Controller
 {
@@ -63,15 +64,21 @@ class ThreadController extends Controller
     public function store(Request $request)
     {
 
-//        if (!auth()->user()->confirmed) {
-//            return redirect('/threads')->with('flash','You must first confirm your email address.');
-//        }
-
         $this->validate($request, [
             'title' => 'required|spamfree',
             'body' => 'required|spamfree',
             'channel_id' => 'required|exists:channels,id',
         ]);
+
+        $response = Zttp::asFormParams()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => config('services.recaptcha.secret'),
+            'response' => $request->input('g-recaptcha-response'),
+            'remoteip' => $_SERVER['REMOTE_ADDR'],
+        ]);
+
+       if(!$response->json()['success']){
+           throw new \Exception('Recaptcha faild!');
+       }
 
         $thread = Thread::create(
             [
