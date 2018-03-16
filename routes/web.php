@@ -30,6 +30,12 @@ Route::get('/threads/{channel}/{thread}/replies', 'RepliesController@index');
 Route::post('/threads/{channel}/{thread}/replies', 'RepliesController@store');
 /*
  |--------------------------------------------------------
+ |                Replies Controller Routes
+ |--------------------------------------------------------
+ */
+Route::post('/replies/{reply}/best', 'BestRepliesController@store')->name('best-replies.store');
+/*
+ |--------------------------------------------------------
  |                Favorites Controller Routes
  |--------------------------------------------------------
  */
@@ -69,7 +75,7 @@ Route::get('api/users', 'Api\UsersController@index');
 Route::post('api/users/{user}/avatar', 'Api\UsersAvatarController@store')->middleware('auth')->name('avatar');
 /*
  |--------------------------------------------------------
- |                RegistrationConfirm
+ |            RegistrationConfirm Controller
  |--------------------------------------------------------
  */
 Route::get('/register/confirm', 'Auth\RegisterConfirmationController@index')->name('register.confirm');

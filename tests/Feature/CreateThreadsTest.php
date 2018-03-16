@@ -102,7 +102,18 @@ class CreateThreadsTest extends TestCase
     /**
      * @test
      */
-    public function unauthorized_users_may_not_delete_threads()
+    function a_thread_with_a_title_that_ends_in_a_number_should_generate_the_proper_slug()
+    {
+        $this->signIn();
+        $thread = create('App\Thread', ['title' => 'Some title 24', 'slug' => 'some-title-24']);
+        $this->post(route('threads'), $thread->toArray());
+        $this->assertTrue(Thread::whereSlug('some-title-25')->exists());
+    }
+
+    /**
+     * @test
+     */
+    function unauthorized_users_may_not_delete_threads()
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
         $thread = create('App\Thread');
@@ -116,7 +127,7 @@ class CreateThreadsTest extends TestCase
     /**
      * @test
      */
-    public function authorized_users_can_delete_thread()
+    function authorized_users_can_delete_thread()
     {
         $this->signIn();
         $thread = create('App\Thread', ['user_id' => auth()->id()]);
