@@ -12,12 +12,16 @@
     export default {
         name: "wysiwyg",
 
-        props: ['name', 'value', 'placeholder'],
+        props: ['name', 'value', 'placeholder', 'shouldClear'],
 
         mounted() {
 
             this.$refs.trix.addEventListener('trix-change', e => {
                 this.$emit('input', e.target.innerHTML);
+            });
+
+            this.$watch('shouldClear', () => {
+                this.$refs.trix.value = '';
             });
 
         }
