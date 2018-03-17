@@ -89,6 +89,15 @@
                     <a href="https://forge.laravel.com">Forge</a>
                     <a href="https://github.com/laravel/laravel">GitHub</a>
                 </div>
+
+                @php
+
+                $body = "<script>alert('gotcha');</script><h3>Heading three allowed me</h3><a href='#' onclick='alert(\'gotcha'\)'>Click Me</a>";
+
+                @endphp
+
+                {!! \Stevebauman\Purify\Facades\Purify::clean($body); !!}
+
             </div>
         </div>
     </body>

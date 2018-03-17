@@ -6,6 +6,7 @@ use App\Events\ThreadHasNewReply;
 use App\Events\ThreadReceivedNewReply;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
+use Stevebauman\Purify\Facades\Purify;
 
 class Thread extends Model
 {
@@ -185,6 +186,15 @@ class Thread extends Model
     public function markBestReply($reply)
     {
         $this->update(['best_reply_id' => $reply->id]);
+    }
+
+    /**
+     * @param $body
+     * @return mixed
+     */
+    public function getBodyAttribute($body)
+    {
+        return Purify::clean($body);
     }
 
 }
