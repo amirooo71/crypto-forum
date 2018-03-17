@@ -21,7 +21,7 @@
             });
 
             this.$watch('shouldClear', () => {
-                this.$refs.trix.value = '';
+                this.$refs.trix.value = ''
             });
 
         }
