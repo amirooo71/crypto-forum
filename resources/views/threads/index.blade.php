@@ -2,6 +2,8 @@
 
 @section('content')
 
+    @include('threads._threads_index_header')
+
     <div class="mg-t-30">
         <section class="is-small">
             <div class="container">

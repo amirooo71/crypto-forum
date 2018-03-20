@@ -9,7 +9,7 @@
 
             </div>
             <div class="form-group">
-                <button type="submit" class="btn" @click="addReply">Post</button>
+                <button type="submit" class="btn" @click="addReply">ارسال</button>
             </div>
         </div>
         <div v-else>

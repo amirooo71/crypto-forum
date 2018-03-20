@@ -24,7 +24,16 @@ class ReadThreadsTest extends TestCase
     public function a_user_can_view_all_threads()
     {
         $response = $this->get('/threads');
-        $response->assertSee($this->thread->title);
+        $response->assertSee($this->thread->owner->name);
+    }
+
+    /**
+     * @test
+     */
+    public function a_user_can_see_thread_owners_avatar()
+    {
+        $response = $this->get('/threads');
+        $response->assertSee($this->thread->owner->avatar_path);
     }
 
     /**
@@ -45,8 +54,8 @@ class ReadThreadsTest extends TestCase
         $threadInChannel = create('App\Thread', ['channel_id' => $channel->id]);
         $threadNotInChannel = create('App\Thread');
         $response = $this->get('/threads/' . $channel->slug);
-        $response->assertSee($threadInChannel->title);
-        $response->assertDontSee($threadNotInChannel->title);
+        $response->assertSee($threadInChannel->owner->name);
+        $response->assertDontSee($threadNotInChannel->owner->name);
     }
 
     /**
@@ -70,8 +79,8 @@ class ReadThreadsTest extends TestCase
         $threadByJohn = create('App\Thread', ['user_id' => auth()->id()]);
         $threadNotByJohn = create('App\Thread');
         $response = $this->get('/threads?by=johnDoe');
-        $response->assertSee($threadByJohn->title);
-        $response->assertDontSee($threadNotByJohn->title);
+        $response->assertSee($threadByJohn->owner->name);
+        $response->assertDontSee($threadNotByJohn->owner->name);
 
     }
 

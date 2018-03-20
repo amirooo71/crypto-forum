@@ -25,7 +25,7 @@
             },
 
             labels() {
-                return this.isActive ? 'unsubscribe' : 'subscribe';
+                return this.isActive ? 'غیر فعال کردن عضویت' : 'فعال کردن عضویت';
             },
         },
 

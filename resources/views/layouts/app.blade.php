@@ -68,7 +68,6 @@
 <body>
 <div id="app">
     @include('layouts.nav')
-    @include('threads._header')
     @yield('content')
     <flash message="{{session('flash')}}"></flash>
 </div>

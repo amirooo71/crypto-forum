@@ -3,10 +3,14 @@
         <div class="panel-heading">
             <div class="level">
                 <h5 class="flex">
+                    نوشته شده توسط
+                    <!--<span v-text="ago"></span>-->
                     <a :href="'/profiles/'+reply.owner.name">
                         {{reply.owner.name}}
                     </a>
-                    said <span v-text="ago"></span>
+                    <span class="is-size-6 text-muted">
+                    چهار ساعت پیش
+                    </span>
                 </h5>
                 <div v-if="signedIn">
                     <favorite :reply="reply"></favorite>
@@ -28,12 +32,17 @@
         </div>
         <div class="panel-footer level" v-if="authorize('owns',reply) || authorize('owns',reply.thread)">
             <div v-if="authorize('owns',reply)">
-                <button class="btn btn-xs mr-1" @click="editing = true">Edit</button>
-                <button class="btn btn-xs mr-1 btn-danger" @click="destroy">Delete</button>
+                <a class="mr-1 has-text-primary" @click="editing = true">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <a class="mr-1 has-text-danger" @click="destroy">
+                    <i class="fas fa-trash"></i>
+                </a>
             </div>
-            <button class="btn btn-xs mr-1 btn-default ml-a" @click="markBestReply"
-                    v-show="!isBest" v-if="authorize('owns',reply.thread)">Best Reply?
-            </button>
+            <a class="mr-1 ml-a has-text-warning" @click="markBestReply"
+               v-show="!isBest" v-if="authorize('owns',reply.thread)">
+                <i class="fas fa-star"></i>
+            </a>
         </div>
     </div>
 </template>

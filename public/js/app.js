@@ -59920,7 +59920,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _vm.shouldPaginate
-    ? _c("ul", { staticClass: "pagination" }, [
+    ? _c("ul", { staticClass: "pagination mg-b-20" }, [
         _c(
           "li",
           {
@@ -59947,7 +59947,7 @@ var render = function() {
               },
               [
                 _c("span", { attrs: { "aria-hidden": "true" } }, [
-                  _vm._v("« Previous")
+                  _vm._v("« قبلی")
                 ])
               ]
             )
@@ -59980,7 +59980,7 @@ var render = function() {
               },
               [
                 _c("span", { attrs: { "aria-hidden": "true" } }, [
-                  _vm._v("Next »")
+                  _vm._v("بعدی »")
                 ])
               ]
             )
@@ -60567,7 +60567,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -60582,6 +60582,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Favorite_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Favorite_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -61148,6 +61157,8 @@ var render = function() {
       _c("div", { staticClass: "panel-heading" }, [
         _c("div", { staticClass: "level" }, [
           _c("h5", { staticClass: "flex" }, [
+            _vm._v("\n                نوشته شده توسط\n                "),
+            _vm._v(" "),
             _c("a", { attrs: { href: "/profiles/" + _vm.reply.owner.name } }, [
               _vm._v(
                 "\n                    " +
@@ -61155,8 +61166,10 @@ var render = function() {
                   "\n                "
               )
             ]),
-            _vm._v("\n                said "),
-            _c("span", { domProps: { textContent: _vm._s(_vm.ago) } })
+            _vm._v(" "),
+            _c("span", { staticClass: "is-size-6 text-muted" }, [
+              _vm._v("\n                چهار ساعت پیش\n                ")
+            ])
           ]),
           _vm._v(" "),
           _vm.signedIn
@@ -61221,32 +61234,32 @@ var render = function() {
             _vm.authorize("owns", _vm.reply)
               ? _c("div", [
                   _c(
-                    "button",
+                    "a",
                     {
-                      staticClass: "btn btn-xs mr-1",
+                      staticClass: "mr-1 has-text-primary",
                       on: {
                         click: function($event) {
                           _vm.editing = true
                         }
                       }
                     },
-                    [_vm._v("Edit")]
+                    [_c("i", { staticClass: "fas fa-edit" })]
                   ),
                   _vm._v(" "),
                   _c(
-                    "button",
+                    "a",
                     {
-                      staticClass: "btn btn-xs mr-1 btn-danger",
+                      staticClass: "mr-1 has-text-danger",
                       on: { click: _vm.destroy }
                     },
-                    [_vm._v("Delete")]
+                    [_c("i", { staticClass: "fas fa-trash" })]
                   )
                 ])
               : _vm._e(),
             _vm._v(" "),
             _vm.authorize("owns", _vm.reply.thread)
               ? _c(
-                  "button",
+                  "a",
                   {
                     directives: [
                       {
@@ -61256,10 +61269,10 @@ var render = function() {
                         expression: "!isBest"
                       }
                     ],
-                    staticClass: "btn btn-xs mr-1 btn-default ml-a",
+                    staticClass: "mr-1 ml-a has-text-warning",
                     on: { click: _vm.markBestReply }
                   },
-                  [_vm._v("Best Reply?\n        ")]
+                  [_c("i", { staticClass: "fas fa-star" })]
                 )
               : _vm._e()
           ])
@@ -63151,7 +63164,7 @@ var render = function() {
                 attrs: { type: "submit" },
                 on: { click: _vm.addReply }
               },
-              [_vm._v("Post")]
+              [_vm._v("ارسال")]
             )
           ])
         ])
@@ -63383,7 +63396,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             return ['btn', this.isActive ? 'btn-primary' : 'btn-default'];
         },
         labels: function labels() {
-            return this.isActive ? 'unsubscribe' : 'subscribe';
+            return this.isActive ? 'غیر فعال کردن عضویت' : 'فعال کردن عضویت';
         }
     },
 
