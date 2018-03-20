@@ -10,8 +10,18 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
+    <!-- Font Awsome -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"
+            integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ"
+            crossorigin="anonymous"></script>
+    <!--/Font Asome-->
+
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.rawgit.com/morteza/bootstrap-rtl/v3.3.4/dist/css/bootstrap-rtl.min.css">
+    <link rel="stylesheet" href="{{asset('css/vendor/bulma.css')}}">
+    <link rel="stylesheet" href="{{asset('css/vendor/custom.css')}}">
+    <!-- End Style -->
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/trix/0.11.2/trix.css">
 
@@ -50,7 +60,7 @@
             display: none;
         }
     </style>
-
+    @stack('stylesheets')
 
     @yield('stylesheets')
 
@@ -58,6 +68,7 @@
 <body>
 <div id="app">
     @include('layouts.nav')
+    @include('threads._header')
     @yield('content')
     <flash message="{{session('flash')}}"></flash>
 </div>
