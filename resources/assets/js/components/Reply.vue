@@ -17,10 +17,11 @@
             <div v-if="editing">
                 <form @submit.prevent="update">
                     <div class="form-group">
-                        <textarea class="form-control" v-model="body" required></textarea>
+                        <!--<textarea class="form-control" v-model="body" required></textarea>-->
+                        <wysiwyg v-model="body"></wysiwyg>
                     </div>
                     <button class="btn btn-xs btn-primary">Update</button>
-                    <button class="btn btn-xs btn-link" @click="editing = false" type="button">Cancel</button>
+                    <button class="btn btn-xs btn-link" @click="resetForm" type="button">Cancel</button>
                 </form>
             </div>
             <div v-else v-html="body"></div>
@@ -31,7 +32,7 @@
                 <button class="btn btn-xs mr-1 btn-danger" @click="destroy">Delete</button>
             </div>
             <button class="btn btn-xs mr-1 btn-default ml-a" @click="markBestReply"
-                   v-show="!isBest" v-if="authorize('owns',reply.thread)">Best Reply?
+                    v-show="!isBest" v-if="authorize('owns',reply.thread)">Best Reply?
             </button>
         </div>
     </div>
@@ -63,6 +64,7 @@
         },
 
         methods: {
+
             update() {
                 axios.patch('/replies/' + this.id, {
                     body: this.body,
@@ -89,6 +91,11 @@
                 axios.post(`/replies/${this.id}/best`);
 
                 window.events.$emit('best-reply-selected', this.id);
+            },
+
+            resetForm() {
+                this.editing = false;
+                this.body = this.reply.body;
             }
         },
 
