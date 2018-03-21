@@ -64079,7 +64079,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -64090,6 +64090,12 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -64187,9 +64193,9 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("section", { staticClass: "hero is-primary is-bold" }, [
     _c("div", { staticClass: "hero-body" }, [
-      _c("div", { staticClass: "columns" }, [
-        _c("div", { staticClass: "column is-8" }, [
-          _c("div", { staticClass: "container" }, [
+      _c("div", { staticClass: "container" }, [
+        _c("div", { staticClass: "columns is-vcentered" }, [
+          _c("div", { staticClass: "column" }, [
             _c("div", { staticClass: "content" }, [
               _c("h3", { staticClass: "has-text-white" }, [
                 _vm._v(
@@ -64205,9 +64211,9 @@ var render = function() {
                   _vm._v(" "),
                   _c("span", { staticClass: "tag is-info" }, [
                     _vm._v(
-                      "\n                            " +
+                      "\n                                    " +
                         _vm._s(_vm.threadVisitsCount) +
-                        "\n                        "
+                        "\n                                "
                     )
                   ])
                 ]),
@@ -64217,54 +64223,60 @@ var render = function() {
                 _c("div", { staticClass: "is-clearfix" })
               ])
             ])
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "column" }, [
-          _c("div", { staticClass: "media" }, [
-            _c("div", { staticClass: "media-content is-clipped" }, [
-              _c("div", { staticClass: "is-pulled-left" }, [
-                _c(
-                  "a",
-                  {
-                    staticClass: "is-size-5",
-                    attrs: { href: _vm.profileLink }
-                  },
-                  [
-                    _vm._v(
-                      "\n                                " +
-                        _vm._s(_vm.thread.owner.name) +
-                        "\n                            "
-                    )
-                  ]
-                ),
-                _vm._v(" "),
-                _c("p", { staticClass: "is-size-7" }, [
-                  _vm._v(
-                    "\n                                " +
-                      _vm._s(_vm.thread.owner.name) +
-                      "@\n                            "
-                  )
-                ]),
-                _vm._v(" "),
-                _c("p", [
-                  _vm._v(
-                    "\n                                عضویت " +
-                      _vm._s(_vm.thread.owner.created_at) +
-                      "\n                            "
-                  )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "column is-narrow" }, [
+            _c("div", { attrs: { id: "carboncontainer" } }, [
+              _c("div", { staticClass: "box", attrs: { id: "carbon" } }, [
+                _c("div", { staticClass: "carbon-item" }, [
+                  _c("div", { staticClass: "media" }, [
+                    _c("div", { staticClass: "media-content is-clipped" }, [
+                      _c("div", { staticClass: "is-pulled-left" }, [
+                        _c(
+                          "a",
+                          {
+                            staticClass: "is-size-5 has-text-info",
+                            attrs: { href: _vm.profileLink }
+                          },
+                          [
+                            _vm._v(
+                              "\n                                                " +
+                                _vm._s(_vm.thread.owner.name) +
+                                "\n                                            "
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c("p", { staticClass: "is-size-7 has-text-grey" }, [
+                          _vm._v(
+                            "\n                                                " +
+                              _vm._s(_vm.thread.owner.name) +
+                              "@\n                                            "
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("p", { staticClass: "is-size-7" }, [
+                          _vm._v(
+                            "\n                                                عضویت " +
+                              _vm._s(_vm.thread.owner.created_at) +
+                              "\n                                            "
+                          )
+                        ])
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "media-left is-pulled-left" }, [
+                      _c("figure", { staticClass: "image is-64x64" }, [
+                        _c("img", {
+                          attrs: {
+                            src: _vm.thread.owner.avatar_path,
+                            alt: _vm.thread.owner.name
+                          }
+                        })
+                      ])
+                    ])
+                  ])
                 ])
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "media-left is-pulled-left" }, [
-              _c("figure", { staticClass: "image is-64x64" }, [
-                _c("img", {
-                  attrs: {
-                    src: _vm.thread.owner.avatar_path,
-                    alt: _vm.thread.owner.name
-                  }
-                })
               ])
             ])
           ])

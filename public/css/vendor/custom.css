@@ -10,10 +10,70 @@ a:link {
     text-decoration: none;
 }
 
-.mg-t-30{
+.mg-t-30 {
     margin-top: 30px;
 }
 
-.mg-b-20{
+.mg-b-20 {
     margin-bottom: 20px;
 }
+
+#carboncontainer {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 300px;
+    min-height: 150px;
+}
+
+@media screen and (min-width: 769px), print {
+    #carbon {
+        width: 340px;
+    }
+}
+
+#carbon {
+    -webkit-box-flex: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    padding: 0;
+    position: relative;
+}
+
+.box {
+    background-color: white;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
+    box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
+    color: #4a4a4a;
+    display: block;
+    padding: 1.25rem;
+}
+
+.carbon-item {
+    color: #363636;
+    line-height: 20px;
+    padding: 20px 0px 20px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carbon-text {
+    padding-top: 30px;
+    text-align: right;
+}
+
+.icon-lg {
+    font-size: 7rem;
+    color: #209cee;
+}
+
