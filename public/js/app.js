@@ -60571,7 +60571,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -60586,6 +60586,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Favorite_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Favorite_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -61159,25 +61168,53 @@ var render = function() {
     },
     [
       _c("div", { staticClass: "panel-heading" }, [
-        _c("div", { staticClass: "level" }, [
-          _c("h5", { staticClass: "flex" }, [
-            _vm._v("\n                نوشته شده توسط\n                "),
-            _vm._v(" "),
-            _c("a", { attrs: { href: "/profiles/" + _vm.reply.owner.name } }, [
-              _vm._v(
-                "\n                    " +
-                  _vm._s(_vm.reply.owner.name) +
-                  "\n                "
-              )
-            ]),
-            _vm._v(" "),
-            _c("span", { staticClass: "is-size-6 text-muted" }, [
-              _vm._v("\n                چهار ساعت پیش\n                ")
+        _c("div", { staticClass: "media" }, [
+          _c("div", { staticClass: "media-right" }, [
+            _c("figure", { staticClass: "image is-32x32" }, [
+              _c("img", {
+                attrs: {
+                  src: _vm.reply.owner.avatar_path,
+                  alt: _vm.reply.owner.name
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "media-content is-clipped" }, [
+            _c("div", { staticClass: "content is-pulled-right" }, [
+              _c("p", [
+                _vm._v(
+                  "\n                        نوشته شده توسط\n                        "
+                ),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  { attrs: { href: "/profiles/" + _vm.reply.owner.name } },
+                  [
+                    _vm._v(
+                      "\n                            " +
+                        _vm._s(_vm.reply.owner.name) +
+                        "\n                        "
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c("span", { staticClass: "is-size-6 text-muted" }, [
+                  _vm._v(
+                    "\n                چهار ساعت پیش\n                        "
+                  )
+                ])
+              ])
             ])
           ]),
           _vm._v(" "),
           _vm.signedIn
-            ? _c("div", [_c("favorite", { attrs: { reply: _vm.reply } })], 1)
+            ? _c(
+                "div",
+                { staticClass: "media-left" },
+                [_c("favorite", { attrs: { reply: _vm.reply } })],
+                1
+              )
             : _vm._e()
         ])
       ]),

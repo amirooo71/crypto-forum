@@ -100,5 +100,5 @@ Route::get('threads/search', 'SearchController@show');
 
 Route::get('/test', function () {
 
-
+    return \App\Thread::find(1)->replies[0]->owner->avatar_path;
 });

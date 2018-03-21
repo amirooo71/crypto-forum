@@ -1,18 +1,27 @@
 <template>
     <div :id="'reply-'+id" class="panel" :class="isBest ? 'panel-success' : 'panel-default'">
         <div class="panel-heading">
-            <div class="level">
-                <h5 class="flex">
-                    نوشته شده توسط
-                    <!--<span v-text="ago"></span>-->
-                    <a :href="'/profiles/'+reply.owner.name">
-                        {{reply.owner.name}}
-                    </a>
-                    <span class="is-size-6 text-muted">
+            <div class="media">
+                <div class="media-right">
+                    <figure class="image is-32x32">
+                        <img :src="reply.owner.avatar_path" :alt="reply.owner.name">
+                    </figure>
+                </div>
+                <div class="media-content is-clipped">
+                    <div class="content is-pulled-right">
+                        <p>
+                            نوشته شده توسط
+                            <!--<span v-text="ago"></span>-->
+                            <a :href="'/profiles/'+reply.owner.name">
+                                {{reply.owner.name}}
+                            </a>
+                            <span class="is-size-6 text-muted">
                     چهار ساعت پیش
-                    </span>
-                </h5>
-                <div v-if="signedIn">
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="media-left" v-if="signedIn">
                     <favorite :reply="reply"></favorite>
                 </div>
             </div>
