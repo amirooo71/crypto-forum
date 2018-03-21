@@ -5,52 +5,68 @@
 @endsection
 
 @section('content')
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Create a New Thread</div>
-                    <div class="panel-body">
-                        <form action="/threads" method="POST">
-                            {{csrf_field()}}
 
-                            <div class="form-group">
-                                <label for="channel_id">Choose a Channel: </label>
-                                <select name="channel_id" id="channel_id" class="form-control">
-                                    <option value="">Choose One...</option>
-                                    @foreach($channels as $channel)
-                                        <option value="{{$channel->id}}" {{old('channel_id') == $channel->id ? 'selected' : ''}}>
-                                            {{$channel->name}}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
+    <section class="hero is-primary is-bold">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">
+                    تحلیل جدید
+                </h1>
+            </div>
+        </div>
+    </section>
 
-                            <div class="form-group">
-                                <label for="title">Title:</label>
-                                <input type="text" class="form-control" id="title" name="title"
-                                       value="{{old('title')}}">
-                            </div>
-                            <div class="form-group">
-                                <label for="body">Title:</label>
-                                <wysiwyg name="body"></wysiwyg>
-                            </div>
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <form action="/threads" method="POST">
+                                {{csrf_field()}}
+                                <div class="form-group">
+                                    <label for="channel_id" class="has-text-grey-dark">ارز :</label>
+                                    <select name="channel_id" id="channel_id" class="form-control">
+                                        <option value="">انتخاب...</option>
+                                        @foreach($channels as $channel)
+                                            <option value="{{$channel->id}}" {{old('channel_id') == $channel->id ? 'selected' : ''}}>
+                                                {{$channel->name}}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
 
-                            <div class="form-group">
-                                <div class="g-recaptcha" data-sitekey="6LdcF00UAAAAACRjZDXNKX2AuPjl4F0W7DrPrhLt"></div
-                            </div>
+                                <div class="form-group">
+                                    <label for="title" class="has-text-grey-dark">توضیحات مختصر :</label>
+                                    <input type="text" class="form-control" id="title" name="title"
+                                           value="{{old('title')}}">
+                                </div>
+                                {{--Chart input--}}
+                                <div class="form-group">
+                                    <label for="title" class="has-text-grey-dark">آدرس نمودار :</label>
+                                    <input type="text" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="body" class="has-text-grey-dark">توضیحات کامل :</label>
+                                    <wysiwyg name="body"></wysiwyg>
+                                </div>
 
-                            <div class="form-group">
-                                <button type="submit" class="btn ">Publish</button>
-                            </div>
-                            @if(count($errors))
-                                <ul class="alert alert-danger">
-                                    @foreach($errors->all() as $error)
-                                        <li>{{$error}}</li>
-                                    @endforeach
-                                </ul>
-                            @endif
-                        </form>
+                                <div class="form-group">
+                                    <div class="g-recaptcha"
+                                         data-sitekey="6LdcF00UAAAAACRjZDXNKX2AuPjl4F0W7DrPrhLt"></div
+                                </div>
+                                <div class="form-group mt-30">
+                                    <button type="submit" class="btn btn-success btn-block">ثبت</button>
+                                </div>
+                                @if(count($errors))
+                                    <ul class="alert alert-danger">
+                                        @foreach($errors->all() as $error)
+                                            <li>{{$error}}</li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

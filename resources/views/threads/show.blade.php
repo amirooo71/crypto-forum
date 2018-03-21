@@ -9,7 +9,7 @@
     <thread-show-header :thread="{{$thread}}"
                         :thread-visits-count="{{$thread->visits()->count()}}"></thread-show-header>
 
-    <thread-view data-replies-count="{{$thread->replies_count}}" :thread="{{$thread}}" inline-template class="mg-t-30">
+    <thread-view data-replies-count="{{$thread->replies_count}}" :thread="{{$thread}}" inline-template class="mt-30">
         <div class="container">
             <div class="columns">
                 <div class="column is-8" v-cloak>
