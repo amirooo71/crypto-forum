@@ -34,43 +34,19 @@
          !!};
     </script>
 
-    <style>
-        body {
-            padding-bottom: 100px;
-        }
-
-        .level {
-            display: flex;
-            align-items: center;
-        }
-
-        .flex {
-            flex: 1;
-        }
-
-        .mr-1 {
-            margin-right: 1em;
-        }
-
-        .ml-a {
-            margin-left: auto;
-        }
-
-        [v-cloak] {
-            display: none;
-        }
-    </style>
-    @stack('stylesheets')
-
     @yield('stylesheets')
 
 </head>
 <body>
-<div id="app">
+<div id="app" class="mb-30">
+
     @include('layouts.nav')
     @yield('content')
     <flash message="{{session('flash')}}"></flash>
+
 </div>
+
+@include('layouts.footer')
 
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>

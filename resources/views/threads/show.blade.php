@@ -26,7 +26,7 @@
                                 تعداد کامنت های ثبت شده
                             </div>
                             <div class="card-header-icon">
-                                <span v-text="repliesCount"></span>
+                                <span class="badge" v-text="repliesCount"></span>
                             </div>
                         </div>
                         <div class="card-content" v-if="signedIn">

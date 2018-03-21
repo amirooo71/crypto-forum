@@ -45,40 +45,4 @@
     </div>
 
 
-    {{--<div class="section">--}}
-    {{--<div class="container">--}}
-    {{--<div class="row">--}}
-    {{--<div class="col-md-8">--}}
-    {{--@include('threads._list')--}}
-    {{--{{$threads->render()}}--}}
-    {{--</div>--}}
-    {{--<div class="col-md-4">--}}
-    {{--@if(count($trending))--}}
-    {{--<div class="card">--}}
-    {{--<div class="card-header">--}}
-    {{--<div class="card-header-title">--}}
-    {{--پربازدیدها--}}
-    {{--</div>--}}
-    {{--<div class="card-header-icon">--}}
-    {{--<i class="fas fa-fire has-text-danger"></i>--}}
-    {{--</div>--}}
-    {{--</div>--}}
-    {{--<div class="card-content">--}}
-    {{--@foreach($trending as $thread)--}}
-    {{--<div class="media">--}}
-    {{--<div class="media-content is-clipped">--}}
-    {{--<a href="{{url($thread->path)}}" class="is-pulled-right">--}}
-    {{--{{$thread->title}}--}}
-    {{--</a>--}}
-    {{--</div>--}}
-    {{--</div>--}}
-    {{--@endforeach--}}
-    {{--</div>--}}
-    {{--</div>--}}
-    {{--@endif--}}
-    {{--</div>--}}
-    {{--</div>--}}
-    {{--</div>--}}
-    {{--</div>--}}
-
 @endsection
