@@ -5,7 +5,7 @@
                 <!--<wysiwyg name="body" v-model="body" placeholder="Have something to say?"-->
                 <!--:shouldClear="completed"></wysiwyg>-->
                 <textarea name="body" id="body" v-model="body" cols="30" rows="10" class="form-control"
-                          placeholder="Have you somthing to say?"></textarea>
+                          placeholder="دیدگاه خود را درباره ی این تحلیل بیان کنید..."></textarea>
 
             </div>
             <div class="form-group">

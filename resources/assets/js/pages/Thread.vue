@@ -38,6 +38,7 @@
 
                 axios.patch(uri, this.form).then(() => {
                     this.editing = false;
+                    Event.$emit('ThreadUpdated',{'title': this.form.title});
                     flash('Your thread has been updated');
                 });
             },

@@ -6,7 +6,8 @@
 
 @section('content')
 
-    @include('threads._threads_show_header')
+    <thread-show-header :thread="{{$thread}}"
+                        :thread-visits-count="{{$thread->visits()->count()}}"></thread-show-header>
 
     <thread-view data-replies-count="{{$thread->replies_count}}" :thread="{{$thread}}" inline-template class="mg-t-30">
         <div class="container">
@@ -28,8 +29,8 @@
                                 <span v-text="repliesCount"></span>
                             </div>
                         </div>
-                        <div class="card-content">
-                            <subscribe-button :active="{{json_encode($thread->isSubscribedTo)}}" v-if="signedIn"></subscribe-button>
+                        <div class="card-content" v-if="signedIn">
+                            <subscribe-button :active="{{json_encode($thread->isSubscribedTo)}}"></subscribe-button>
                             <button class="btn btn-default btn-block" v-if="authorize('isAdmin')"
                                     v-text="locked ? 'Unlock' : 'Lock'"
                                     @click="toggleLock">Lock

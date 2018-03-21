@@ -20,27 +20,27 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">Browse <span class="caret"></span></a>
+                       aria-expanded="false">تحلیل ها <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="/threads">All Threads</a>
+                            <a href="/threads">همه تحلیل ها</a>
                         </li>
                         @if(\Illuminate\Support\Facades\Auth::check())
-                            <li><a href="/threads?by={{auth()->user()->name}}">My Threads</a></li>
+                            <li><a href="/threads?by={{auth()->user()->name}}">تحلیل های من</a></li>
                         @endif
 
-                        <li><a href="/threads?popular=1">Popular threads</a></li>
-                        <li><a href="/threads?unanswered=1">Unanswered threads</a></li>
+                        <li><a href="/threads?popular=1">تحلیل های محبوب</a></li>
+                        <li><a href="/threads?unanswered=1">تحلیل های بدون نظر</a></li>
 
                     </ul>
                 </li>
                 <li>
-                    <a href="/threads/create">New Thread</a>
+                    <a href="/threads/create">تحلیل جدید</a>
                 </li>
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">Channel <span class="caret"></span></a>
+                       aria-expanded="false">ارزها <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         @foreach($channels as $channel)
                             <li><a href="/threads/{{$channel->slug}}">{{$channel->name}}</a></li>
@@ -55,10 +55,9 @@
             <ul class="nav navbar-nav navbar-right">
                 <!-- Authentication Links -->
                 @if (Auth::guest())
-                    <li><a href="{{ route('login') }}">Login</a></li>
-                    <li><a href="{{ route('register') }}">Register</a></li>
+                    <li><a href="{{ route('login') }}">ورود</a></li>
+                    <li><a href="{{ route('register') }}">ثبت نام</a></li>
                 @else
-
                     <user-notifications></user-notifications>
 
                     <li class="dropdown">
@@ -68,13 +67,13 @@
                         </a>
 
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="{{route('profile',\Illuminate\Support\Facades\Auth::user())}}">My Profile</a>
+                            <li><a href="{{route('profile',\Illuminate\Support\Facades\Auth::user())}}">پروفایل</a>
                             </li>
                             <li>
                                 <a href="{{ route('logout') }}"
                                    onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                    Logout
+                                    خروج
                                 </a>
 
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST"
