@@ -98,4 +98,11 @@ Route::get('threads/search', 'SearchController@show');
  |           Chart Controller
  |--------------------------------------------------------
  */
-Route::get('analysis/chart', 'AnalysisController@index');
+Route::get('analysis/chart', 'AnalysisController@index')->name('analysis.index');
+
+
+Route::post('/fuck', function () {
+
+    throw new \Exception('Your reply contains spam.');
+
+});

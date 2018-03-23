@@ -1,12 +1,50 @@
 <template>
     <div>
         <div id="tv_chart_container"></div>
-        <a class="float" @click="add">
+
+        <a v-if="signedIn" class="float" @click="showModal = true">
             <i class="fa fa-plus my-float"></i>
+        </a>
+        <a href="/login" class="float" v-else>
+            <i class="fas fa-sign-in-alt my-float"></i>
         </a>
         <div class="label-container">
             <div class="label-text">ثبت آنالیز</div>
         </div>
+
+        <div class="modal is-active" v-if="showModal">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">تحلیل</p>
+                    <button class="delete" aria-label="close" @click="showModal = false"></button>
+                </header>
+                <section class="modal-card-body">
+                    <div v-if="isSaveClicked">
+                        <div v-if="imageUrl">
+                            <p class="content">تحلیل شما با موفقیت ثبت شد. لطفا برای ادامه گزینه بعدی را کلیک کنید.</p>
+                            <figure class="image">
+                                <img :src="imageUrl" alt="">
+                            </figure>
+                        </div>
+                        <div v-else class="loader">
+                        </div>
+                    </div>
+                    <div v-else>
+                        <p>در صورت اطمینان گزینه ارسال، و در غیر این صورت گزینه انصراف را کلیک کنید.</p>
+                        <a href="/" class="is-size-7">بازگشت به صفحه ی اصلی</a>
+                    </div>
+
+                </section>
+                <footer class="modal-card-foot">
+                    <button class="button is-primary" @click="add">ارسال</button>
+                    <button class="button is-success mr-1" v-if="id">بعدی</button>
+                    <button class="button mr-1" @click="showModal = false">انصراف</button>
+                </footer>
+            </div>
+            <button class="modal-close is-large" aria-label="close" @click="showModal = false"></button>
+        </div>
+
     </div>
 </template>
 
@@ -20,9 +58,10 @@
 
             return {
 
-                data: {
-                    
-                },
+                showModal: false,
+                analysisImageUrl: '',
+                isSaveClicked: false,
+                id: '',
 
             };
 
@@ -63,6 +102,7 @@
                     client_id: 'tradingview.com',
                     user_id: 'public_user_id'
                 });
+
             },
 
             getParameterByName(name) {
@@ -74,13 +114,51 @@
 
             add() {
 
+                this.isSaveClicked = true;
+
+                const vm = this;
+
                 tvWidget.onChartReady(function () {
 
-                    tvWidget.save(function (data) {
-                        console.log(data.charts);
+                    tvWidget.chart().executeActionById('takeScreenshot');
+
+                    tvWidget.subscribe("onScreenshotReady", (url) => {
+
+                        vm.analysisImageUrl = url;
+
+                        tvWidget.save(function (data) {
+
+                            let params = {
+
+                                data: data,
+                                url: url,
+
+                            };
+
+                            axios.post('/fuck', params).then((response) => {
+
+                                vm.id = response.data.id;
+
+                                console.log(response);
+
+                            }).catch((error) => console.log(error.message));
+
+                        });
+
                     });
 
                 });
+
+            },
+
+        },
+
+
+        computed: {
+
+            imageUrl() {
+
+                return this.analysisImageUrl ? 'https://www.tradingview.com/x/' + this.analysisImageUrl : '';
             }
 
         },

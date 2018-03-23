@@ -37,6 +37,9 @@
                 <li>
                     <a href="/threads/create">تحلیل جدید</a>
                 </li>
+                <li>
+                    <a href="{{route('analysis.index')}}">نمودار</a>
+                </li>
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
