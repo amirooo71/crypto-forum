@@ -64442,7 +64442,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -64516,8 +64516,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             showModal: false,
             analysisImageUrl: '',
             isSaveClicked: false,
-            id: ''
-
+            message: '',
+            analysisId: ''
         };
     },
     created: function created() {
@@ -64577,18 +64577,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
                         var params = {
 
-                            data: data,
-                            url: url
+                            analysis_data: data,
+                            image_url: url
 
                         };
 
-                        axios.post('/fuck', params).then(function (response) {
+                        axios.post('/analysis/chart', params).then(function (response) {
 
-                            vm.id = response.data.id;
-
-                            console.log(response);
+                            console.log(response.data);
+                            vm.analysisId = response.data.analysis_id;
+                            vm.message = "تحلیل شما با موفقیت ثبت شد. لطفا برای ادامه گزینه بعدی را کلیک کنید.";
                         }).catch(function (error) {
-                            return console.log(error.message);
+                            vm.message = "خطایی پیش آمده است.";
                         });
                     });
                 });
@@ -64600,6 +64600,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         imageUrl: function imageUrl() {
 
             return this.analysisImageUrl ? 'https://www.tradingview.com/x/' + this.analysisImageUrl : '';
+        },
+        threadUrl: function threadUrl() {
+            return '/threads/create?analysis_id=' + this.analysisId;
         }
     }
 });
@@ -64659,9 +64662,7 @@ var render = function() {
                     _vm.imageUrl
                       ? _c("div", [
                           _c("p", { staticClass: "content" }, [
-                            _vm._v(
-                              "تحلیل شما با موفقیت ثبت شد. لطفا برای ادامه گزینه بعدی را کلیک کنید."
-                            )
+                            _vm._v(_vm._s(_vm.message))
                           ]),
                           _vm._v(" "),
                           _c("figure", { staticClass: "image" }, [
@@ -64692,10 +64693,15 @@ var render = function() {
                 [_vm._v("ارسال")]
               ),
               _vm._v(" "),
-              _vm.id
-                ? _c("button", { staticClass: "button is-success mr-1" }, [
-                    _vm._v("بعدی")
-                  ])
+              _vm.analysisId
+                ? _c(
+                    "a",
+                    {
+                      staticClass: "button is-success mr-1",
+                      attrs: { href: _vm.threadUrl }
+                    },
+                    [_vm._v("بعدی")]
+                  )
                 : _vm._e(),
               _vm._v(" "),
               _c(

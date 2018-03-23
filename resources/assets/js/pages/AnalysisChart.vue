@@ -22,7 +22,7 @@
                 <section class="modal-card-body">
                     <div v-if="isSaveClicked">
                         <div v-if="imageUrl">
-                            <p class="content">تحلیل شما با موفقیت ثبت شد. لطفا برای ادامه گزینه بعدی را کلیک کنید.</p>
+                            <p class="content">{{message}}</p>
                             <figure class="image">
                                 <img :src="imageUrl" alt="">
                             </figure>
@@ -38,7 +38,7 @@
                 </section>
                 <footer class="modal-card-foot">
                     <button class="button is-primary" @click="add">ارسال</button>
-                    <button class="button is-success mr-1" v-if="id">بعدی</button>
+                    <a :href="threadUrl" class="button is-success mr-1" v-if="analysisId">بعدی</a>
                     <button class="button mr-1" @click="showModal = false">انصراف</button>
                 </footer>
             </div>
@@ -61,8 +61,8 @@
                 showModal: false,
                 analysisImageUrl: '',
                 isSaveClicked: false,
-                id: '',
-
+                message: '',
+                analysisId: '',
             };
 
         },
@@ -130,18 +130,21 @@
 
                             let params = {
 
-                                data: data,
-                                url: url,
+                                analysis_data: data,
+                                image_url: url,
 
                             };
 
-                            axios.post('/fuck', params).then((response) => {
+                            axios.post('/analysis/chart', params).then((response) => {
 
-                                vm.id = response.data.id;
+                                console.log(response.data);
+                                vm.analysisId = response.data.analysis_id;
+                                vm.message = "تحلیل شما با موفقیت ثبت شد. لطفا برای ادامه گزینه بعدی را کلیک کنید.";
 
-                                console.log(response);
 
-                            }).catch((error) => console.log(error.message));
+                            }).catch((error) => {
+                                vm.message = "خطایی پیش آمده است.";
+                            });
 
                         });
 
@@ -159,6 +162,10 @@
             imageUrl() {
 
                 return this.analysisImageUrl ? 'https://www.tradingview.com/x/' + this.analysisImageUrl : '';
+            },
+
+            threadUrl() {
+                return '/threads/create?analysis_id=' + this.analysisId;
             }
 
         },

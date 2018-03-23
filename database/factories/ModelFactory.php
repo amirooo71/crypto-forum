@@ -51,6 +51,9 @@ $factory->define(\App\Thread::class, function (\Faker\Generator $faker) {
         'body' => $faker->paragraph,
         'slug' => str_slug($title),
         'locked' => false,
+        'analysis_id' => function () {
+            return factory('App\Analysis')->create()->id;
+        },
     ];
 
 });
@@ -86,4 +89,16 @@ $factory->define(\Illuminate\Notifications\DatabaseNotification::class, function
         'notifiable_type' => 'App\User',
         'data' => ['foo' => 'bar']
     ];
+});
+
+$factory->define(\App\Analysis::class, function (\Faker\Generator $faker) {
+
+    return [
+        'user_id' => function () {
+            return factory('App\User')->create()->id;
+        },
+        'image_url' => $faker->url,
+        'analysis_data' => ['foo' => 'bar'],
+    ];
+
 });

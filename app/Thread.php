@@ -14,7 +14,7 @@ class Thread extends Model
 
     protected $guarded = [];
 
-    protected $with = ['owner', 'channel'];
+    protected $with = ['owner', 'channel', 'analysis'];
 
     protected $appends = ['isSubscribedTo'];
 
@@ -59,6 +59,14 @@ class Thread extends Model
     public function owner()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function analysis()
+    {
+        return $this->belongsTo(Analysis::class);
     }
 
     /**

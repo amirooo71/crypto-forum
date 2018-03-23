@@ -22,7 +22,7 @@
                 <div class="col-md-8 col-md-offset-2">
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <form action="/threads" method="POST">
+                            <form action="/threads/{{$analysisId}}" method="POST">
                                 {{csrf_field()}}
                                 <div class="form-group">
                                     <label for="channel_id" class="has-text-grey-dark">ارز :</label>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Analysis;
 use App\Channel;
 use App\Filters\ThreadFilters;
 use App\Rules\Recaptcha;
@@ -59,21 +60,29 @@ class ThreadController extends Controller
 
     public function create()
     {
-        return view('threads.create');
+        $analysisId = \request()->analysis_id;
+
+        if (!Analysis::isValidAnalysis($analysisId)) {
+            return redirect('/analysis/chart');
+        }
+
+        return view('threads.create', compact('analysisId'));
     }
 
     /**
+     * @param $analysisId
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store()
+    public function store($analysisId)
     {
+        //Handle invalid analysisId
+
         \request()->validate([
             'title' => 'required|spamfree',
             'body' => 'required|spamfree',
             'channel_id' => 'required|exists:channels,id',
             'g-recaptcha-response' => ['required', new Recaptcha()],
         ]);
-
 
         $thread = Thread::create(
             [
@@ -82,8 +91,11 @@ class ThreadController extends Controller
                 'title' => \request('title'),
                 'body' => \request('body'),
                 'slug' => \request('title'),
+                'analysis_id' => $analysisId,
             ]
         );
+
+        $thread->analysis->update(['published' => true]);
 
         return redirect($thread->path())
             ->with('flash', 'Your Thread Has been published');

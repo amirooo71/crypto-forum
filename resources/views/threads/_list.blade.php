@@ -26,7 +26,7 @@
                 <div class="card-image">
 
                     <figure class="image is-3by2">
-                        <img src="https://bulma.io/images/placeholders/1280x960.png"
+                        <img src="{{$thread->analysis->image_full_path}}"
                              alt="Placeholder image">
                     </figure>
                 </div>

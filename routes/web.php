@@ -15,7 +15,7 @@ Route::get('/home', 'HomeController@index')->name('home');
  */
 Route::get('threads', 'ThreadController@index')->name('threads');
 Route::get('threads/create', 'ThreadController@create');
-Route::post('threads', 'ThreadController@store')->middleware('must-be-confirmed');
+Route::post('threads/{analysisId}', 'ThreadController@store')->middleware('must-be-confirmed');
 Route::get('threads/{channel}', 'ThreadController@index');
 Route::get('threads/{channel}/{thread}', 'ThreadController@show');
 Route::patch('threads/{channel}/{thread}', 'ThreadController@update');
@@ -99,10 +99,11 @@ Route::get('threads/search', 'SearchController@show');
  |--------------------------------------------------------
  */
 Route::get('analysis/chart', 'AnalysisController@index')->name('analysis.index');
+Route::post('analysis/chart', 'AnalysisController@store')->name('analysis.store')->middleware('auth');
 
 
-Route::post('/fuck', function () {
+Route::get('/test', function () {
 
-    throw new \Exception('Your reply contains spam.');
+    return \App\Analysis::first()->image_path;
 
 });
