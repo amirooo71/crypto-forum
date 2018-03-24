@@ -20,7 +20,7 @@ class CreateThreadsTest extends TestCase
         $analysis = create('App\Analysis');
         $this->post(route('threads.store', $analysis->id), $thread->toArray());
     }
-
+    
     /**
      * @test
      */

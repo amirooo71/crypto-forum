@@ -60,6 +60,7 @@ class ThreadController extends Controller
 
     public function create()
     {
+
         $analysisId = \request()->analysis_id;
 
         if (!$analysis = Analysis::isValidAnalysis($analysisId)) {

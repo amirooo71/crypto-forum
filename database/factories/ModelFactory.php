@@ -99,6 +99,7 @@ $factory->define(\App\Analysis::class, function (\Faker\Generator $faker) {
         },
         'image_url' => $faker->url,
         'analysis_data' => ['foo' => 'bar'],
+        'published' => false,
     ];
 
 });
