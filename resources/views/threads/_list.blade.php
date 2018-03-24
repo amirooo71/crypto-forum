@@ -57,7 +57,9 @@
                                 <div class="is-clearfix"></div>
                             </div>
                             <div class="is-pulled-left has-icon has-text-info">
-                                <p class="is-size-7">چهار ساعت پیش</p>
+                                <p class="is-size-7">
+                                    {{$thread->created_at->diffForHumans()}}
+                                </p>
                             </div>
                         </div>
                     </div>

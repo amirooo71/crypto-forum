@@ -9,16 +9,18 @@
                 </div>
                 <div class="media-content is-clipped">
                     <div class="content is-pulled-right">
-                        <p>
-                            نوشته شده توسط
-                            <!--<span v-text="ago"></span>-->
-                            <a :href="'/profiles/'+reply.owner.name">
-                                {{reply.owner.name}}
-                            </a>
-                            <span class="is-size-6 text-muted">
-                    چهار ساعت پیش
+                        <div class="is-inline-flex">
+                            <p class="is-size-6 text-muted">
+                                نوشته شده توسط
+                                <!--<span v-text="ago"></span>-->
+                                <a :href="'/profiles/'+reply.owner.name">
+                                    {{reply.owner.name}}
+                                </a>
+                            </p>
+                            <span class="is-size-6 text-muted mr-1by2">
+                                {{ago}}
                             </span>
-                        </p>
+                        </div>
                     </div>
                 </div>
                 <div class="media-left" v-if="signedIn">
@@ -120,7 +122,10 @@
         computed: {
 
             ago() {
-                return moment(this.reply.created_at).fromNow();
+
+                moment.locale('fa');
+                return moment(this.reply.created_at).startOf('hour').fromNow();
+
             },
         }
     }

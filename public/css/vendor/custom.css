@@ -11,6 +11,10 @@
     margin-right: 1em;
 }
 
+.mr-1by2 {
+    margin-right: 0.5em;
+}
+
 .ml-a {
     margin-left: auto;
 }

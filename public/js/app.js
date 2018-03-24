@@ -60573,7 +60573,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -60588,6 +60588,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Favorite_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Favorite_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment__);
+//
+//
 //
 //
 //
@@ -60707,7 +60709,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     computed: {
         ago: function ago() {
-            return __WEBPACK_IMPORTED_MODULE_1_moment___default()(this.reply.created_at).fromNow();
+
+            __WEBPACK_IMPORTED_MODULE_1_moment___default.a.locale('fa');
+            return __WEBPACK_IMPORTED_MODULE_1_moment___default()(this.reply.created_at).startOf('hour').fromNow();
         }
     }
 });
@@ -61184,26 +61188,30 @@ var render = function() {
           _vm._v(" "),
           _c("div", { staticClass: "media-content is-clipped" }, [
             _c("div", { staticClass: "content is-pulled-right" }, [
-              _c("p", [
-                _vm._v(
-                  "\n                        نوشته شده توسط\n                        "
-                ),
-                _vm._v(" "),
-                _c(
-                  "a",
-                  { attrs: { href: "/profiles/" + _vm.reply.owner.name } },
-                  [
-                    _vm._v(
-                      "\n                            " +
-                        _vm._s(_vm.reply.owner.name) +
-                        "\n                        "
-                    )
-                  ]
-                ),
-                _vm._v(" "),
-                _c("span", { staticClass: "is-size-6 text-muted" }, [
+              _c("div", { staticClass: "is-inline-flex" }, [
+                _c("p", { staticClass: "is-size-6 text-muted" }, [
                   _vm._v(
-                    "\n                چهار ساعت پیش\n                        "
+                    "\n                            نوشته شده توسط\n                            "
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "a",
+                    { attrs: { href: "/profiles/" + _vm.reply.owner.name } },
+                    [
+                      _vm._v(
+                        "\n                                " +
+                          _vm._s(_vm.reply.owner.name) +
+                          "\n                            "
+                      )
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("span", { staticClass: "is-size-6 text-muted mr-1by2" }, [
+                  _vm._v(
+                    "\n                            " +
+                      _vm._s(_vm.ago) +
+                      "\n                        "
                   )
                 ])
               ])
@@ -61419,7 +61427,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -61434,7 +61442,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_at_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_at_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery_caret__ = __webpack_require__(203);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery_caret___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery_caret__);
-//
 //
 //
 //
@@ -63220,9 +63227,9 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("p", { staticClass: "text-center" }, [
-      _vm._v("Please "),
-      _c("a", { attrs: { href: "/login" } }, [_vm._v("sing in")]),
-      _vm._v(" in to participate in this\n            discussion\n        ")
+      _vm._v("برای ارسال نظر "),
+      _c("a", { attrs: { href: "/login" } }, [_vm._v("وارد")]),
+      _vm._v(" شوید\n        ")
     ])
   }
 ]
@@ -63297,11 +63304,7 @@ var render = function() {
       }),
       _vm._v(" "),
       _vm.$parent.locked
-        ? _c("p", [
-            _vm._v(
-              "\n        This thread has been locked. No more replies are allowd.\n    "
-            )
-          ])
+        ? _c("p", [_vm._v("\n        این تحلیل موقتا مسدود شده است.\n    ")])
         : _c("new-reply", { on: { created: _vm.add } })
     ],
     2
@@ -64257,7 +64260,15 @@ var render = function() {
                   ])
                 ]),
                 _vm._v(" "),
-                _vm._m(1),
+                _c("div", { staticClass: "mg-r-5" }, [
+                  _c("p", { staticClass: "has-text-light" }, [
+                    _vm._v(
+                      "\n                                    " +
+                        _vm._s(_vm.thread.created_at) +
+                        "\n                                "
+                    )
+                  ])
+                ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "is-clearfix" })
               ])
@@ -64332,18 +64343,6 @@ var staticRenderFns = [
     return _c("span", { staticClass: "tag is-light" }, [
       _c("span", { staticClass: "icon has-text-black" }, [
         _c("i", { staticClass: "fas fa-eye" })
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "mg-r-5" }, [
-      _c("p", { staticClass: "has-text-light" }, [
-        _vm._v(
-          "\n                                    یک ساعت پیش\n                                "
-        )
       ])
     ])
   }

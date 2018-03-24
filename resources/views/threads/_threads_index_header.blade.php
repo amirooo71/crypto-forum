@@ -18,7 +18,15 @@
                                     <div class="media-right">
                                         <div class="content carbon-text">
                                             <p class="is-text-4">تحلیل های ارسالی</p>
-                                            <p class="has-text-grey">۲۷۴۹</p>
+                                            @if(count(\App\Thread::all()))
+                                                <p class="has-text-grey">
+                                                    {{count(\App\Thread::all())}}
+                                                </p>
+                                            @else
+                                                <p class="has-text-grey">
+                                                    0
+                                                </p>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="media-content is-clipped">

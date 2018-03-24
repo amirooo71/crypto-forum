@@ -21,7 +21,7 @@
                                 </div>
                                 <div class="mg-r-5">
                                     <p class="has-text-light">
-                                        یک ساعت پیش
+                                        {{thread.created_at}}
                                     </p>
                                 </div>
                                 <div class="is-clearfix"></div>

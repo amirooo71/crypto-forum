@@ -4,7 +4,7 @@
 
     @include('threads._threads_index_header')
 
-    <div class="mt-30">
+    <div class="section">
         <section class="is-small">
             <div class="container">
                 <div class="columns">

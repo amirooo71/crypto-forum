@@ -13,8 +13,7 @@
             </div>
         </div>
         <div v-else>
-            <p class="text-center">Please <a href="/login">sing in</a> in to participate in this
-                discussion
+            <p class="text-center">برای ارسال نظر <a href="/login">وارد</a> شوید
             </p>
         </div>
     </div>

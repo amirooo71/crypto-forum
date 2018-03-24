@@ -104,6 +104,7 @@ Route::post('analysis/chart', 'AnalysisController@store')->name('analysis.store'
 
 Route::get('/test', function () {
 
-    return \App\Analysis::first()->image_path;
+    \Carbon\Carbon::setLocale('fa');
+   return \App\User::first()->created_at->diffForHumans();
 
 });

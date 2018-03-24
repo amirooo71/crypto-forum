@@ -5,7 +5,7 @@ namespace App;
 use App\Events\ThreadHasNewReply;
 use App\Events\ThreadReceivedNewReply;
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Scout\Searchable;
+use Laravelrus\LocalizedCarbon\Traits\LocalizedEloquentTrait;
 use Stevebauman\Purify\Facades\Purify;
 
 class Thread extends Model

@@ -11,7 +11,7 @@
 
     <chart :thread="{{$thread}}"></chart>
 
-    <thread-view data-replies-count="{{$thread->replies_count}}" :thread="{{$thread}}" inline-template class="mt-30">
+    <thread-view data-replies-count="{{$thread->replies_count}}" :thread="{{$thread}}" inline-template class="section">
         <div class="container">
             <div class="columns">
                 <div class="column is-8" v-cloak>

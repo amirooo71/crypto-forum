@@ -8,7 +8,7 @@
         <paginator :dataSet="dataSet" @changed="fetch"></paginator>
 
         <p v-if="$parent.locked">
-            This thread has been locked. No more replies are allowd.
+            این تحلیل موقتا مسدود شده است.
         </p>
         <new-reply @created="add" v-else></new-reply>
     </div>

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Channel;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
@@ -31,6 +32,11 @@ class AppServiceProvider extends ServiceProvider
 //        View::share('channels',Channel::all());
 
         Validator::extend('spamfree', 'App\Rules\SpamFree@passes');
+
+        /**
+         * Set Default Carbon Locale
+         */
+        Carbon::setLocale('fa');
 
     }
 
