@@ -62,11 +62,11 @@ class ThreadController extends Controller
     {
         $analysisId = \request()->analysis_id;
 
-        if (!Analysis::isValidAnalysis($analysisId)) {
+        if (!$analysis = Analysis::isValidAnalysis($analysisId)) {
             return redirect('/analysis/chart');
         }
 
-        return view('threads.create', compact('analysisId'));
+        return view('threads.create', compact('analysis'));
     }
 
     /**

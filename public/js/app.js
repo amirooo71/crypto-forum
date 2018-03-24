@@ -64442,7 +64442,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -64453,7 +64453,6 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
 //
 //
 //
@@ -64666,7 +64665,12 @@ var render = function() {
                           ]),
                           _vm._v(" "),
                           _c("figure", { staticClass: "image" }, [
-                            _c("img", { attrs: { src: _vm.imageUrl, alt: "" } })
+                            _c("img", {
+                              attrs: {
+                                src: _vm.imageUrl,
+                                alt: "نحلیل ارز دیجیتال"
+                              }
+                            })
                           ])
                         ])
                       : _c("div", { staticClass: "loader" })
@@ -64674,7 +64678,7 @@ var render = function() {
                 : _c("div", [
                     _c("p", [
                       _vm._v(
-                        "در صورت اطمینان گزینه ارسال، و در غیر این صورت گزینه انصراف را کلیک کنید."
+                        "در صورت اطمینان از تحلیل خود گزینه ارسال، و در غیر این صورت گزینه انصراف را کلیک کنید."
                       )
                     ]),
                     _vm._v(" "),
@@ -64687,11 +64691,31 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("footer", { staticClass: "modal-card-foot" }, [
-              _c(
-                "button",
-                { staticClass: "button is-primary", on: { click: _vm.add } },
-                [_vm._v("ارسال")]
-              ),
+              !_vm.analysisId
+                ? _c(
+                    "button",
+                    {
+                      staticClass: "button is-primary",
+                      on: { click: _vm.add }
+                    },
+                    [_vm._v("ارسال")]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              !_vm.analysisId
+                ? _c(
+                    "button",
+                    {
+                      staticClass: "button mr-1",
+                      on: {
+                        click: function($event) {
+                          _vm.showModal = false
+                        }
+                      }
+                    },
+                    [_vm._v("انصراف")]
+                  )
+                : _vm._e(),
               _vm._v(" "),
               _vm.analysisId
                 ? _c(
@@ -64702,20 +64726,7 @@ var render = function() {
                     },
                     [_vm._v("بعدی")]
                   )
-                : _vm._e(),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "button mr-1",
-                  on: {
-                    click: function($event) {
-                      _vm.showModal = false
-                    }
-                  }
-                },
-                [_vm._v("انصراف")]
-              )
+                : _vm._e()
             ])
           ]),
           _vm._v(" "),

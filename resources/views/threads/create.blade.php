@@ -19,10 +19,13 @@
     <div class="section">
         <div class="container">
             <div class="row">
+                <figure class="image">
+                    <img src="{{$analysis->image_full_path}}" alt="تحلیل ارز دیجیتال">
+                </figure>
                 <div class="col-md-8 col-md-offset-2">
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <form action="/threads/{{$analysisId}}" method="POST">
+                            <form action="/threads/{{$analysis->id}}" method="POST">
                                 {{csrf_field()}}
                                 <div class="form-group">
                                     <label for="channel_id" class="has-text-grey-dark">ارز :</label>
@@ -40,11 +43,6 @@
                                     <label for="title" class="has-text-grey-dark">توضیحات مختصر :</label>
                                     <input type="text" class="form-control" id="title" name="title"
                                            value="{{old('title')}}">
-                                </div>
-                                {{--Chart input--}}
-                                <div class="form-group">
-                                    <label for="title" class="has-text-grey-dark">آدرس نمودار :</label>
-                                    <input type="text" class="form-control">
                                 </div>
                                 <div class="form-group">
                                     <label for="body" class="has-text-grey-dark">توضیحات کامل :</label>

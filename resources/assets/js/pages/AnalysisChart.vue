@@ -24,27 +24,26 @@
                         <div v-if="imageUrl">
                             <p class="content">{{message}}</p>
                             <figure class="image">
-                                <img :src="imageUrl" alt="">
+                                <img :src="imageUrl" alt="نحلیل ارز دیجیتال">
                             </figure>
                         </div>
                         <div v-else class="loader">
                         </div>
                     </div>
                     <div v-else>
-                        <p>در صورت اطمینان گزینه ارسال، و در غیر این صورت گزینه انصراف را کلیک کنید.</p>
+                        <p>در صورت اطمینان از تحلیل خود گزینه ارسال، و در غیر این صورت گزینه انصراف را کلیک کنید.</p>
                         <a href="/" class="is-size-7">بازگشت به صفحه ی اصلی</a>
                     </div>
 
                 </section>
                 <footer class="modal-card-foot">
-                    <button class="button is-primary" @click="add">ارسال</button>
+                    <button class="button is-primary" @click="add" v-if="!analysisId">ارسال</button>
+                    <button class="button mr-1" @click="showModal = false" v-if="!analysisId">انصراف</button>
                     <a :href="threadUrl" class="button is-success mr-1" v-if="analysisId">بعدی</a>
-                    <button class="button mr-1" @click="showModal = false">انصراف</button>
                 </footer>
             </div>
             <button class="modal-close is-large" aria-label="close" @click="showModal = false"></button>
         </div>
-
     </div>
 </template>
 
