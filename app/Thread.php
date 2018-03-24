@@ -10,7 +10,7 @@ use Stevebauman\Purify\Facades\Purify;
 
 class Thread extends Model
 {
-    use RecordsActivity, Searchable;
+    use RecordsActivity;
 
     protected $guarded = [];
 
