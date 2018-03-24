@@ -1,13 +1,12 @@
 <template>
     <div>
-
         <div id="tv_chart_container"></div>
-
     </div>
 </template>
 
 <script>
     export default {
+
         name: "chart",
 
         props: ['thread'],
@@ -49,7 +48,7 @@
                     width: '100%',
                 });
 
-                widget.onChartReady(function() {
+                widget.onChartReady(function () {
 
                     widget.load(vm.thread.analysis.analysis_data);
 

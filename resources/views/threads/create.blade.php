@@ -19,12 +19,14 @@
     <div class="section">
         <div class="container">
             <div class="row">
-                <figure class="image">
-                    <img src="{{$analysis->image_full_path}}" alt="تحلیل ارز دیجیتال">
-                </figure>
                 <div class="col-md-8 col-md-offset-2">
                     <div class="panel panel-default">
                         <div class="panel-body">
+                            <div class="form-group">
+                                <figure class="image">
+                                    <img src="{{$analysis->image_full_path}}" alt="تحلیل ارز دیجیتال">
+                                </figure>
+                            </div>
                             <form action="/threads/{{$analysis->id}}" method="POST">
                                 {{csrf_field()}}
                                 <div class="form-group">

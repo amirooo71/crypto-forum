@@ -78,7 +78,7 @@
             </div>
         </div>
     @empty
-        <p>There are no relevant results at this time.</p>
+        <p>هیچ داده ای یافت نشد.</p>
     @endforelse
 </div>
 

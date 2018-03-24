@@ -17,7 +17,8 @@ class CreateThreadsTest extends TestCase
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
         $thread = make('App\Thread');
-        $this->post(route('threads'), $thread->toArray());
+        $analysis = create('App\Analysis');
+        $this->post(route('threads.store', $analysis->id), $thread->toArray());
     }
 
     /**
@@ -28,7 +29,8 @@ class CreateThreadsTest extends TestCase
         $user = factory('App\User')->states('unconfirmed')->create();
         $this->signIn($user);
         $thread = make('App\Thread');
-        $this->post(route('threads'), $thread->toArray())
+        $analysis = create('App\Analysis');
+        $this->post(route('threads.store', $analysis->id), $thread->toArray())
             ->assertRedirect(route('threads'))
             ->assertSessionHas('flash');
     }
@@ -40,7 +42,8 @@ class CreateThreadsTest extends TestCase
     {
 
         $this->expectException('Illuminate\Auth\AuthenticationException');
-        $response = $this->get('/threads/create');
+        $analysis = create('App\Analysis');
+        $response = $this->get(route('threads.create', $analysis->id));
         $response->assertRedirect('/login');
     }
 
@@ -93,7 +96,8 @@ class CreateThreadsTest extends TestCase
         $this->signIn();
         $thread = create('App\Thread', ['title' => 'Foo Title', 'slug' => 'foo-title']);
         $this->assertEquals($thread->fresh()->slug, 'foo-title');
-        $this->post(route('threads'), $thread->toArray() + ['g-recaptcha-response' => 'token']);
+        $analysis = create('App\Analysis');
+        $this->post(route('threads.store', $analysis->id), $thread->toArray() + ['g-recaptcha-response' => 'token']);
         $this->assertTrue(Thread::whereSlug('foo-title-2')->exists());
     }
 
@@ -114,7 +118,8 @@ class CreateThreadsTest extends TestCase
     {
         $this->signIn();
         $thread = create('App\Thread', ['title' => 'Some title 24', 'slug' => 'some-title-24']);
-        $this->post(route('threads'), $thread->toArray() + ['g-recaptcha-response' => 'token']);
+        $analysis = create('App\Analysis');
+        $this->post(route('threads.store', $analysis->id), $thread->toArray() + ['g-recaptcha-response' => 'token']);
         $this->assertTrue(Thread::whereSlug('some-title-25')->exists());
     }
 
@@ -151,7 +156,8 @@ class CreateThreadsTest extends TestCase
     {
         $this->signIn();
         $thread = make('App\Thread', $overrides);
-        return $this->post(route('threads'), $thread->toArray() + ['g-recaptcha-response' => 'token']);
+        $analysis = create('App\Analysis');
+        return $this->post(route('threads.store', $analysis->id), $thread->toArray() + ['g-recaptcha-response' => 'token']);
     }
 
 

@@ -1,7 +1,6 @@
 <template>
     <div>
         <div id="tv_chart_container"></div>
-
         <a v-if="signedIn" class="float" @click="showModal = true">
             <i class="fa fa-plus my-float"></i>
         </a>
@@ -11,7 +10,6 @@
         <div class="label-container">
             <div class="label-text">ثبت آنالیز</div>
         </div>
-
         <div class="modal is-active" v-if="showModal">
             <div class="modal-background"></div>
             <div class="modal-card">
