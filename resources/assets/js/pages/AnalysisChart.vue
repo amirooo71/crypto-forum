@@ -101,7 +101,6 @@
                     client_id: 'tradingview.com',
                     user_id: 'public_user_id'
                 });
-
             },
 
             getParameterByName(name) {
@@ -174,3 +173,4 @@
 <style scoped>
 
 </style>
+

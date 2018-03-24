@@ -10,11 +10,15 @@
     export default {
         name: "chart",
 
+        props: ['thread'],
+
         data() {
             return {}
         },
 
         created() {
+
+            let vm = this;
 
             function getParameterByName(name) {
                 name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -44,6 +48,13 @@
                     user_id: 'public_user_id',
                     width: '100%',
                 });
+
+                widget.onChartReady(function() {
+
+                    widget.load(vm.thread.analysis.analysis_data);
+
+                });
+
             });
 
         },
