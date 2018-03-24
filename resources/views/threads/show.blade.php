@@ -9,6 +9,8 @@
     <thread-show-header :thread="{{$thread}}"
                         :thread-visits-count="{{$thread->visits()->count()}}"></thread-show-header>
 
+    <chart></chart>
+
     <thread-view data-replies-count="{{$thread->replies_count}}" :thread="{{$thread}}" inline-template class="mt-30">
         <div class="container">
             <div class="columns">

@@ -20,7 +20,7 @@
             crossorigin="anonymous"></script>
     <!--/Font Asome-->
 
-    <!-- Chat Core -->
+    <!-- Chart Core -->
     <script type="text/javascript" src="{{asset('chart/charting_library/charting_library.min.js')}}"></script>
     <script type="text/javascript" src="{{asset('chart/datafeeds/udf/dist/polyfills.js')}}"></script>
     <script type="text/javascript" src="{{asset('chart/datafeeds/udf/dist/bundle.js')}}"></script>
