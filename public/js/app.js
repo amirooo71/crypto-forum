@@ -60090,7 +60090,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -60140,6 +60140,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         markAsRead: function markAsRead(notification) {
             axios.delete('/profiles/' + window.App.user.name + '/notifications/' + notification.id);
         }
+    },
+
+    computed: {
+        notifyCount: function notifyCount() {
+            return this.notifications.length;
+        }
     }
 });
 
@@ -60152,53 +60158,53 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _vm.notifications.length
-    ? _c("li", { staticClass: "dropdown" }, [
-        _vm._m(0),
-        _vm._v(" "),
+    ? _c("li", { staticClass: "dropdown dropdown-notifications" }, [
         _c(
-          "ul",
-          { staticClass: "dropdown-menu" },
-          _vm._l(_vm.notifications, function(notification) {
-            return _c("li", [
-              _c(
-                "a",
-                {
-                  attrs: { href: notification.data.link },
-                  on: {
-                    click: function($event) {
-                      _vm.markAsRead(notification)
+          "a",
+          {
+            staticClass: "dropdown-toggle",
+            attrs: { href: "#notifications-panel", "data-toggle": "dropdown" }
+          },
+          [
+            _c("i", {
+              staticClass: "glyphicon glyphicon-bell notification-icon",
+              attrs: { "data-count": _vm.notifyCount }
+            })
+          ]
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "dropdown-container" }, [
+          _c(
+            "ul",
+            { staticClass: "dropdown-menu" },
+            _vm._l(_vm.notifications, function(notification) {
+              return _c("li", [
+                _c(
+                  "a",
+                  {
+                    attrs: { href: notification.data.link },
+                    on: {
+                      click: function($event) {
+                        _vm.markAsRead(notification)
+                      }
                     }
-                  }
-                },
-                [
-                  _vm._v(
-                    "\n                " +
-                      _vm._s(notification.data.message) +
-                      "\n            "
-                  )
-                ]
-              )
-            ])
-          })
-        )
+                  },
+                  [
+                    _vm._v(
+                      "\n                    " +
+                        _vm._s(notification.data.message) +
+                        "\n                "
+                    )
+                  ]
+                )
+              ])
+            })
+          )
+        ])
       ])
     : _vm._e()
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "a",
-      {
-        staticClass: "dropdown-toggle",
-        attrs: { href: "", "data-toggle": "dropdown" }
-      },
-      [_c("span", { staticClass: "glyphicon glyphicon-bell" })]
-    )
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -61261,7 +61267,7 @@ var render = function() {
                   ),
                   _vm._v(" "),
                   _c("button", { staticClass: "btn btn-xs btn-primary" }, [
-                    _vm._v("Update")
+                    _vm._v("آپدیت")
                   ]),
                   _vm._v(" "),
                   _c(
@@ -61271,7 +61277,7 @@ var render = function() {
                       attrs: { type: "button" },
                       on: { click: _vm.resetForm }
                     },
-                    [_vm._v("Cancel")]
+                    [_vm._v("خروج")]
                   )
                 ]
               )

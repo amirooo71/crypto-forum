@@ -54,7 +54,7 @@
             </div>
 
             <div class="navbar-start">
-                <ul class="nav navbar-nav navbar-left">
+                <ul class="nav navbar-nav navbar-right">
                     <!-- Authentication Links -->
                     @if (Auth::guest())
                         <li><a href="{{ route('login') }}">ورود</a></li>

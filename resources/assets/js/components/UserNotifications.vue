@@ -1,18 +1,18 @@
 <template>
-
-    <li class="dropdown" v-if="notifications.length">
-        <a href="" class="dropdown-toggle" data-toggle="dropdown">
-            <span class="glyphicon glyphicon-bell"></span>
+    <li class="dropdown dropdown-notifications" v-if="notifications.length">
+        <a href="#notifications-panel" class="dropdown-toggle" data-toggle="dropdown">
+            <i :data-count="notifyCount" class="glyphicon glyphicon-bell notification-icon"></i>
         </a>
-        <ul class="dropdown-menu">
-            <li v-for="notification in notifications">
-                <a :href="notification.data.link" @click="markAsRead(notification)">
-                    {{notification.data.message}}
-                </a>
-            </li>
-        </ul>
+        <div class="dropdown-container">
+            <ul class="dropdown-menu">
+                <li v-for="notification in notifications">
+                    <a :href="notification.data.link" @click="markAsRead(notification)">
+                        {{notification.data.message}}
+                    </a>
+                </li>
+            </ul>
+        </div>
     </li>
-
 </template>
 
 <script>
@@ -38,6 +38,14 @@
             },
 
         },
+
+        computed: {
+
+            notifyCount() {
+                return this.notifications.length;
+            }
+
+        }
     }
 </script>
 

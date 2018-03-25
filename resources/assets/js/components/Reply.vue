@@ -35,8 +35,8 @@
                         <!--<textarea class="form-control" v-model="body" required></textarea>-->
                         <wysiwyg v-model="body"></wysiwyg>
                     </div>
-                    <button class="btn btn-xs btn-primary">Update</button>
-                    <button class="btn btn-xs btn-link" @click="resetForm" type="button">Cancel</button>
+                    <button class="btn btn-xs btn-primary">آپدیت</button>
+                    <button class="btn btn-xs btn-link" @click="resetForm" type="button">خروج</button>
                 </form>
             </div>
             <div v-else v-html="body"></div>

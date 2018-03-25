@@ -14,6 +14,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="//cdn.rawgit.com/morteza/bootstrap-rtl/v3.3.4/dist/css/bootstrap-rtl.min.css">
     <link rel="stylesheet" href="{{asset('css/vendor/bulma.css')}}">
+    <link rel="stylesheet" href="{{asset('css/vendor/bootstrap-notifications.min.css')}}">
     <link rel="stylesheet" href="{{asset('css/vendor/custom.css')}}">
     <!-- End Style -->
 

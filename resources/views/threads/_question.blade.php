@@ -41,9 +41,9 @@
     {{--</div>--}}
     {{--</div>--}}
     <div class="panel-body" v-html="form.body"></div>
-    <div class="panel-footer" v-if="authorize('owns',thread)">
-        <a class="mr-1 has-text-primary" @click="editing = true">
-            <i class="fas fa-edit"></i>
-        </a>
-    </div>
+    {{--<div class="panel-footer" v-if="authorize('owns',thread)">--}}
+        {{--<a class="mr-1 has-text-primary" @click="editing = true">--}}
+            {{--<i class="fas fa-edit"></i>--}}
+        {{--</a>--}}
+    {{--</div>--}}
 </div>
