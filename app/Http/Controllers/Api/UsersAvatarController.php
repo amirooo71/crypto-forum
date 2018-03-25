@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Intervention\Image\Facades\Image;
 
 class UsersAvatarController extends Controller
 {
@@ -14,10 +15,23 @@ class UsersAvatarController extends Controller
             'avatar' => ['required', 'image'],
         ]);
 
+        $imgPath = \request()->file('avatar')->store('avatars', 'public');
+
+        $this->saveAvatarProfileImage($imgPath);
+
         auth()->user()->update([
-            'avatar_path' => \request()->file('avatar')->store('avatars', 'public')
+            'avatar_path' => $imgPath,
         ]);
 
         return response()->json([], 204);
+    }
+
+    /**
+     * @param $imgPath
+     */
+    private function saveAvatarProfileImage($imgPath): void
+    {
+        $avatar = Image::make(public_path('/storage/' . $imgPath))->resize(200, 200);
+        $avatar->save('images/' . $imgPath);
     }
 }

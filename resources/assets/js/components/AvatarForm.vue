@@ -1,14 +1,13 @@
 <template>
     <div>
-        <div class="level">
-            <img :src="avatar" class="mr-1" width="50" height="50">
-            <h1>
-                {{user.name}}
-            </h1>
+        <div class="column">
+            <img :src="avatar" :alt="user.name" class="mr-1 img-responsive img-rounded img-avatar">
         </div>
-        <form v-if="canUpdate" method="POST" enctype="multipart/form-data">
-            <image-upload name="avatar" @loaded="onLoad"></image-upload>
-        </form>
+        <div class="column mr-1">
+            <form v-if="canUpdate" method="POST" enctype="multipart/form-data">
+                <image-upload name="avatar" @loaded="onLoad"></image-upload>
+            </form>
+        </div>
     </div>
 </template>
 

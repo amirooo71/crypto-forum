@@ -36,6 +36,7 @@ trait RecordsActivity
 
     /**
      * @param $event
+     * @throws \ReflectionException
      */
     protected function recordActivity($event)
     {
@@ -56,6 +57,7 @@ trait RecordsActivity
     /**
      * @param $event
      * @return string
+     * @throws \ReflectionException
      */
     protected function getActivityType($event): string
     {
