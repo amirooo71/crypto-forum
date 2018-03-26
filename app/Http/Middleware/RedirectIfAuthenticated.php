@@ -15,7 +15,7 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next)
     {
         if (\auth()->check() && ($request->user()->confirmed == false)) {
-            return redirect('/threads')->with('flash', 'You must first confirm your email address.');
+            return redirect('/threads')->with('flash', 'حساب کاربری شما فعال نیست! لطفا ایمیل خودتان را چک کنید.');
         }
 
         return $next($request);
