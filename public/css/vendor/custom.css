@@ -208,12 +208,16 @@ a.float:hover + div.label-container {
     align-items: center;
 }
 
-.is-text-column{
+.is-text-column {
     flex-direction: column;
 }
 
-.chart-section{
+.chart-section {
 
     background: url("./../../images/chart.png");
 
+}
+
+.section-tile-landing {
+    margin-bottom: 6rem;
 }
