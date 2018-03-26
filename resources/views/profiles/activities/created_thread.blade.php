@@ -3,13 +3,13 @@
     @slot('header')
 
         <div class="is-inline-flex">
-            <a href="#">
+            <a href="{{route('profile',$profileUser)}}">
                 {{$profileUser->name}}
             </a>
             <span class="text-muted mr-1by2">
                 ثبت تحلیل
             </span>
-            <a href="#" class="mr-1by2">
+            <a href="{{$activity->subject->path()}}" class="mr-1by2">
                 {{$activity->subject->title}}
             </a>
             <span class="text-muted mr-1by2">

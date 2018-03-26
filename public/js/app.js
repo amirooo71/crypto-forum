@@ -60090,7 +60090,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -60101,6 +60101,8 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
 //
 //
 //
@@ -60158,12 +60160,18 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _vm.notifications.length
-    ? _c("li", { staticClass: "dropdown dropdown-notifications" }, [
+    ? _c("li", { staticClass: "dropdown" }, [
         _c(
           "a",
           {
             staticClass: "dropdown-toggle",
-            attrs: { href: "#notifications-panel", "data-toggle": "dropdown" }
+            attrs: {
+              href: "#",
+              "data-toggle": "dropdown",
+              role: "button",
+              "aria-haspopup": "true",
+              "aria-expanded": "false"
+            }
           },
           [
             _c("i", {
@@ -60173,34 +60181,32 @@ var render = function() {
           ]
         ),
         _vm._v(" "),
-        _c("div", { staticClass: "dropdown-container" }, [
-          _c(
-            "ul",
-            { staticClass: "dropdown-menu" },
-            _vm._l(_vm.notifications, function(notification) {
-              return _c("li", [
-                _c(
-                  "a",
-                  {
-                    attrs: { href: notification.data.link },
-                    on: {
-                      click: function($event) {
-                        _vm.markAsRead(notification)
-                      }
+        _c(
+          "ul",
+          { staticClass: "dropdown-menu" },
+          _vm._l(_vm.notifications, function(notification) {
+            return _c("li", [
+              _c(
+                "a",
+                {
+                  attrs: { href: notification.data.link },
+                  on: {
+                    click: function($event) {
+                      _vm.markAsRead(notification)
                     }
-                  },
-                  [
-                    _vm._v(
-                      "\n                    " +
-                        _vm._s(notification.data.message) +
-                        "\n                "
-                    )
-                  ]
-                )
-              ])
-            })
-          )
-        ])
+                  }
+                },
+                [
+                  _vm._v(
+                    "\n                " +
+                      _vm._s(notification.data.message) +
+                      "\n            "
+                  )
+                ]
+              )
+            ])
+          })
+        )
       ])
     : _vm._e()
 }

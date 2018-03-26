@@ -1,13 +1,13 @@
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <div class="level">
-            <span class="flex">
-               {{$header}}
-            </span>
+<div class="mt-30">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-header-title">
+                {{$header}}
+            </div>
         </div>
-    </div>
-    <div class="panel-body">
-        {{$body}}
+        <div class="card-content">
+            {{$body}}
+        </div>
     </div>
 </div>
 

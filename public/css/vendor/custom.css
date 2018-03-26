@@ -193,3 +193,8 @@ a.float:hover + div.label-container {
     margin: 44px 0 22px;
     border-bottom: 1px dashed #00b1b3;
 }
+
+.navbar-collapse.in {
+    overflow-y: auto;
+    padding-right: 1rem;
+}
