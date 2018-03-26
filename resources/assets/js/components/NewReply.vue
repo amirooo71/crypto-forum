@@ -55,11 +55,11 @@
                     .then(response => {
                         this.body = '';
                         this.completed = true;
-                        flash('Your Reply has been posted');
+                        noty('success','نظر شما با موفقیت ثبت شد.');
                         this.$emit('created', response.data);
                     })
                     .catch(error => {
-                        flash(error.response.data, 'danger');
+                        noty('error',error.response.data.message);
                     })
                 ;
             },

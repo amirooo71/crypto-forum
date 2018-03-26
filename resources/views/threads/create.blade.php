@@ -27,6 +27,15 @@
                                     <img src="{{$analysis->image_full_path}}" alt="تحلیل ارز دیجیتال">
                                 </figure>
                             </div>
+
+                            @if(count($errors))
+                                <ul class="alert alert-danger">
+                                    @foreach($errors->all() as $error)
+                                        <li>{{$error}}</li>
+                                    @endforeach
+                                </ul>
+                            @endif
+
                             <form action="/threads/{{$analysis->id}}" method="POST">
                                 {{csrf_field()}}
                                 <div class="form-group">
@@ -58,13 +67,6 @@
                                 <div class="form-group mt-30">
                                     <button type="submit" class="btn btn-success btn-block">ثبت</button>
                                 </div>
-                                @if(count($errors))
-                                    <ul class="alert alert-danger">
-                                        @foreach($errors->all() as $error)
-                                            <li>{{$error}}</li>
-                                        @endforeach
-                                    </ul>
-                                @endif
                             </form>
                         </div>
                     </div>

@@ -99,7 +99,7 @@ class ThreadController extends Controller
         $thread->analysis->update(['published' => true]);
 
         return redirect($thread->path())
-            ->with('flash', 'Your Thread Has been published');
+            ->with('flash', 'تحلیل با موفقیت ثبت شد.');
     }
 
     public function update($channel, Thread $thread)

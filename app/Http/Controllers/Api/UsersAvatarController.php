@@ -31,7 +31,10 @@ class UsersAvatarController extends Controller
      */
     private function saveAvatarProfileImage($imgPath): void
     {
-        $avatar = Image::make(public_path('/storage/' . $imgPath))->resize(200, 200);
-        $avatar->save('images/' . $imgPath);
+        if (app()->environment() !== 'testing') {
+
+            $avatar = Image::make(public_path('/storage/' . $imgPath))->resize(200, 200);
+            $avatar->save('images/' . $imgPath);
+        }
     }
 }
