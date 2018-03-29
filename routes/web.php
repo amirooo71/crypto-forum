@@ -1,7 +1,11 @@
 <?php
 
 Auth::routes();
-
+/*
+ |--------------------------------------------------------
+ |                Home Controller Routes
+ |--------------------------------------------------------
+ */
 Route::get('/', 'HomeController@index')->name('home');
 
 /*
@@ -85,13 +89,13 @@ Route::post('/lock-threads/{thread}', 'LockedThreadsController@store')->name('lo
 Route::delete('/lock-threads/{thread}', 'LockedThreadsController@destroy')->name('locked-threads.destroy')->middleware('admin');
 /*
  |--------------------------------------------------------
- |           SearchController Controller
+ |             SearchController Controller
  |--------------------------------------------------------
  */
 Route::get('threads/search', 'SearchController@show');
 /*
  |--------------------------------------------------------
- |           Chart Controller
+ |               Chart Controller Routes
  |--------------------------------------------------------
  */
 Route::get('analysis/chart', 'AnalysisController@index')->name('analysis.index');
