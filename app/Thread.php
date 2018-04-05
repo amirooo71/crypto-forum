@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Laravelrus\LocalizedCarbon\Traits\LocalizedEloquentTrait;
 use Stevebauman\Purify\Facades\Purify;
 
+
 class Thread extends Model
 {
     use RecordsActivity;
@@ -34,6 +35,10 @@ class Thread extends Model
             $thread->replies->each(function ($reply) {
                 $reply->delete();
             });
+        });
+
+        static::created(function ($thread) {
+            (new Reputation)->award($thread->owner, Reputation::THREAD_WAS_PUBLISHED);
         });
     }
 
@@ -194,6 +199,7 @@ class Thread extends Model
     public function markBestReply($reply)
     {
         $this->update(['best_reply_id' => $reply->id]);
+        (new Reputation)->award($reply->owner, Reputation::BEST_REPLY_AWARDED);
     }
 
     /**

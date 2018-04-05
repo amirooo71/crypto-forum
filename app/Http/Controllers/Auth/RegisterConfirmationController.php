@@ -19,6 +19,6 @@ class RegisterConfirmationController extends Controller
 
         $user->confirm();
         return redirect(route('threads'))
-            ->with('flash', 'Your account is now confirmed! You may post to the form.');
+            ->with('flash', 'حساب کاربری شما با موفقیت فعال شد.');
     }
 }
