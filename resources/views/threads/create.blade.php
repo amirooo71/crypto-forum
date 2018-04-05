@@ -62,7 +62,7 @@
 
                                 <div class="form-group">
                                     <div class="g-recaptcha"
-                                         data-sitekey="6LdcF00UAAAAACRjZDXNKX2AuPjl4F0W7DrPrhLt"></div
+                                         data-sitekey="{{config('podonak.recaptcha.key')}}"></div
                                 </div>
                                 <div class="form-group mt-30">
                                     <button type="submit" class="btn btn-success btn-block">ثبت</button>
