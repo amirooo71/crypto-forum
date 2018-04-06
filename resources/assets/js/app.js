@@ -40,9 +40,9 @@ Vue.component('user-notifications', require('./components/UserNotifications.vue'
 Vue.component('thread-view', require('./pages/Thread.vue'));
 Vue.component('wysiwyg', require('./components/Wysiwyg.vue'));
 Vue.component('avatar-form', require('./components/AvatarForm.vue'));
-Vue.component('chart', require('./components/Chart.vue'));
+Vue.component('thread-chart', require('./components/ThreadChart.vue'));
 Vue.component('thread-show-header', require('./components/ThreadShowHeader.vue')); //Should I refactor???
-Vue.component('analysis-chart', require('./pages/AnalysisChart'));
+Vue.component('analysis-chart', require('./pages/AnalysisChart.vue'));
 
 const app = new Vue({
     el: '#app'

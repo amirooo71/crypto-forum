@@ -7,7 +7,7 @@
 <script>
     export default {
 
-        name: "chart",
+        name: "thread-chart",
 
         props: ['thread'],
 
@@ -58,6 +58,7 @@
 
         },
     }
+
 </script>
 
 <style scoped>

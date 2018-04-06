@@ -29,64 +29,20 @@
 
 {{--Viewing--}}
 <div class="panel panel-default" v-else>
-    {{--<div class="panel-heading">--}}
-    {{--<div class="level">--}}
-    {{--<img src="{{$thread->owner->avatar_path}}" alt="{{$thread->owner->name}}"--}}
-    {{--width="25" height="25" class="mr-1">--}}
-    {{--<span class="flex">--}}
-    {{--<a href="/profiles/{{$thread->owner->name}}">{{$thread->owner->name}}</a>--}}
-    {{--<i>posted : </i>--}}
-    {{--<span v-text="form.title"></span>--}}
-    {{--</span>--}}
-    {{--</div>--}}
-    {{--</div>--}}
     <div class="panel-body" v-html="form.body"></div>
-    {{--<div class="panel-footer" v-if="authorize('owns',thread)">--}}
-    {{--<a class="mr-1 has-text-primary" @click="editing = true">--}}
-    {{--<i class="fas fa-edit"></i>--}}
-    {{--</a>--}}
-    {{--</div>--}}
-</div>
-
-<div class="box">
-    <div class="timeline is-rtl">
-        <header class="timeline-header">
-            <span class="tag is-medium is-primary">چهار ساعت پیش</span>
-        </header>
-        <div class="timeline-item is-primary">
-            <div class="timeline-marker is-primary"></div>
-            <div class="timeline-content">
-                <p class="has-text-justified">
-                    ورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.
-                    چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی
-                    مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد. کتابهای زیادی در شصت و سه
-                    درصد گذشته، حال و آینده شناخت فراوان جامعه و متخصصان را می طلبد تا با نرم افزارها شناخت بیشتری
-                    را برای طراحان رایانه ای علی الخصوص طراحان خلاقی و فرهنگ پیشرو در زبان فارسی ایجاد کرد. در این
-                    صورت می توان امید داشت که تمام و دشواری موجود در ارائه راهکارها و شرایط سخت تایپ به پایان رسد
-                    وزمان مورد نیاز شامل حروفچینی دستاوردهای اصلی و جوابگوی سوالات پیوسته اهل دنیای موجود طراحی
-                    اساسا مورد استفاده قرار گیرد.
-                </p>
-            </div>
-        </div>
-        <header class="timeline-header">
-            <span class="tag is-medium is-primary">چهار ساعت پیش</span>
-        </header>
-        <div class="timeline-item is-warning">
-            <div class="timeline-marker is-primary"></div>
-            <div class="timeline-content">
-                <p>
-                    ورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.
-                    چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی
-                    مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد. کتابهای زیادی در شصت و سه
-                    درصد گذشته، حال و آینده شناخت فراوان جامعه و متخصصان را می طلبد تا با نرم افزارها شناخت بیشتری
-                    را برای طراحان رایانه ای علی الخصوص طراحان خلاقی و فرهنگ پیشرو در زبان فارسی ایجاد کرد. در این
-                    صورت می توان امید داشت که تمام و دشواری موجود در ارائه راهکارها و شرایط سخت تایپ به پایان رسد
-                    وزمان مورد نیاز شامل حروفچینی دستاوردهای اصلی و جوابگوی سوالات پیوسته اهل دنیای موجود طراحی
-                    اساسا مورد استفاده قرار گیرد.
-                </p>
-            </div>
-        </div>
+    <div class="panel-footer" v-if="authorize('owns',thread)">
+        {{--<a class="mr-1 has-text-primary" @click="editing = true">--}}
+        {{--<i class="fas fa-edit"></i>--}}
+        {{--</a>--}}
+        <button class="button is-small is-info" @click="showCommentModal = true">درج کامنت</button>
     </div>
 </div>
 
-
+{{--Comment--}}
+<div class="modal is-active" v-if="showCommentModal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <new-threads-comment :thread="{{$thread}}"></new-threads-comment>
+    </div>
+    <button class="modal-close is-large" aria-label="close" @click="showCommentModal = false"></button>
+</div>

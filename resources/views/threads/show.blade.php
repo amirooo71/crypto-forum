@@ -9,7 +9,7 @@
     <thread-show-header :thread="{{$thread}}"
                         :thread-visits-count="{{$thread->visits()->count()}}"></thread-show-header>
 
-    <chart :thread="{{$thread}}"></chart>
+    <thread-chart :thread="{{$thread}}"></thread-chart>
 
     <thread-view data-replies-count="{{$thread->replies_count}}" :thread="{{$thread}}" inline-template class="section">
         <div class="container">
@@ -17,6 +17,8 @@
                 <div class="column is-8" v-cloak>
 
                     @include('threads._question')
+
+                    <threads-comments></threads-comments>
 
                     <replies @added="repliesCount++" @removed="repliesCount--"></replies>
 
@@ -43,5 +45,4 @@
             </div>
         </div>
     </thread-view>
-
 @endsection
