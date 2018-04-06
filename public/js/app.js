@@ -66860,7 +66860,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -66871,6 +66871,8 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
 //
 //
 //
@@ -66963,7 +66965,15 @@ var render = function() {
                         _vm._s(comment.body) +
                         "\n                    "
                     )
-                  ])
+                  ]),
+                  _vm._v(" "),
+                  comment.image_url
+                    ? _c("figure", { staticClass: "image pd-t-10" }, [
+                        _c("img", {
+                          attrs: { src: comment.image_url, alt: comment.body }
+                        })
+                      ])
+                    : _vm._e()
                 ])
               ])
             ])
@@ -67068,7 +67078,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -67131,6 +67141,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.post('/analysis/' + this.thread.slug + '/comment', data).then(function (response) {
                 Event.$emit('addComment', { comment: response.data.comment });
                 noty('success', response.data.message);
+            }).catch(function (error) {
+                noty('error', error.response.data.message);
             });
         }
     }

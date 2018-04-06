@@ -52,6 +52,9 @@
                         Event.$emit('addComment', {comment: response.data.comment});
                         noty('success', response.data.message);
                     })
+                    .catch(error => {
+                        noty('error',error.response.data.message);
+                    })
                 ;
             }
 

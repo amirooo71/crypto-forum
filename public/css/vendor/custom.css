@@ -7,6 +7,10 @@
     flex: 1;
 }
 
+.pd-t-10{
+    padding-top: 10px;
+}
+
 .mr-1 {
     margin-right: 1em;
 }

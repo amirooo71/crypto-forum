@@ -26,6 +26,10 @@ class ThreadsCommentsController extends Controller
      */
     public function store(Thread $thread)
     {
+        \request()->validate([
+            'body' => 'required|spamfree',
+        ]);
+
         $comment = $thread->addComment([
             'body' => \request()->body,
             'image_url' => \request()->image_url,

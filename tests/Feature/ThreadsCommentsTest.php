@@ -45,5 +45,17 @@ class ThreadsCommentsTest extends TestCase
         $this->assertCount(1, $response);
     }
 
+    /**
+     * @test
+     */
+    function a_threads_comment_requires_a_body()
+    {
+        $this->signIn();
+        $thread = create('App\Thread');
+        $threadsComment = make('App\ThreadsComment', ['thread_id' => $thread->id,'body' => null]);
+        $response = $this->post(route('threads.comments.store', $thread), $threadsComment->toArray());
+        $response->assertStatus(422);
+    }
+
 
 }
