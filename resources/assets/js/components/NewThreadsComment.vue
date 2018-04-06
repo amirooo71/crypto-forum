@@ -49,8 +49,8 @@
 
                 axios.post(`/analysis/${this.thread.slug}/comment`, data)
                     .then(response => {
-                        Event.$emit('addComment');
-                        noty('success',response.data.message);
+                        Event.$emit('addComment', {comment: response.data.comment});
+                        noty('success', response.data.message);
                     })
                 ;
             }

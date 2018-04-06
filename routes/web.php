@@ -106,6 +106,7 @@ Route::post('analysis/chart', 'AnalysisController@store')->name('analysis.store'
  |--------------------------------------------------------
  */
 Route::post('analysis/{thread}/comment', 'ThreadsCommentsController@store')->name('threads.comments.store')->middleware('auth');
+Route::get('analysis/{thread}/comments', 'ThreadsCommentsController@index')->name('threads.comments.index');
 
 
 Route::get('/test', function () {

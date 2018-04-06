@@ -66860,7 +66860,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -66894,30 +66894,38 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    name: "threads-comments"
+
+    name: "threads-comments",
+
+    props: ['thread'],
+
+    data: function data() {
+        return {
+            comments: []
+        };
+    },
+    created: function created() {
+        var _this = this;
+
+        Event.$on('addComment', function (data) {
+            return _this.comments.push(data.comment);
+        });
+        this.fetchComments();
+    },
+
+
+    methods: {
+        fetchComments: function fetchComments() {
+            var _this2 = this;
+
+            axios.get('/analysis/' + this.thread.slug + '/comments').then(function (response) {
+                _this2.comments = response.data;
+            });
+        }
+    }
+
 });
 
 /***/ }),
@@ -66928,54 +66936,43 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "box" }, [
-      _c("div", { staticClass: "timeline is-rtl" }, [
-        _c("header", { staticClass: "timeline-header" }, [
-          _c("span", { staticClass: "tag is-medium is-primary" }, [
-            _vm._v("چهار ساعت پیش")
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "timeline-item is-primary" }, [
-          _c("div", { staticClass: "timeline-marker is-primary" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "timeline-content" }, [
-            _c("p", { staticClass: "has-text-justified" }, [
-              _vm._v(
-                "\n                    ورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.\n                    چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی\n                    مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد. کتابهای زیادی در شصت و سه\n                    درصد گذشته، حال و آینده شناخت فراوان جامعه و متخصصان را می طلبد تا با نرم افزارها شناخت بیشتری\n                    را برای طراحان رایانه ای علی الخصوص طراحان خلاقی و فرهنگ پیشرو در زبان فارسی ایجاد کرد. در این\n                    صورت می توان امید داشت که تمام و دشواری موجود در ارائه راهکارها و شرایط سخت تایپ به پایان رسد\n                    وزمان مورد نیاز شامل حروفچینی دستاوردهای اصلی و جوابگوی سوالات پیوسته اهل دنیای موجود طراحی\n                    اساسا مورد استفاده قرار گیرد.\n                "
-              )
+  return _vm.comments.length > 0
+    ? _c("div", { staticClass: "box" }, [
+        _c(
+          "div",
+          { staticClass: "timeline is-rtl" },
+          _vm._l(_vm.comments, function(comment) {
+            return _c("div", [
+              _c("header", { staticClass: "timeline-header" }, [
+                _c("span", { staticClass: "tag is-medium is-primary" }, [
+                  _vm._v(
+                    "\n                    " +
+                      _vm._s(comment.created_at) +
+                      "\n                "
+                  )
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "timeline-item is-primary" }, [
+                _c("div", { staticClass: "timeline-marker is-primary" }),
+                _vm._v(" "),
+                _c("div", { staticClass: "timeline-content" }, [
+                  _c("p", { staticClass: "has-text-justified" }, [
+                    _vm._v(
+                      "\n                        " +
+                        _vm._s(comment.body) +
+                        "\n                    "
+                    )
+                  ])
+                ])
+              ])
             ])
-          ])
-        ]),
-        _vm._v(" "),
-        _c("header", { staticClass: "timeline-header" }, [
-          _c("span", { staticClass: "tag is-medium is-primary" }, [
-            _vm._v("چهار ساعت پیش")
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "timeline-item is-warning" }, [
-          _c("div", { staticClass: "timeline-marker is-primary" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "timeline-content" }, [
-            _c("p", [
-              _vm._v(
-                "\n                    ورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.\n                    چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی\n                    مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد. کتابهای زیادی در شصت و سه\n                    درصد گذشته، حال و آینده شناخت فراوان جامعه و متخصصان را می طلبد تا با نرم افزارها شناخت بیشتری\n                    را برای طراحان رایانه ای علی الخصوص طراحان خلاقی و فرهنگ پیشرو در زبان فارسی ایجاد کرد. در این\n                    صورت می توان امید داشت که تمام و دشواری موجود در ارائه راهکارها و شرایط سخت تایپ به پایان رسد\n                    وزمان مورد نیاز شامل حروفچینی دستاوردهای اصلی و جوابگوی سوالات پیوسته اهل دنیای موجود طراحی\n                    اساسا مورد استفاده قرار گیرد.\n                "
-              )
-            ])
-          ])
-        ])
+          })
+        )
       ])
-    ])
-  }
-]
+    : _vm._e()
+}
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -67132,7 +67129,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             };
 
             axios.post('/analysis/' + this.thread.slug + '/comment', data).then(function (response) {
-                Event.$emit('addComment');
+                Event.$emit('addComment', { comment: response.data.comment });
                 noty('success', response.data.message);
             });
         }

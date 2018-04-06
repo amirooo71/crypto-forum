@@ -18,7 +18,7 @@
 
                     @include('threads._question')
 
-                    <threads-comments></threads-comments>
+                    <threads-comments :thread="{{$thread}}"></threads-comments>
 
                     <replies @added="repliesCount++" @removed="repliesCount--"></replies>
 

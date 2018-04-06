@@ -84,10 +84,11 @@ class Thread extends Model
 
     /**
      * @param $comment
+     * @return Model
      */
     public function addComment($comment)
     {
-        $this->comments()->create($comment);
+        return $this->comments()->create($comment);
     }
 
     /**
