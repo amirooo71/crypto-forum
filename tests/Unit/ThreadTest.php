@@ -40,6 +40,14 @@ class ThreadTest extends TestCase
     /**
      * @test
      */
+    public function thread_has_comments()
+    {
+        $this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $this->thread->comments);
+    }
+
+    /**
+     * @test
+     */
     public function thread_has_a_creator()
     {
         $this->assertInstanceOf('App\User', $this->thread->owner);
@@ -147,7 +155,7 @@ class ThreadTest extends TestCase
     function a_thread_body_is_sanitized_automatically()
     {
         $thread = make('App\Thread', ['body' => '<script>alert("bad")</script><p>This is ok</p>']);
-        $this->assertEquals("<p>This is ok</p>",$thread->body);
+        $this->assertEquals("<p>This is ok</p>", $thread->body);
     }
 
 }

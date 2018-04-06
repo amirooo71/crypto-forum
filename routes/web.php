@@ -100,6 +100,12 @@ Route::get('threads/search', 'SearchController@show');
  */
 Route::get('analysis/chart', 'AnalysisController@index')->name('analysis.index');
 Route::post('analysis/chart', 'AnalysisController@store')->name('analysis.store')->middleware('auth');
+/*
+ |--------------------------------------------------------
+ |               Threads Comments Routes
+ |--------------------------------------------------------
+ */
+Route::post('analysis/{thread}/comment', 'ThreadsCommentsController@store')->name('threads.comments.store')->middleware('auth');
 
 
 Route::get('/test', function () {

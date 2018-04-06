@@ -75,6 +75,22 @@ class Thread extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function comments()
+    {
+        return $this->hasMany(ThreadsComment::class);
+    }
+
+    /**
+     * @param $comment
+     */
+    public function addComment($comment)
+    {
+        $this->comments()->create($comment);
+    }
+
+    /**
      * @param $reply
      * @return Model
      */

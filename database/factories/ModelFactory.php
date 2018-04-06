@@ -59,7 +59,6 @@ $factory->define(\App\Thread::class, function (\Faker\Generator $faker) {
 });
 
 $factory->define(\App\Reply::class, function (\Faker\Generator $faker) {
-
     return [
         'user_id' => function () {
             return factory('App\User')->create()->id;
@@ -69,7 +68,6 @@ $factory->define(\App\Reply::class, function (\Faker\Generator $faker) {
         },
         'body' => $faker->paragraph,
     ];
-
 });
 
 $factory->define(App\Channel::class, function (\Faker\Generator $faker) {
@@ -92,7 +90,6 @@ $factory->define(\Illuminate\Notifications\DatabaseNotification::class, function
 });
 
 $factory->define(\App\Analysis::class, function (\Faker\Generator $faker) {
-
     return [
         'user_id' => function () {
             return factory('App\User')->create()->id;
@@ -101,5 +98,14 @@ $factory->define(\App\Analysis::class, function (\Faker\Generator $faker) {
         'analysis_data' => ['foo' => 'bar'],
         'published' => false,
     ];
+});
 
+$factory->define(\App\ThreadsComment::class, function (\Faker\Generator $faker) {
+    return [
+        'thread_id' => function () {
+            return factory('App\Thread')->create()->id;
+        },
+        'body' => $faker->sentence,
+        'image_url' => $faker->url,
+    ];
 });

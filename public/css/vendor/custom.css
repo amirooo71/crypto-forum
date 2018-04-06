@@ -221,3 +221,12 @@ a.float:hover + div.label-container {
 .section-tile-landing {
     margin-bottom: 6rem;
 }
+
+.timeline.is-rtl {
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    -webkit-box-align: end;
+    -ms-flex-align: end;
+    align-items: flex-start
+}
