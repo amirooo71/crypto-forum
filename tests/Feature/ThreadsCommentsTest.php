@@ -52,7 +52,7 @@ class ThreadsCommentsTest extends TestCase
     {
         $this->signIn();
         $thread = create('App\Thread');
-        $threadsComment = make('App\ThreadsComment', ['thread_id' => $thread->id,'body' => null]);
+        $threadsComment = make('App\ThreadsComment', ['thread_id' => $thread->id, 'body' => null]);
         $response = $this->post(route('threads.comments.store', $thread), $threadsComment->toArray());
         $response->assertStatus(422);
     }

@@ -2,7 +2,7 @@
     <div>
         <div id="tv_chart_container"></div>
         <a v-if="signedIn" class="float" @click="showModal = true">
-            <i class="fa fa-plus my-float"></i>
+            <i class="fa fa-plus my-float" id="v-step-0"></i>
         </a>
         <a href="/login" class="float" v-else>
             <i class="fas fa-sign-in-alt my-float"></i>
@@ -42,10 +42,15 @@
             </div>
             <button class="modal-close is-large" aria-label="close" @click="showModal = false"></button>
         </div>
+        <v-tour name="analysis-chart" :steps="steps"></v-tour>
     </div>
 </template>
 
 <script>
+
+    import VueTour from 'vue-tour';
+
+    require('vue-tour/dist/vue-tour.css');
 
     export default {
 
@@ -60,8 +65,23 @@
                 isSaveClicked: false,
                 message: '',
                 analysisId: '',
+
+                steps: [
+                    {
+                        target: '#v-step-0',  // We're using document.querySelector() under the hood
+                        content: 'با استفاده از این دکمه می توانید تحلیل خود را ثبت کنید.',
+                        params: {
+                            placement: 'left'
+                        }
+                    },
+                ],
+
             };
 
+        },
+
+        mounted: function () {
+            this.$tours['analysis-chart'].start()
         },
 
         created() {
