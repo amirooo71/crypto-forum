@@ -14,7 +14,6 @@
     <div id="app-navbar-collapse" class="navbar-menu navbar-collapse">
         <div class="navbar-start">
             <ul class="nav navbar-nav">
-
                 <li>
                     <a href="/threads/create">تحلیل جدید</a>
                 </li>
