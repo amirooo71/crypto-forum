@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Thread;
-use App\ThreadsComment;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class ThreadsCommentsController extends Controller
@@ -19,20 +17,26 @@ class ThreadsCommentsController extends Controller
         return $thread->comments;
     }
 
-
     /**
      * @param Thread $thread
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(Thread $thread)
     {
+
+        if ($thread->user_id !== auth()->id()) {
+            if (\request()->wantsJson()) {
+                return \response()->json(['status' => 'Permission denied'], Response::HTTP_FORBIDDEN);
+            }
+        }
+
         \request()->validate([
             'body' => 'required|spamfree',
         ]);
 
         $comment = $thread->addComment([
             'body' => \request()->body,
-            'image_url' => \request()->image_url,
+            'image_url' => \request()->image_url
         ]);
 
         return response()->json(

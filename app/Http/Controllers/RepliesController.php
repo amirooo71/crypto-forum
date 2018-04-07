@@ -3,12 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePostRequest;
-use App\Notifications\YouWereMentioned;
 use App\Reply;
 use App\Thread;
-use App\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 
 class RepliesController extends Controller
 {

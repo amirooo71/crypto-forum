@@ -111,5 +111,6 @@ Route::get('analysis/{thread}/comments', 'ThreadsCommentsController@index')->nam
 
 Route::get('/test', function () {
 
+    return \App\Thread::find(1)->owner->id;
 
 });
