@@ -3,8 +3,8 @@
         <div class="timeline is-rtl">
             <div v-for="comment in comments">
                 <header class="timeline-header">
-                    <span class="tag is-medium is-primary">
-                        {{comment.created_at}}
+                    <span class="tag is-samll is-primary">
+                        {{comment.created_at | ago}}
                     </span>
                 </header>
                 <div class="timeline-item is-primary">
@@ -24,11 +24,16 @@
 </template>
 
 <script>
+
+    import filters from './../mixins/filters';
+
     export default {
 
         name: "threads-comments",
 
         props: ['thread'],
+
+        mixins: [filters],
 
         data() {
             return {

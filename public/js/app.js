@@ -28100,6 +28100,7 @@ var app = new Vue({
 
 window._ = __webpack_require__(141);
 window.Noty = __webpack_require__(142);
+window.Moment = __webpack_require__(0);
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -63894,7 +63895,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -63907,8 +63908,7 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Favorite_vue__ = __webpack_require__(197);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Favorite_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Favorite_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_filters__ = __webpack_require__(275);
 //
 //
 //
@@ -63978,6 +63978,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     name: "reply",
     props: ['reply'],
     components: { Favorite: __WEBPACK_IMPORTED_MODULE_0__Favorite_vue___default.a },
+    mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_filters__["a" /* default */]],
 
     data: function data() {
         return {
@@ -64026,15 +64027,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.editing = false;
             this.body = this.reply.body;
         }
-    },
-
-    computed: {
-        ago: function ago() {
-
-            __WEBPACK_IMPORTED_MODULE_1_moment___default.a.locale('fa');
-            return __WEBPACK_IMPORTED_MODULE_1_moment___default()(this.reply.created_at).startOf('hour').fromNow();
-        }
     }
+
 });
 
 /***/ }),
@@ -64529,7 +64523,7 @@ var render = function() {
                 _c("span", { staticClass: "is-size-6 text-muted mr-1by2" }, [
                   _vm._v(
                     "\n                            " +
-                      _vm._s(_vm.ago) +
+                      _vm._s(_vm._f("ago")(_vm.reply.created_at)) +
                       "\n                        "
                   )
                 ])
@@ -66889,7 +66883,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -66900,6 +66894,7 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__mixins_filters__ = __webpack_require__(275);
 //
 //
 //
@@ -66925,12 +66920,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+
+
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 
     name: "threads-comments",
 
     props: ['thread'],
+
+    mixins: [__WEBPACK_IMPORTED_MODULE_0__mixins_filters__["a" /* default */]],
 
     data: function data() {
         return {
@@ -66975,10 +66975,10 @@ var render = function() {
           _vm._l(_vm.comments, function(comment) {
             return _c("div", [
               _c("header", { staticClass: "timeline-header" }, [
-                _c("span", { staticClass: "tag is-medium is-primary" }, [
+                _c("span", { staticClass: "tag is-samll is-primary" }, [
                   _vm._v(
                     "\n                    " +
-                      _vm._s(comment.created_at) +
+                      _vm._s(_vm._f("ago")(comment.created_at)) +
                       "\n                "
                   )
                 ])
@@ -68141,7 +68141,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -68152,6 +68152,7 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__mixins_filters__ = __webpack_require__(275);
 //
 //
 //
@@ -68224,10 +68225,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: "thread-show-header",
+
+    mixins: [__WEBPACK_IMPORTED_MODULE_0__mixins_filters__["a" /* default */]],
 
     props: ['thread', 'threadVisitsCount'],
 
@@ -68292,7 +68297,7 @@ var render = function() {
                   _c("p", { staticClass: "has-text-light" }, [
                     _vm._v(
                       "\n                                    " +
-                        _vm._s(_vm.thread.created_at) +
+                        _vm._s(_vm._f("ago")(_vm.thread.created_at)) +
                         "\n                                "
                     )
                   ])
@@ -68331,11 +68336,13 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("br"),
-                      _vm._v(
-                        "\n                                        " +
-                          _vm._s(_vm.thread.owner.created_at) +
-                          "عضویت\n                                    "
-                      )
+                      _vm._v(" "),
+                      _c("span", { staticClass: "text-muted" }, [
+                        _vm._v(
+                          _vm._s(_vm._f("ago")(_vm.thread.owner.created_at))
+                        )
+                      ]),
+                      _vm._v(" عضویت\n                                    ")
                     ])
                   ]),
                   _vm._v(" "),
@@ -73046,6 +73053,31 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 266 */,
+/* 267 */,
+/* 268 */,
+/* 269 */,
+/* 270 */,
+/* 271 */,
+/* 272 */,
+/* 273 */,
+/* 274 */,
+/* 275 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = ({
+
+    filters: {
+        ago: function ago(time) {
+            Moment.locale('fa');
+            return Moment(time).startOf('hour').fromNow();
+        }
+    }
+
+});
 
 /***/ })
 /******/ ]);

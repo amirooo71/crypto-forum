@@ -21,7 +21,7 @@
                                 </div>
                                 <div class="mg-r-5">
                                     <p class="has-text-light">
-                                        {{thread.created_at}}
+                                        {{thread.created_at | ago}}
                                     </p>
                                 </div>
                                 <div class="is-clearfix"></div>
@@ -44,7 +44,7 @@
                                             <a :href="profileLink">{{thread.owner.name}}</a>
                                             <small>@{{thread.owner.name}}</small>
                                             <br>
-                                            {{thread.owner.created_at}}عضویت
+                                            <span class="text-muted">{{thread.owner.created_at | ago}}</span> عضویت
                                         </p>
                                     </div>
                                     <nav class="level is-mobile">
@@ -72,8 +72,12 @@
 
 <script>
 
+    import filters from './../mixins/filters';
+
     export default {
         name: "thread-show-header",
+
+        mixins: [filters],
 
         props: ['thread', 'threadVisitsCount'],
 

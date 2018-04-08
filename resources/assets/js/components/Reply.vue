@@ -16,7 +16,7 @@
                                 </a>
                             </p>
                             <span class="is-size-6 text-muted mr-1by2">
-                                {{ago}}
+                                {{reply.created_at | ago}}
                             </span>
                         </div>
                     </div>
@@ -61,12 +61,13 @@
 <script>
 
     import Favorite from './Favorite.vue';
-    import moment from 'moment';
+    import filters from './../mixins/filters'
 
     export default {
         name: "reply",
         props: ['reply'],
         components: {Favorite},
+        mixins: [filters],
 
         data() {
             return {
@@ -119,15 +120,6 @@
             }
         },
 
-        computed: {
-
-            ago() {
-
-                moment.locale('fa');
-                return moment(this.reply.created_at).startOf('hour').fromNow();
-
-            },
-        }
     }
 </script>
 

@@ -1,5 +1,6 @@
 window._ = require('lodash');
 window.Noty = require('noty');
+window.Moment = require('moment');
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
