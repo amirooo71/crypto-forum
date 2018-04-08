@@ -2,10 +2,8 @@
     <div :id="'reply-'+id" class="panel" :class="isBest ? 'panel-success' : 'panel-default'">
         <div class="panel-heading">
             <div class="media">
-                <div class="media-right">
-                    <figure class="image is-32x32">
-                        <img :src="reply.owner.avatar_path" :alt="reply.owner.name">
-                    </figure>
+                <div class="media-left" v-if="signedIn">
+                    <favorite :reply="reply"></favorite>
                 </div>
                 <div class="media-content is-clipped">
                     <div class="content is-pulled-right">
@@ -23,8 +21,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="media-left" v-if="signedIn">
-                    <favorite :reply="reply"></favorite>
+                <div class="media-right">
+                    <figure class="image is-32x32">
+                        <img :src="reply.owner.avatar_path" :alt="reply.owner.name">
+                    </figure>
                 </div>
             </div>
         </div>

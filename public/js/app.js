@@ -64496,16 +64496,14 @@ var render = function() {
     [
       _c("div", { staticClass: "panel-heading" }, [
         _c("div", { staticClass: "media" }, [
-          _c("div", { staticClass: "media-right" }, [
-            _c("figure", { staticClass: "image is-32x32" }, [
-              _c("img", {
-                attrs: {
-                  src: _vm.reply.owner.avatar_path,
-                  alt: _vm.reply.owner.name
-                }
-              })
-            ])
-          ]),
+          _vm.signedIn
+            ? _c(
+                "div",
+                { staticClass: "media-left" },
+                [_c("favorite", { attrs: { reply: _vm.reply } })],
+                1
+              )
+            : _vm._e(),
           _vm._v(" "),
           _c("div", { staticClass: "media-content is-clipped" }, [
             _c("div", { staticClass: "content is-pulled-right" }, [
@@ -64539,14 +64537,16 @@ var render = function() {
             ])
           ]),
           _vm._v(" "),
-          _vm.signedIn
-            ? _c(
-                "div",
-                { staticClass: "media-left" },
-                [_c("favorite", { attrs: { reply: _vm.reply } })],
-                1
-              )
-            : _vm._e()
+          _c("div", { staticClass: "media-right" }, [
+            _c("figure", { staticClass: "image is-32x32" }, [
+              _c("img", {
+                attrs: {
+                  src: _vm.reply.owner.avatar_path,
+                  alt: _vm.reply.owner.name
+                }
+              })
+            ])
+          ])
         ])
       ]),
       _vm._v(" "),
@@ -64820,7 +64820,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.post(location.pathname + '/replies', { body: this.body }).then(function (response) {
                 _this.body = '';
                 _this.completed = true;
-                noty('success', 'نظر شما با موفقیت ثبت شد.');
+                noty('success', 'دیدگاه شما با موفقیت ثبت شد.');
                 _this.$emit('created', response.data);
             }).catch(function (error) {
                 noty('error', error.response.data.message);
@@ -66585,7 +66585,7 @@ if (false) {
         remove: function remove(index) {
             this.items.splice(index, 1);
             this.$emit('removed');
-            flash('Reply was deleted!');
+            flash('حذف با موفقیت انجام شد.');
         }
     }
 });

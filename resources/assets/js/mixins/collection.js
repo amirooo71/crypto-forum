@@ -18,7 +18,7 @@ export default {
         remove(index) {
             this.items.splice(index, 1);
             this.$emit('removed');
-            flash('Reply was deleted!');
+            flash('حذف با موفقیت انجام شد.');
         }
 
     }

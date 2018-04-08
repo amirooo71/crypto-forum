@@ -55,7 +55,7 @@
                     .then(response => {
                         this.body = '';
                         this.completed = true;
-                        noty('success','نظر شما با موفقیت ثبت شد.');
+                        noty('success','دیدگاه شما با موفقیت ثبت شد.');
                         this.$emit('created', response.data);
                     })
                     .catch(error => {
