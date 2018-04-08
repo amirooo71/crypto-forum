@@ -67792,7 +67792,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "file", staticStyle: { "margin-right": "25px" } },
+    { staticClass: "file", staticStyle: { "margin-right": "20px" } },
     [
       _c("label", { staticClass: "file-label" }, [
         _c("input", {

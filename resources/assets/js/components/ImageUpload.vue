@@ -1,6 +1,6 @@
 <template>
 
-    <div class="file" style="margin-right: 25px;">
+    <div class="file" style="margin-right: 20px;">
         <label class="file-label">
             <input class="file-input" type="file" accept="image/*" @change="onChange">
             <span class="file-cta">

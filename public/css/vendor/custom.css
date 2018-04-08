@@ -47,6 +47,10 @@ a:link {
     margin-top: 30px;
 }
 
+.mt-10 {
+    margin-top: 10px;
+}
+
 .mg-b-20 {
     margin-bottom: 20px;
 }
@@ -288,4 +292,8 @@ a.float:hover + div.label-container {
 .tags.has-addons .tag:not(:first-child) {
     border-bottom-left-radius: 3px;
     border-top-left-radius: 3px;
+}
+
+.point{
+    padding-top: 40px;
 }

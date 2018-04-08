@@ -1,14 +1,7 @@
-<div class="mt-30">
-    <div class="card">
-        <div class="card-header">
-            <div class="card-header-title">
-                {{$header}}
-            </div>
-        </div>
-        <div class="card-content">
-            {{$body}}
-        </div>
+<div class="timeline-item">
+    <div class="timeline-marker"></div>
+    <div class="timeline-content">
+        <p class="heading">{{$header}}</p>
+        <div class="box mt-10">{{$body}}</div>
     </div>
 </div>
-
-
