@@ -63358,7 +63358,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -63388,13 +63388,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+
     name: "user-notifications",
 
     data: function data() {
         return {
-            notifications: false
+            notifications: false,
+            showNotificationModal: false
         };
     },
     created: function created() {
@@ -63409,6 +63414,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     methods: {
         markAsRead: function markAsRead(notification) {
             axios.delete('/profiles/' + window.App.user.name + '/notifications/' + notification.id);
+            this.showNotificationModal = false;
         }
     },
 
@@ -63439,6 +63445,11 @@ var render = function() {
               role: "button",
               "aria-haspopup": "true",
               "aria-expanded": "false"
+            },
+            on: {
+              click: function($event) {
+                _vm.showNotificationModal = true
+              }
             }
           },
           [
@@ -63449,32 +63460,50 @@ var render = function() {
           ]
         ),
         _vm._v(" "),
-        _c(
-          "ul",
-          { staticClass: "dropdown-menu" },
-          _vm._l(_vm.notifications, function(notification) {
-            return _c("li", [
+        _vm.showNotificationModal
+          ? _c("div", { staticClass: "modal is-active" }, [
+              _c("div", { staticClass: "modal-background" }),
+              _vm._v(" "),
               _c(
-                "a",
-                {
-                  attrs: { href: notification.data.link },
-                  on: {
-                    click: function($event) {
-                      _vm.markAsRead(notification)
-                    }
+                "div",
+                { staticClass: "modal-content" },
+                _vm._l(_vm.notifications, function(notification) {
+                  return _c("div", { staticClass: "card" }, [
+                    _c("div", { staticClass: "card-content" }, [
+                      _c(
+                        "a",
+                        {
+                          attrs: { href: notification.data.link },
+                          on: {
+                            click: function($event) {
+                              _vm.markAsRead(notification)
+                            }
+                          }
+                        },
+                        [
+                          _vm._v(
+                            "\n                        " +
+                              _vm._s(notification.data.message) +
+                              "\n                    "
+                          )
+                        ]
+                      )
+                    ])
+                  ])
+                })
+              ),
+              _vm._v(" "),
+              _c("button", {
+                staticClass: "modal-close is-large",
+                attrs: { "aria-label": "close" },
+                on: {
+                  click: function($event) {
+                    _vm.showNotificationModal = false
                   }
-                },
-                [
-                  _vm._v(
-                    "\n                " +
-                      _vm._s(notification.data.message) +
-                      "\n            "
-                  )
-                ]
-              )
+                }
+              })
             ])
-          })
-        )
+          : _vm._e()
       ])
     : _vm._e()
 }
@@ -68112,7 +68141,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -68123,6 +68152,14 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -68267,56 +68304,42 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "column is-narrow" }, [
-            _c("div", { attrs: { id: "carboncontainer" } }, [
-              _c("div", { staticClass: "box", attrs: { id: "carbon" } }, [
-                _c("div", { staticClass: "carbon-item" }, [
-                  _c("div", { staticClass: "media" }, [
-                    _c("div", { staticClass: "media-content is-clipped" }, [
-                      _c("div", { staticClass: "is-pulled-left" }, [
-                        _c(
-                          "a",
-                          {
-                            staticClass: "is-size-5 has-text-info",
-                            attrs: { href: _vm.profileLink }
-                          },
-                          [
-                            _vm._v(
-                              "\n                                                " +
-                                _vm._s(_vm.thread.owner.name) +
-                                "\n                                            "
-                            )
-                          ]
-                        ),
-                        _vm._v(" "),
-                        _c("p", { staticClass: "is-size-7 has-text-grey" }, [
-                          _vm._v(
-                            "\n                                                " +
-                              _vm._s(_vm.thread.owner.name) +
-                              "@\n                                            "
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("p", { staticClass: "is-size-7" }, [
-                          _vm._v(
-                            "\n                                                عضویت " +
-                              _vm._s(_vm.thread.owner.created_at) +
-                              "\n                                            "
-                          )
-                        ])
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "media-left is-pulled-left" }, [
-                      _c("figure", { staticClass: "image is-64x64" }, [
-                        _c("img", {
-                          attrs: {
-                            src: _vm.thread.owner.avatar_path,
-                            alt: _vm.thread.owner.name
-                          }
-                        })
-                      ])
+            _c("div", { staticClass: "box" }, [
+              _c("article", { staticClass: "media" }, [
+                _c("figure", { staticClass: "media-left" }, [
+                  _c("p", { staticClass: "image is-64x64" }, [
+                    _c("a", { attrs: { href: _vm.profileLink } }, [
+                      _c("img", {
+                        attrs: {
+                          src: _vm.thread.owner.avatar_path,
+                          alt: _vm.thread.owner.name
+                        }
+                      })
                     ])
                   ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "media-content" }, [
+                  _c("div", { staticClass: "content" }, [
+                    _c("p", [
+                      _c("a", { attrs: { href: _vm.profileLink } }, [
+                        _vm._v(_vm._s(_vm.thread.owner.name))
+                      ]),
+                      _vm._v(" "),
+                      _c("small", [
+                        _vm._v("@" + _vm._s(_vm.thread.owner.name))
+                      ]),
+                      _vm._v(" "),
+                      _c("br"),
+                      _vm._v(
+                        "\n                                        " +
+                          _vm._s(_vm.thread.owner.created_at) +
+                          "عضویت\n                                    "
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _vm._m(1)
                 ])
               ])
             ])
@@ -68334,6 +68357,32 @@ var staticRenderFns = [
     return _c("span", { staticClass: "tag is-light" }, [
       _c("span", { staticClass: "icon has-text-black" }, [
         _c("i", { staticClass: "fas fa-eye" })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("nav", { staticClass: "level is-mobile" }, [
+      _c("div", { staticClass: "level-left" }, [
+        _c("a", { staticClass: "level-item" }, [
+          _c("span", { staticClass: "icon is-small" }, [
+            _c("i", { staticClass: "fas fa-reply" })
+          ])
+        ]),
+        _vm._v(" "),
+        _c("a", { staticClass: "level-item" }, [
+          _c("span", { staticClass: "icon is-small" }, [
+            _c("i", { staticClass: "fas fa-retweet" })
+          ])
+        ]),
+        _vm._v(" "),
+        _c("a", { staticClass: "level-item" }, [
+          _c("span", { staticClass: "icon is-small" }, [
+            _c("i", { staticClass: "fas fa-heart" })
+          ])
+        ])
       ])
     ])
   }

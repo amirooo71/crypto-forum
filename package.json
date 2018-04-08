@@ -19,6 +19,7 @@
     "vue": "^2.1.10"
   },
   "dependencies": {
+    "animate.css": "^3.6.1",
     "at.js": "^1.5.3",
     "bulma-extensions": "^1.0.14",
     "bulma-rtl": "^0.6.1",

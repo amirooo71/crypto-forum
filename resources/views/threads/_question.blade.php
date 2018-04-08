@@ -26,15 +26,14 @@
         </div>
     </div>
 </div>
-
 {{--Viewing--}}
 <div class="panel panel-default" v-else>
-    <div class="panel-body" v-html="form.body"></div>
+    <div class="panel-body has-text-justified" v-html="form.body"></div>
     <div class="panel-footer" v-if="authorize('owns',thread)">
         {{--<a class="mr-1 has-text-primary" @click="editing = true">--}}
         {{--<i class="fas fa-edit"></i>--}}
         {{--</a>--}}
-        <button class="button is-small is-info" @click="showCommentModal = true">درج کامنت</button>
+        <button class="button is-small is-info" @click="showCommentModal = true">کامنت</button>
     </div>
 </div>
 

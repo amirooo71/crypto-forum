@@ -55,7 +55,6 @@
     <div class="section is-medium chart-section">
         <div class="container">
             <div class="columns">
-
                 <div class="column has-text-centered box">
                     <p class="title has-text-grey-dark">نمودار لحظه ای قیمت</p>
                 </div>

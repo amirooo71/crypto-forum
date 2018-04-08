@@ -7,7 +7,7 @@
     flex: 1;
 }
 
-.pd-t-10{
+.pd-t-10 {
     padding-top: 10px;
 }
 
@@ -51,7 +51,7 @@ a:link {
     margin-bottom: 20px;
 }
 
-#carboncontainer {
+carboncontainer {
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
@@ -69,7 +69,7 @@ a:link {
 
 @media screen and (min-width: 769px), print {
     #carbon {
-        width: 340px;
+        width: 300px;
     }
 }
 
@@ -77,19 +77,38 @@ a:link {
     -webkit-box-flex: 1;
     -ms-flex-positive: 1;
     flex-grow: 1;
+    min-height: 130px;
     padding: 0;
     position: relative;
 }
 
-/*.box {*/
-/*background-color: white;*/
-/*border-radius: 5px;*/
-/*-webkit-box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);*/
-/*box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);*/
-/*color: #4a4a4a;*/
-/*display: block;*/
-/*padding: 1.25rem;*/
-/*}*/
+#carbonads {
+    font-size: 14px;
+    text-align: left;
+}
+
+#carbonads .carbon-wrap {
+    min-height: 130px;
+    position: relative;
+}
+
+#carbonads .carbon-img {
+    bottom: 0;
+    float: left;
+    left: 0;
+    min-height: 130px;
+    padding: 15px 0 15px 15px;
+    position: absolute;
+    top: 0;
+    width: 145px;
+}
+
+#carbonads .carbon-text {
+    display: block;
+    color: #363636;
+    line-height: 20px;
+    padding: 15px 15px 35px 160px;
+}
 
 .carbon-item {
     color: #363636;
@@ -255,4 +274,18 @@ a.float:hover + div.label-container {
     -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
     background-clip: padding-box;
+}
+
+.tags.has-addons .tag {
+    margin: 0;
+}
+
+.tags.has-addons .tag:not(:last-child) {
+    border-bottom-right-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.tags.has-addons .tag:not(:first-child) {
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
 }

@@ -29,31 +29,39 @@
                         </div>
                     </div>
                     <div class="column is-narrow">
-                        <div id="carboncontainer">
-                            <div id="carbon" class="box">
-                                <div class="carbon-item">
-                                    <div class="media">
-                                        <div class="media-content is-clipped">
-                                            <div class="is-pulled-left">
-                                                <a :href="profileLink" class="is-size-5 has-text-info">
-                                                    {{thread.owner.name}}
-                                                </a>
-                                                <p class="is-size-7 has-text-grey">
-                                                    {{thread.owner.name}}@
-                                                </p>
-                                                <p class="is-size-7">
-                                                    عضویت {{thread.owner.created_at}}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="media-left is-pulled-left">
-                                            <figure class="image is-64x64">
-                                                <img :src="thread.owner.avatar_path" :alt="thread.owner.name">
-                                            </figure>
-                                        </div>
+                        <div class="box">
+                            <article class="media">
+                                <figure class="media-left">
+                                    <p class="image is-64x64">
+                                        <a :href="profileLink">
+                                            <img :src="thread.owner.avatar_path" :alt="thread.owner.name">
+                                        </a>
+                                    </p>
+                                </figure>
+                                <div class="media-content">
+                                    <div class="content">
+                                        <p>
+                                            <a :href="profileLink">{{thread.owner.name}}</a>
+                                            <small>@{{thread.owner.name}}</small>
+                                            <br>
+                                            {{thread.owner.created_at}}عضویت
+                                        </p>
                                     </div>
+                                    <nav class="level is-mobile">
+                                        <div class="level-left">
+                                            <a class="level-item">
+                                                <span class="icon is-small"><i class="fas fa-reply"></i></span>
+                                            </a>
+                                            <a class="level-item">
+                                                <span class="icon is-small"><i class="fas fa-retweet"></i></span>
+                                            </a>
+                                            <a class="level-item">
+                                                <span class="icon is-small"><i class="fas fa-heart"></i></span>
+                                            </a>
+                                        </div>
+                                    </nav>
                                 </div>
-                            </div>
+                            </article>
                         </div>
                     </div>
                 </div>

@@ -4,31 +4,32 @@
             <div class="card">
                 <div class="card-content">
                     <div class="media">
+                        <div class="media-content is-clipped">
+                            <div class="is-pulled-right">
+                                <p class="is-size-6">
+                                    <a href="{{route('profile',$thread->owner)}}">{{$thread->owner->name}}</a>
+                                </p>
+                                <p class="is-size-7 is-pulled-right">{{$thread->owner->name}}@</p>
+                            </div>
+                            <div class="is-pulled-left">
+                                <p class="is-size-7">{{$thread->channel->name}}</p>
+                            </div>
+                        </div>
                         <div class="media-right is-paddingless">
                             <figure class="image is-48x48">
                                 <img src="{{$thread->owner->avatar_path}}"
                                      alt="{{$thread->owner->name}}">
                             </figure>
                         </div>
-                        <div class="media-content is-clipped">
-                            <div class="is-pulled-right">
-                                <p class="is-size-6">
-                                    <a href="{{route('profile',$thread->owner)}}">{{$thread->owner->name}}</a>
-                                </p>
-                                <p class="is-size-7 is-pulled-right">امیر@</p>
-                            </div>
-                            <div class="is-pulled-left">
-                                <p class="is-size-7 is-hidden-mobile">بیتکوین</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="card-image">
-
-                    <figure class="image is-3by2">
-                        <img src="{{$thread->analysis->image_full_path}}"
-                             alt="Placeholder image">
-                    </figure>
+                    <a href="{{$thread->path()}}">
+                        <figure class="image is-3by2">
+                            <img src="{{$thread->analysis->image_full_path}}"
+                                 alt="Placeholder image">
+                        </figure>
+                    </a>
                 </div>
                 <div class="card-content">
                     <div class="columns">
