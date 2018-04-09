@@ -53,7 +53,7 @@ $factory->define(\App\Thread::class, function (\Faker\Generator $faker) {
         'locked' => false,
         'analysis_id' => function () {
             return factory('App\Analysis')->create()->id;
-        },
+        }
     ];
 
 });

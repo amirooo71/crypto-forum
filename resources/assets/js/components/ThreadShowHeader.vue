@@ -26,6 +26,9 @@
                                 </div>
                                 <div class="is-clearfix"></div>
                             </div>
+                            <p v-if="authorize('owns',thread)">
+                                <strong>توکن تحلیل</strong> <code>{{thread.thread_token}}</code>
+                            </p>
                         </div>
                     </div>
                     <div class="column is-narrow">

@@ -33,7 +33,14 @@
         {{--<a class="mr-1 has-text-primary" @click="editing = true">--}}
         {{--<i class="fas fa-edit"></i>--}}
         {{--</a>--}}
-        <button class="button is-small is-info" @click="showCommentModal = true">کامنت</button>
+        <button class="button is-small is-info" @click="showCommentModal = true">
+            <i class="fas fa-paperclip"></i>
+            <span class="mr-1">کامنت</span>
+        </button>
+        <button class="button is-small is-info" @click="showAttachModal = true">
+            <i class="fas fa-paperclip"></i>
+            <span class="mr-1">تحلیل</span>
+        </button>
     </div>
 </div>
 
@@ -44,4 +51,13 @@
         <new-threads-comment :thread="{{$thread}}"></new-threads-comment>
     </div>
     <button class="modal-close is-large" aria-label="close" @click="showCommentModal = false"></button>
+</div>
+
+{{--attach--}}
+<div class="modal is-active" v-if="showAttachModal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <attach-thread></attach-thread>
+    </div>
+    <button class="modal-close is-large" aria-label="close" @click="showAttachModal = false"></button>
 </div>

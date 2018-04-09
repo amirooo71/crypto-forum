@@ -4,10 +4,11 @@
     import SubscribeButton from '../components/SubscribeButton.vue'
     import ThreadsComments from '../components/ThreadsComments.vue';
     import NewThreadsComment from '../components/NewThreadsComment.vue';
+    import AttachThread from '../components/AttachThread.vue';
 
     export default {
 
-        components: {Replies, SubscribeButton, ThreadsComments, NewThreadsComment},
+        components: {Replies, SubscribeButton, ThreadsComments, NewThreadsComment, AttachThread},
 
         props: ['dataRepliesCount', 'thread'],
 
@@ -17,6 +18,7 @@
                 locked: this.thread.locked,
                 editing: false,
                 showCommentModal: false,
+                showAttachModal: false,
                 form: {},
             }
         },
