@@ -63886,7 +63886,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -63935,7 +63935,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         var _this = this;
 
         Event.$on('addComment', function () {
-            return _this.showCommentModal = false;
+            _this.showCommentModal = false;
+            _this.showAttachModal = false;
         });
         this.resetForm();
     },
@@ -73180,7 +73181,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -73242,7 +73243,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 _this.thread = response.data;
             });
         },
-        add: function add() {}
+        add: function add() {
+
+            var data = {
+                body: this.thread.body,
+                image_url: this.imageUrl,
+                slug: this.thread.slug
+            };
+            axios.post('/thread/attach/' + this.thread.slug, data).then(function (response) {
+                Event.$emit('addComment', { comment: response.data.comment });
+                noty('success', response.data.message);
+            }).catch(function (error) {
+                noty('error', error.response.data.message);
+            });
+        }
     },
 
     computed: {

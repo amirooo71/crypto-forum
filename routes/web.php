@@ -113,6 +113,7 @@ Route::get('analysis/{thread}/comments', 'ThreadsCommentsController@index')->nam
  |--------------------------------------------------------
  */
 Route::get('thread/attach/{token}', 'AttachThreadController@show')->name('attach.thread.show')->middleware('auth');
+Route::post('thread/attach/{thread}', 'AttachThreadController@store')->name('attach.thread.store')->middleware('auth');
 
 Route::get('/test', function () {
 

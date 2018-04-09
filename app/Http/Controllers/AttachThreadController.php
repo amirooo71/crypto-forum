@@ -22,8 +22,30 @@ class AttachThreadController extends Controller
         }
     }
 
-    public function store()
+    public function store(Thread $thread)
     {
 
+        if ($thread->user_id !== auth()->id()) {
+            if (\request()->wantsJson()) {
+                return \response()->json(['status' => 'Permission denied'], Response::HTTP_FORBIDDEN);
+            }
+        }
+
+        \request()->validate([
+            'body' => 'required|spamfree',
+        ]);
+
+        $comment = $thread->addComment([
+            'body' => \request()->body,
+            'image_url' => \request()->image_url,
+            'slug' => \request()->slug
+        ]);
+
+        return response()->json(
+            [
+                'message' => 'تحلیل با موفقیت ثبت شد.',
+                'comment' => $comment,
+            ]
+            , Response::HTTP_CREATED);
     }
 }

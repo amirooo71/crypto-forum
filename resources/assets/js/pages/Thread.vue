@@ -24,7 +24,10 @@
         },
 
         created() {
-            Event.$on('addComment', () => this.showCommentModal = false);
+            Event.$on('addComment', () => {
+                this.showCommentModal = false;
+                this.showAttachModal = false;
+            });
             this.resetForm();
         },
 

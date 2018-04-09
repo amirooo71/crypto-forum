@@ -51,6 +51,19 @@
 
             add() {
 
+                let data = {
+                    body: this.thread.body,
+                    image_url: this.imageUrl,
+                    slug: this.thread.slug,
+                };
+                axios.post(`/thread/attach/${this.thread.slug}`, data)
+                    .then(response => {
+                        Event.$emit('addComment', {comment: response.data.comment});
+                        noty('success', response.data.message);
+                    })
+                    .catch(error => {
+                        noty('error', error.response.data.message);
+                    });
             }
 
         },
