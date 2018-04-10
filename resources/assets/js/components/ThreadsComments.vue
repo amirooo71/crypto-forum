@@ -13,9 +13,11 @@
                         <p class="has-text-justified">
                             {{comment.body}}
                         </p>
-                        <figure class="image pd-t-10" v-if="comment.image_url">
-                            <img :src="comment.image_url" :alt="comment.body">
-                        </figure>
+                        <a :href="comment.thread_url">
+                            <figure class="image pd-t-10" v-if="comment.image_url">
+                                <img :src="comment.image_url" :alt="comment.body">
+                            </figure>
+                        </a>
                     </div>
                 </div>
             </div>

@@ -3,22 +3,43 @@
         <div class="field">
             <label class="label">آدرس تصویر تحلیل (اختیاری)</label>
             <div class="control">
-                <input class="input" type="text" name="image_url" v-model="image_url"
-                       placeholder="مثال: https://www.tradingview.com/x/A5pM7jjZ">
+                <input class="input" type="text" name="image_url" v-model="url"
+                       placeholder="مثال: https://www.tradingview.com/x/A5pM7jjZ" @keyup="attach">
             </div>
             <p class="help">در صورت نیاز به تصویر تحلیل با مراجعه به صفحه نمودار و کپی کردن آدرس تصویر در این قسمت،
                 تصویر تحلیل شما در قسمت کامنت نمایش خواهد داده شد. <a href="/analysis/chart">(نمودار)</a>
             </p>
         </div>
-        <div class="field">
-            <label class="label">توضیحات</label>
-            <div class="control">
-                <textarea class="textarea" name="body" v-model="body"></textarea>
+        <div v-if="isComment">
+            <div class="field">
+                <label class="label">توضیحات</label>
+                <div class="control">
+                    <textarea class="textarea" name="body" v-model="body"></textarea>
+                </div>
+            </div>
+            <div class="field is-grouped">
+                <div class="control">
+                    <button class="button is-info" @click="add">ثبت کامنت</button>
+                </div>
             </div>
         </div>
-        <div class="field is-grouped">
-            <div class="control">
-                <button class="button is-info" @click="add">ثبت</button>
+        <div v-else>
+            <div class="field">
+                <figure class="image">
+                    <img :src="imageUrl" alt="نحلیل ارز دیجیتال">
+                </figure>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <textarea class="textarea" v-model="body"></textarea>
+                </div>
+                <p class="help">با تغییر این متن توضیحات تحلیل شما تغییر نخواهد کرد. و تغییرات فقط در این قسمت اعمال می
+                    شود.</p>
+            </div>
+            <div class="field is-grouped">
+                <div class="control">
+                    <button class="button is-info" @click="add">ثبت تحلیل</button>
+                </div>
             </div>
         </div>
     </div>
@@ -33,19 +54,28 @@
 
         data() {
             return {
-                image_url: '',
+                url: '',
                 body: '',
+                attachedThread: '',
+                isComment: true,
             }
         },
 
         methods: {
 
+            attach() {
+                axios.get(this.url + '/attach')
+                    .then(response => {
+                        this.attachedThread = response.data;
+                        this.isComment = false;
+                    }).catch(error => {
+                    this.isComment = true;
+                });
+            },
+
             add() {
 
-                let data = {
-                    image_url: this.image_url,
-                    body: this.body,
-                };
+                let data = this.prepareData();
 
                 axios.post(`/analysis/${this.thread.slug}/comment`, data)
                     .then(response => {
@@ -53,11 +83,33 @@
                         noty('success', response.data.message);
                     })
                     .catch(error => {
-                        noty('error',error.response.data.message);
+                        noty('error', error.response.data.message);
                     })
                 ;
-            }
+            },
 
+            prepareData() {
+
+                if (this.attachedThread) {
+                    return {
+                        image_url: this.imageUrl,
+                        body: this.body,
+                        thread_url: this.url,
+                    };
+                } else {
+                    return {
+                        image_url: this.url,
+                        body: this.body,
+                    };
+                }
+
+            }
+        },
+
+        computed: {
+            imageUrl() {
+                return 'https://www.tradingview.com/x/' + this.attachedThread.analysis.image_url;
+            },
         }
 
     }

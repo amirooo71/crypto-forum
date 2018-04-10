@@ -35,11 +35,7 @@
         {{--</a>--}}
         <button class="button is-small is-info" @click="showCommentModal = true">
             <i class="fas fa-paperclip"></i>
-            <span class="mr-1">کامنت</span>
-        </button>
-        <button class="button is-small is-info" @click="showAttachModal = true">
-            <i class="fas fa-paperclip"></i>
-            <span class="mr-1">تحلیل</span>
+            <span class="mr-1">بروزرسانی</span>
         </button>
     </div>
 </div>
@@ -53,11 +49,3 @@
     <button class="modal-close is-large" aria-label="close" @click="showCommentModal = false"></button>
 </div>
 
-{{--attach--}}
-<div class="modal is-active" v-if="showAttachModal">
-    <div class="modal-background"></div>
-    <div class="modal-content">
-        <attach-thread></attach-thread>
-    </div>
-    <button class="modal-close is-large" aria-label="close" @click="showAttachModal = false"></button>
-</div>

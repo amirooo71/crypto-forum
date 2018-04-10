@@ -18,7 +18,7 @@ class CreateThreadsCommentsTable extends Migration
             $table->unsignedInteger('thread_id');
             $table->text('body');
             $table->string('image_url')->nullable();
-            $table->string('slug')->nullable();
+            $table->string('thread_url')->nullable();
             $table->timestamps();
         });
     }

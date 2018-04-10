@@ -21,6 +21,19 @@ class ThreadsCommentsController extends Controller
      * @param Thread $thread
      * @return \Illuminate\Http\JsonResponse
      */
+    public function show($channelId, Thread $thread)
+    {
+        if ($thread) {
+            return \response()->json($thread, Response::HTTP_OK);
+        }
+
+        return \response()->json([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @param Thread $thread
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(Thread $thread)
     {
 
@@ -36,7 +49,8 @@ class ThreadsCommentsController extends Controller
 
         $comment = $thread->addComment([
             'body' => \request()->body,
-            'image_url' => \request()->image_url
+            'image_url' => \request()->image_url,
+            'thread_url' => request()->thread_url,
         ]);
 
         return response()->json(

@@ -107,16 +107,4 @@ Route::post('analysis/chart', 'AnalysisController@store')->name('analysis.store'
  */
 Route::post('analysis/{thread}/comment', 'ThreadsCommentsController@store')->name('threads.comments.store')->middleware('auth');
 Route::get('analysis/{thread}/comments', 'ThreadsCommentsController@index')->name('threads.comments.index');
-/*
- |--------------------------------------------------------
- |               Attach Thread Routes
- |--------------------------------------------------------
- */
-Route::get('thread/attach/{token}', 'AttachThreadController@show')->name('attach.thread.show')->middleware('auth');
-Route::post('thread/attach/{thread}', 'AttachThreadController@store')->name('attach.thread.store')->middleware('auth');
-
-Route::get('/test', function () {
-
-    return \App\Thread::find(1)->owner->id;
-
-});
+Route::get('threads/{channel}/{thread}/attach', 'ThreadsCommentsController@show')->name('threads.comment.show')->middleware('auth');

@@ -39,7 +39,6 @@ class Thread extends Model
 
         static::created(function ($thread) {
             (new Reputation)->award($thread->owner, Reputation::THREAD_WAS_PUBLISHED);
-            $thread->update(['thread_token' => md5($thread->slug)]);
         });
     }
 

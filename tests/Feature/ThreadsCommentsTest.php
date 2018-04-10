@@ -57,5 +57,27 @@ class ThreadsCommentsTest extends TestCase
         $response->assertStatus(422);
     }
 
+    /**
+     * @test
+     */
+    function an_authenticated_user_can_see_thread_info()
+    {
+        $this->signIn();
+        $channel = create('App\Channel');
+        $thread = create('App\Thread', ['channel_id' => $channel->id]);
+        $response = $this->getJson("threads/{$channel->id}/{$thread->slug}/attach")->json();
+        $this->assertCount(16, $response);
+    }
 
+
+    /**
+     * @test
+     */
+    function an_unauthenticated_user_can_not_see_thread_info()
+    {
+        $this->expectException('Illuminate\Auth\AuthenticationException');
+        $channel = create('App\Channel');
+        $thread = create('App\Thread', ['channel_id' => $channel->id]);
+        $this->getJson("threads/{$channel->id}/{$thread->slug}/attach")->json();
+    }
 }

@@ -26,8 +26,8 @@
                                 </div>
                                 <div class="is-clearfix"></div>
                             </div>
-                            <p v-if="authorize('owns',thread)">
-                                <strong>توکن تحلیل</strong> <code>{{thread.thread_token}}</code>
+                            <p>
+                                <button class="button is-white" @click="copy">آدرس تحلیل</button>
                             </p>
                         </div>
                     </div>
@@ -76,6 +76,9 @@
 <script>
 
     import filters from './../mixins/filters';
+    import VueClipboard from 'vue-clipboard2'
+
+    Vue.use(VueClipboard);
 
     export default {
         name: "thread-show-header",
@@ -94,8 +97,30 @@
 
             Event.$on('ThreadUpdated', (data) => {
                 this.title = data.title;
-            });
+            })
+            ;
 
+        },
+
+        methods: {
+            copy() {
+                let link = window.location.href;
+                this.$copyText(link).then(function (e) {
+                    Swal({
+                        title: "عملیات موفق",
+                        text: "لینک تحلیل با موفقیت ذخیره شد.",
+                        icon: "success",
+                        button: "خروج",
+                    });
+                }, function (e) {
+                    Swal({
+                        title: "عملیات ناموفق",
+                        text: "خطایی پیش آمده است.",
+                        icon: "error",
+                        button: "خروج",
+                    });
+                })
+            },
         },
 
         computed: {
