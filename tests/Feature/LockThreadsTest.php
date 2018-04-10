@@ -26,7 +26,7 @@ class LockThreadsTest extends TestCase
      */
     function administrators_can_lock_threads()
     {
-        $this->signIn(factory('App\User')->states('administrator')->create());
+        $this->signInAdmin();
         $thread = create('App\Thread', ['user_id' => auth()->id(),'locked' => true]);
         $this->post(route('locked-threads.store', $thread));
         $this->assertTrue($thread->fresh()->locked, 'Failed asserting that the thread was locked.');
@@ -37,7 +37,7 @@ class LockThreadsTest extends TestCase
      */
     function administrators_can_unlock_threads()
     {
-        $this->signIn(factory('App\User')->states('administrator')->create());
+        $this->signInAdmin();
         $thread = create('App\Thread', ['user_id' => auth()->id(), 'locked' => false]);
         $this->delete(route('locked-threads.destroy', $thread));
         $this->assertFalse($thread->fresh()->locked, 'Failed asserting that the thread was unlocked.');

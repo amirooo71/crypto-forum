@@ -108,3 +108,25 @@ Route::post('analysis/chart', 'AnalysisController@store')->name('analysis.store'
 Route::post('analysis/{thread}/comment', 'ThreadsCommentsController@store')->name('threads.comments.store')->middleware('auth');
 Route::get('analysis/{thread}/comments', 'ThreadsCommentsController@index')->name('threads.comments.index');
 Route::get('threads/{channel}/{thread}/attach', 'ThreadsCommentsController@show')->name('threads.comment.show')->middleware('auth');
+/*
+ |--------------------------------------------------------
+ |               Administrators Routes
+ |--------------------------------------------------------
+ */
+Route::group([
+    'prefix' => 'admin',
+    'middleware' => 'admin',
+    'namespace' => 'Admin',
+], function () {
+    Route::get('', 'DashboardController@index')->name('admin.dashboard.index');
+    Route::post('channels', 'ChannelsController@store')->name('admin.channels.store');
+    Route::get('channels', 'ChannelsController@index')->name('admin.channels.index');
+    Route::get('channels/create', 'ChannelsController@create')->name('admin.channels.create');
+});
+
+
+Route::get('test', function () {
+
+    dd(auth()->user()->isAdmin());
+
+});
