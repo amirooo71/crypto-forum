@@ -1,7 +1,7 @@
 <template>
     <div class="box" v-if="comments.length > 0">
         <div class="timeline is-rtl">
-            <div v-for="comment in comments">
+            <div v-for="comment in orderedComments">
                 <header class="timeline-header">
                     <span class="tag is-samll is-primary">
                         {{comment.created_at | ago}}
@@ -60,7 +60,13 @@
 
             },
 
-        }
+        },
+
+        computed: {
+            orderedComments() {
+                return _.orderBy(this.comments, ['created_at'], ['desc']);
+            }
+        },
 
     }
 </script>

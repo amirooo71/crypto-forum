@@ -67223,7 +67223,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -67297,6 +67297,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 _this2.comments = response.data;
             });
         }
+    },
+
+    computed: {
+        orderedComments: function orderedComments() {
+            return _.orderBy(this.comments, ['created_at'], ['desc']);
+        }
     }
 
 });
@@ -67314,7 +67320,7 @@ var render = function() {
         _c(
           "div",
           { staticClass: "timeline is-rtl" },
-          _vm._l(_vm.comments, function(comment) {
+          _vm._l(_vm.orderedComments, function(comment) {
             return _c("div", [
               _c("header", { staticClass: "timeline-header" }, [
                 _c("span", { staticClass: "tag is-samll is-primary" }, [
@@ -67451,7 +67457,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -67462,9 +67468,6 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
 //
 //
 //
@@ -67584,7 +67587,7 @@ var render = function() {
   return _c("div", { staticClass: "section" }, [
     _c("div", { staticClass: "field" }, [
       _c("label", { staticClass: "label" }, [
-        _vm._v("آدرس تصویر تحلیل (اختیاری)")
+        _vm._v("آدرس تحلیل یا تصویر (اختیاری)")
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "control" }, [
@@ -67598,11 +67601,7 @@ var render = function() {
             }
           ],
           staticClass: "input",
-          attrs: {
-            type: "text",
-            name: "image_url",
-            placeholder: "مثال: https://www.tradingview.com/x/A5pM7jjZ"
-          },
+          attrs: { type: "text", name: "image_url" },
           domProps: { value: _vm.url },
           on: {
             keyup: _vm.attach,
@@ -67680,6 +67679,7 @@ var render = function() {
                   }
                 ],
                 staticClass: "textarea",
+                attrs: { placeholder: "توضیحات..." },
                 domProps: { value: _vm.body },
                 on: {
                   input: function($event) {
@@ -67690,12 +67690,6 @@ var render = function() {
                   }
                 }
               })
-            ]),
-            _vm._v(" "),
-            _c("p", { staticClass: "help" }, [
-              _vm._v(
-                "با تغییر این متن توضیحات تحلیل شما تغییر نخواهد کرد. و تغییرات فقط در این قسمت اعمال می\n                شود."
-              )
             ])
           ]),
           _vm._v(" "),

@@ -1,10 +1,9 @@
 <template>
     <div class="section">
         <div class="field">
-            <label class="label">آدرس تصویر تحلیل (اختیاری)</label>
+            <label class="label">آدرس تحلیل یا تصویر (اختیاری)</label>
             <div class="control">
-                <input class="input" type="text" name="image_url" v-model="url"
-                       placeholder="مثال: https://www.tradingview.com/x/A5pM7jjZ" @keyup="attach">
+                <input class="input" type="text" name="image_url" v-model="url" @keyup="attach">
             </div>
             <p class="help">در صورت نیاز به تصویر تحلیل با مراجعه به صفحه نمودار و کپی کردن آدرس تصویر در این قسمت،
                 تصویر تحلیل شما در قسمت کامنت نمایش خواهد داده شد. <a href="/analysis/chart">(نمودار)</a>
@@ -31,10 +30,8 @@
             </div>
             <div class="field">
                 <div class="control">
-                    <textarea class="textarea" v-model="body"></textarea>
+                    <textarea class="textarea" v-model="body" placeholder="توضیحات..."></textarea>
                 </div>
-                <p class="help">با تغییر این متن توضیحات تحلیل شما تغییر نخواهد کرد. و تغییرات فقط در این قسمت اعمال می
-                    شود.</p>
             </div>
             <div class="field is-grouped">
                 <div class="control">

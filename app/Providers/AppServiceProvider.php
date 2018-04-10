@@ -21,15 +21,15 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
 
-        Schema::defaultStringLength(191);
-        View::composer('*', function ($view) {
-            $channels = Cache::rememberForever('channels', function () {
-                return Channel::all();
-            });
-            $view->with('channels', $channels);
-        });
+//        Schema::defaultStringLength(191);
+//        View::composer('*', function ($view) {
+//            $channels = Cache::rememberForever('channels', function () {
+//                return Channel::all();
+//            });
+//            $view->with('channels', $channels);
+//        });
 //        OR
-//        View::share('channels',Channel::all());
+        View::share('channels',Channel::all());
 
         Validator::extend('spamfree', 'App\Rules\SpamFree@passes');
 
