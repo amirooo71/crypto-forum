@@ -35,6 +35,10 @@ class Thread extends Model
             $thread->replies->each(function ($reply) {
                 $reply->delete();
             });
+            $thread->comments->each(function ($comment) {
+                $comment->delete();
+            });
+            (new Reputation)->reduce($thread->owner, Reputation::THREAD_WAS_PUBLISHED);
         });
 
         static::created(function ($thread) {
