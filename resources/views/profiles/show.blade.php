@@ -12,7 +12,7 @@
                         <div class="point">
                             <span class="has-text-light">امتیاز</span>
                             <h4 class="is-white is-1 title">
-                                1,000
+                                {{$profileUser->reputation}}
                             </h4>
                         </div>
                     </div>

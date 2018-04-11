@@ -27,4 +27,16 @@ abstract class TestCase extends BaseTestCase
         return $this;
     }
 
+    /**
+     * @param null $admin
+     * @return $this
+     */
+    protected function signInAdmin($admin = null)
+    {
+        $admin = $admin ?: create('App\User');
+        config(['podonak.administrators' => [$admin->email]]);
+        $this->actingAs($admin);
+        return $this;
+    }
+
 }

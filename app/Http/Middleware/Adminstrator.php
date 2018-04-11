@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class Administrator
+class Adminstrator
 {
     /**
      * Handle an incoming request.
@@ -18,8 +18,6 @@ class Administrator
         if (auth()->check() && auth()->user()->isAdmin()) {
             return $next($request);
         }
-
-        abort(403, 'Yo do not have permission to perform this action');
-
+        abort(403, 'You do not have permission to perform this action.');
     }
 }

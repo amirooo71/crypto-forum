@@ -19,6 +19,16 @@
                                         {{threadVisitsCount}}
                                     </span>
                                 </div>
+                                <div class="tags has-addons mg-r-5">
+                                    <span class="tag is-light">
+                                        <span class="icon has-text-black">
+                                           <i class="fas fa-trophy"></i>
+                                        </span>
+                                    </span>
+                                    <span class="tag is-info">
+                                        {{thread.owner.reputation}}
+                                    </span>
+                                </div>
                                 <div class="mg-r-5">
                                     <p class="has-text-light">
                                         {{thread.created_at | ago}}

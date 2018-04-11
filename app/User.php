@@ -25,7 +25,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'email','confirmation_token'
+        'password', 'remember_token', 'email', 'confirmation_token'
     ];
 
     protected $casts = [
@@ -73,6 +73,20 @@ class User extends Authenticatable
         return sprintf("users.%s.visists.%s", $this->id, $thread->id);
     }
 
+
+    /**
+     * Determine if the user is an administrator.
+     *
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return in_array(
+            strtolower($this->email),
+            array_map('strtolower', config('podonak.administrators'))
+        );
+    }
+
     /**
      * @param $thread
      * @throws \Exception
@@ -98,14 +112,5 @@ class User extends Authenticatable
         $this->confirmation_token = null;
         $this->save();
     }
-
-    /**
-     * @return bool
-     */
-    public function isAdmin()
-    {
-        return in_array($this->name, ['amir']);
-    }
-
 
 }
