@@ -193,7 +193,7 @@ class Thread extends Model
 
     public function setSlugAttribute($value)
     {
-        if (static::whereSlug($slug = str_slug($value))->exists()) {
+        if (static::whereSlug($slug = str_slug($value, '-', 'fa'))->exists()) {
             $slug = $this->incrementSlug($slug);
         }
 
