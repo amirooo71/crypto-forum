@@ -17,7 +17,7 @@ class UsersAvatarController extends Controller
 
         $imgPath = \request()->file('avatar')->store('avatars', 'public');
 
-//        $this->saveAvatarProfileImage($imgPath);
+        $this->saveAvatarProfileImage($imgPath);
 
         auth()->user()->update([
             'avatar_path' => $imgPath,
