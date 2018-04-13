@@ -1,6 +1,8 @@
 @if($thread)
     <div class="tile is-parent">
         <article class="tile is-child box">
+            <p class="is-size-5 has-text-grey">آخرین تحلیل ارسالی</p>
+            <hr class="hr-bold">
             <div class="card-content">
                 <div class="media">
                     <div class="media-content is-clipped">

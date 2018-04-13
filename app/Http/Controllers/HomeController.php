@@ -15,6 +15,10 @@ class HomeController extends Controller
     public function index()
     {
         $thread = Thread::orderBy('replies_count', 'desc')->first();
-        return view('home', compact('thread'));
+        $popularThreads = Thread::orderBy('replies_count', 'desc')->take(2)->get();
+        return view('home', [
+            'thread' => $thread,
+            'popularThreads' => $popularThreads,
+        ]);
     }
 }

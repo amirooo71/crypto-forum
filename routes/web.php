@@ -127,6 +127,7 @@ Route::group([
 
 Route::get('test', function () {
 
-    dd(auth()->user()->isAdmin());
+    $popularThreads = \App\Thread::orderBy('replies_count', 'desc')->take(2)->get();
+    return $popularThreads;
 
 });

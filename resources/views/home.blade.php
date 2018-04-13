@@ -9,10 +9,10 @@
                     <div class="column is-vertically-centered">
                         <div class="is-text-column">
                             <h1 class="title">
-                                مجمع تحلیل ارزهای دیجیتال
+                                پودونک
                             </h1>
                             <h2 class="subtitle">
-                                تحلیل و نظرات خود را به اشتراک بگذارید
+                                مجمع تحلیل و مبادله ارزهای دیجیتال
                             </h2>
                         </div>
                     </div>
@@ -52,32 +52,67 @@
         </div>
     </div>
 
-    <div class="section is-medium chart-section">
-        <div class="container">
-            <div class="columns">
-                <div class="column has-text-centered box">
-                    <p class="title has-text-grey-dark">نمودار لحظه ای قیمت</p>
-                </div>
-                <div class="column has-text-centered">
-                    <a href="{{route('analysis.index')}}" class="button is-info is-large is-rounded">
-                        <i class="fas fa-chart-bar"></i>
-                        <span class="mr-1">
-                        مشاهده نمودار
-                        </span>
-                    </a>
+
+    <section class="hero is-info is-fullheight trading-section">
+        <div class="hero-body">
+            <div class="container">
+                <div class="columns">
+                    <div class="column">
+                        <h1 class="title">
+                            پلتفرم آموزشی مبادله ارز دیجیتال
+                        </h1>
+                        <h2 class="subtitle">
+                            به راحتی و بدون هیچ هزینه ای شروع به یادگیری مبادله ارز دیجیتال کنید
+                        </h2>
+                    </div>
+                    <div class="column has-text-centered">
+                        <div class="content">
+                            <p class="has-text-justified">
+                                اگر شما تازه قصد ورود به بازار ارز دیجیتال دارید این جا بهترین جا برای شروع است. به دلیل
+                                نوسان زیاد قیمت در بازار ارز دیجیتال در صورت تازه کار بودن ممکن است متحمل ضرر زیادی شوید
+                                (دیدم که میگم!!! :) ) پس بهتر است قبل از ورود به بازار اصلی با استفاده از سامانه مبادله
+                                ارز
+                                دیجیتال پودونک که کاملا با پلتفرم های موجود یکسان است شروع به معامله کردن کنید و پس از
+                                یادگیری و آشنا شدن وارد بازار اصلی شوید.
+                            </p>
+                            <a href="https://demo.podonak.com/" class="button is-large trading-btn">ورود به بازار</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div class="section is-mobile has-text-centered">
+
+
+    {{--<div class="section is-medium chart-section">--}}
+    {{--<div class="container">--}}
+    {{--<div class="columns">--}}
+    {{--<div class="column has-text-centered box">--}}
+    {{--<p class="title has-text-grey-dark">نمودار لحظه ای قیمت</p>--}}
+    {{--</div>--}}
+    {{--<div class="column has-text-centered">--}}
+    {{--<a href="{{route('analysis.index')}}" class="button is-info is-large is-rounded">--}}
+    {{--<i class="fas fa-chart-bar"></i>--}}
+    {{--<span class="mr-1">--}}
+    {{--مشاهده نمودار--}}
+    {{--</span>--}}
+    {{--</a>--}}
+    {{--</div>--}}
+    {{--</div>--}}
+    {{--</div>--}}
+    {{--</div>--}}
+
+    <div class="section is-medium is-mobile has-text-centered">
         <div class="container">
-            <p class="title has-text-grey-dark">
-                مارکت ها
-            </p>
-            <p class="subtitle has-text-grey-dark">
-                مارکت های در دسترس ( به زودی مارکت های دیگر هم اضافه می شوند )
-            </p>
+            <div class="content">
+                <p class="title has-text-grey-dark">
+                    نرخ ارز پودونک از کجا تامین می شود؟
+                </p>
+                <p class="subtitle has-text-grey-dark">
+                    در پودونک نرخ ها از اکسچنج های معتبر زیر تامین می شود.
+                </p>
+            </div>
             <div class="columns">
                 <div class="column">
                     <figure class="image is-16by9">

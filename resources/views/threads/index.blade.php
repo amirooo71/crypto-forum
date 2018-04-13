@@ -8,14 +8,12 @@
         <section class="is-small">
             <div class="container">
                 <div class="columns">
-
                     <div class="column is-8">
                         @include('threads._list')
                         <div class="pagination">
                             {{$threads->render()}}
                         </div>
                     </div>
-
                     <div class="column">
                         @if(count($trending))
                             <div class="card">
@@ -41,7 +39,6 @@
                             </div>
                         @endif
                     </div>
-
                 </div>
             </div>
         </section>
