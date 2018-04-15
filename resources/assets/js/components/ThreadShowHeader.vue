@@ -60,19 +60,7 @@
                                             <span class="text-muted">{{thread.owner.created_at | ago}}</span> عضویت
                                         </p>
                                     </div>
-                                    <nav class="level is-mobile">
-                                        <div class="level-left">
-                                            <a class="level-item">
-                                                <span class="icon is-small"><i class="fas fa-reply"></i></span>
-                                            </a>
-                                            <a class="level-item">
-                                                <span class="icon is-small"><i class="fas fa-retweet"></i></span>
-                                            </a>
-                                            <a class="level-item">
-                                                <span class="icon is-small"><i class="fas fa-heart"></i></span>
-                                            </a>
-                                        </div>
-                                    </nav>
+                                    <thread-favorite :thread="thread"></thread-favorite>
                                 </div>
                             </article>
                         </div>
@@ -85,6 +73,7 @@
 
 <script>
 
+    import ThreadFavorite from './ThreadFavorite.vue'
     import filters from './../mixins/filters';
     import VueClipboard from 'vue-clipboard2'
 
@@ -92,6 +81,8 @@
 
     export default {
         name: "thread-show-header",
+
+        components: {ThreadFavorite},
 
         mixins: [filters],
 

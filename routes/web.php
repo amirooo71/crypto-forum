@@ -15,6 +15,7 @@ Route::get('/', 'HomeController@index')->name('home');
  */
 Route::get('threads', 'ThreadController@index')->name('threads');
 Route::get('threads/create', 'ThreadController@create')->name('threads.create');
+
 Route::post('threads/{analysisId}', 'ThreadController@store')->name('threads.store')->middleware('must-be-confirmed');
 Route::get('threads/{channel}', 'ThreadController@index');
 Route::get('threads/{channel}/{thread}', 'ThreadController@show');
@@ -110,6 +111,13 @@ Route::get('analysis/{thread}/comments', 'ThreadsCommentsController@index')->nam
 Route::get('threads/{channel}/{thread}/attach', 'ThreadsCommentsController@show')->name('threads.comment.show')->middleware('auth');
 /*
  |--------------------------------------------------------
+ |            Thread Favorites Controller Routes
+ |--------------------------------------------------------
+ */
+Route::post('/threads/{thread}/favorites', 'ThreadFavoritesController@store');
+Route::delete('/threads/{thread}/favorites', 'ThreadFavoritesController@destroy');
+/*
+ |--------------------------------------------------------
  |               Administrators Routes
  |--------------------------------------------------------
  */
@@ -119,9 +127,9 @@ Route::group([
     'namespace' => 'Admin',
 ], function () {
     Route::get('', 'DashboardController@index')->name('admin.dashboard.index');
-    Route::post('channels', 'ChannelsController@store')->name('admin.channels.store');
-    Route::get('channels', 'ChannelsController@index')->name('admin.channels.index');
-    Route::get('channels/create', 'ChannelsController@create')->name('admin.channels.create');
+//    Route::post('channels', 'ChannelsController@store')->name('admin.channels.store');
+//    Route::get('channels', 'ChannelsController@index')->name('admin.channels.index');
+//    Route::get('channels/create', 'ChannelsController@create')->name('admin.channels.create');
 });
 
 
@@ -131,3 +139,4 @@ Route::get('test', function () {
     return $popularThreads;
 
 });
+

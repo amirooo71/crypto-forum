@@ -11,13 +11,13 @@ use Stevebauman\Purify\Facades\Purify;
 
 class Thread extends Model
 {
-    use RecordsActivity;
+    use Favorable, RecordsActivity;
 
     protected $guarded = [];
 
-    protected $with = ['owner', 'channel', 'analysis'];
+    protected $with = ['owner', 'channel', 'analysis', 'favorites'];
 
-    protected $appends = ['isSubscribedTo'];
+    protected $appends = ['isSubscribedTo', 'isFavorited', 'favoritesCount'];
 
     protected $casts = [
         'locked' => 'boolean',
