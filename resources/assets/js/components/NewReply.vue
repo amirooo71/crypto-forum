@@ -55,12 +55,11 @@
                     .then(response => {
                         this.body = '';
                         this.completed = true;
-                        noty('success','دیدگاه شما با موفقیت ثبت شد.');
+                        noty('success', 'دیدگاه شما با موفقیت ثبت شد.');
                         this.$emit('created', response.data);
                     })
                     .catch(error => {
-                        console.log(error.response.data);
-                        noty('error',error.response.data.message);
+                        noty('error', error.response.data.message);
                     })
                 ;
             },
