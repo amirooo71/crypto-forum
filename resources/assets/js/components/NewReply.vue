@@ -59,6 +59,7 @@
                         this.$emit('created', response.data);
                     })
                     .catch(error => {
+                        console.log(error.response.data);
                         noty('error',error.response.data.message);
                     })
                 ;
