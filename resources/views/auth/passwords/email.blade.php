@@ -5,39 +5,51 @@
         <div class="hero-body">
             <div class="container">
                 <div class="col-md-8 col-md-offset-2">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">بازیابی رمز عبور</div>
-
-                        <div class="panel-body">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-header-title">
+                                بازیابی رمز عبور
+                            </div>
+                        </div>
+                        <div class="card-content">
                             @if (session('status'))
                                 <div class="alert alert-success">
                                     {{ session('status') }}
                                 </div>
                             @endif
-
-                            <form class="form-horizontal" method="POST" action="{{ route('password.email') }}">
+                            <form method="POST" action="{{ route('password.email') }}">
                                 {{ csrf_field() }}
 
-                                <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                                    <label for="email" class="col-md-4 control-label">آدرس ایمیل</label>
-
-                                    <div class="col-md-6">
-                                        <input id="email" type="email" class="form-control" name="email"
-                                               value="{{ old('email') }}" required>
-
-                                        @if ($errors->has('email'))
-                                            <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                        @endif
+                                <div class="field is-horizontal">
+                                    <div class="field-label is-normal">
+                                        <label class="label">ایمیل</label>
+                                    </div>
+                                    <div class="field-body">
+                                        <div class="field">
+                                            <div class="control">
+                                                <input class="input {{ $errors->has('email') ? ' is-danger' : '' }}"
+                                                       type="email" value="{{ old('email') }}"
+                                                       name="email" id="email">
+                                            </div>
+                                            @if ($errors->has('email'))
+                                                <p class="help is-danger">{{ $errors->first('email') }}</p>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div class="form-group">
-                                    <div class="col-md-6 col-md-offset-4">
-                                        <button type="submit" class="btn btn-primary">
-                                            ارسال ایمیل بازیابی
-                                        </button>
+                                <div class="field is-horizontal">
+                                    <div class="field-label">
+                                        <!-- Left empty for spacing -->
+                                    </div>
+                                    <div class="field-body">
+                                        <div class="field">
+                                            <div class="control is-pulled-right">
+                                                <button type="submit" class="button is-primary">
+                                                    بازیابی
+                                                </button>
+                                            </div>
+                                            <div class="is-clearfix"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </form>
