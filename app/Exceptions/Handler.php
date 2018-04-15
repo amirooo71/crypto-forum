@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
 class Handler extends ExceptionHandler
@@ -75,5 +76,16 @@ class Handler extends ExceptionHandler
         }
 
         return redirect()->guest(route('login'));
+    }
+
+    protected function convertValidationExceptionToResponse(ValidationException $e, $request)
+    {
+        $response = parent::convertValidationExceptionToResponse($e, $request);
+        if ($response instanceof JsonResponse) {
+            $original = $response->getOriginalContent();
+            $original['message'] = __($original['message']);
+            $response->setContent(json_encode($original));
+        }
+        return $response;
     }
 }
