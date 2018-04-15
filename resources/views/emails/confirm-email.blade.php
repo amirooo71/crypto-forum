@@ -1,12 +1,12 @@
 @component('mail::message')
 # Introduction
 
-We just need to confirm your email address to prove that you're human.
+شما با موفقیت ثبت نام شدید. جهت فعال سازی حساب خود بر روی دکمه فعال سازی کلیک کنید.
 
 @component('mail::button', ['url' => url('/register/confirm?token=' . $user->confirmation_token)])
-Confirm Email
+فعال سازی
 @endcomponent
 
-Thanks,<br>
+با سپاس،<br>
 {{ config('app.name') }}
 @endcomponent
