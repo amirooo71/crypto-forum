@@ -18,4 +18,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
+/*
+ |--------------------------------------------------------
+ |            Thread Favorites Controller Routes
+ |--------------------------------------------------------
+ */
+Route::post('/threads/{thread}/favorites', 'Api\ThreadFavoritesController@store');
+Route::delete('/threads/{thread}/favorites', 'Api\ThreadFavoritesController@destroy');
+
+
+
 //Route::get('/users', 'Api\UsersController');

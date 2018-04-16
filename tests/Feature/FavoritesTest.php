@@ -66,7 +66,7 @@ class FavoritesTest extends TestCase
     public function guests_can_not_favorite_any_threads()
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
-        $this->post('threads/1/favorites');
+        $this->post('api/threads/1/favorites');
     }
 
     /**
@@ -76,7 +76,7 @@ class FavoritesTest extends TestCase
     {
         $this->signIn();
         $thread = create('App\Thread');
-        $this->post('threads/' . $thread->slug . '/favorites');
+        $this->post('api/threads/' . $thread->slug . '/favorites');
         $this->assertCount(1, $thread->favorites);
     }
 
@@ -87,9 +87,9 @@ class FavoritesTest extends TestCase
     {
         $this->signIn();
         $thread = create('App\Thread');
-//        $thread->favorite();
-//        $this->assertCount(1, $thread->favorites);
-        $this->delete('/threads/' . $thread->id . '/favorites');
+        $thread->favorite();
+        $this->assertCount(1, $thread->favorites);
+        $this->delete('api/threads/' . $thread->slug . '/favorites');
         $this->assertCount(0, $thread->fresh()->favorites);
     }
 
@@ -101,8 +101,8 @@ class FavoritesTest extends TestCase
         $this->signIn();
         $thread = create('App\Thread');
         try {
-            $this->post('threads/' . $thread->id . '/favorites');
-            $this->post('threads/' . $thread->id . '/favorites');
+            $this->post('api/threads/' . $thread->slug . '/favorites');
+            $this->post('api/threads/' . $thread->slug . '/favorites');
         } catch (\Exception $e) {
             $this->fail('Did not expect to insert the same record set twice.');
         }

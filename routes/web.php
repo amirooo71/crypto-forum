@@ -111,13 +111,6 @@ Route::get('analysis/{thread}/comments', 'ThreadsCommentsController@index')->nam
 Route::get('threads/{channel}/{thread}/attach', 'ThreadsCommentsController@show')->name('threads.comment.show')->middleware('auth');
 /*
  |--------------------------------------------------------
- |            Thread Favorites Controller Routes
- |--------------------------------------------------------
- */
-Route::post('/threads/{thread}/favorites', 'ThreadFavoritesController@store');
-Route::delete('/threads/{thread}/favorites', 'ThreadFavoritesController@destroy');
-/*
- |--------------------------------------------------------
  |               Administrators Routes
  |--------------------------------------------------------
  */

@@ -66,7 +66,7 @@ class ThreadsCommentsTest extends TestCase
         $channel = create('App\Channel');
         $thread = create('App\Thread', ['channel_id' => $channel->id]);
         $response = $this->getJson("threads/{$channel->id}/{$thread->slug}/attach")->json();
-        $this->assertCount(16, $response);
+        $this->assertCount(19, $response);
     }
 
 
