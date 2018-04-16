@@ -111,6 +111,14 @@ Route::get('analysis/{thread}/comments', 'ThreadsCommentsController@index')->nam
 Route::get('threads/{channel}/{thread}/attach', 'ThreadsCommentsController@show')->name('threads.comment.show')->middleware('auth');
 /*
  |--------------------------------------------------------
+ |            Thread Favorites Controller Routes
+ |--------------------------------------------------------
+ */
+Route::post('api/threads/{thread}/favorites', 'Api\ThreadFavoritesController@store');
+Route::delete('api/threads/{thread}/favorites', 'Api\ThreadFavoritesController@destroy');
+
+/*
+ |--------------------------------------------------------
  |               Administrators Routes
  |--------------------------------------------------------
  */
@@ -126,10 +134,4 @@ Route::group([
 });
 
 
-Route::get('test', function () {
-
-    $popularThreads = \App\Thread::orderBy('replies_count', 'desc')->take(2)->get();
-    return $popularThreads;
-
-});
 

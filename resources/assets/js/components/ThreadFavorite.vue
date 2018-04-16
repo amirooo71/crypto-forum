@@ -1,21 +1,21 @@
 <template>
-    <nav class="level is-mobile">
+    <nav class="level is-mobile is-clipped">
         <div class="level-left">
-            <a class="level-item">
-                <span class="icon is-small"><i class="fas fa-reply"></i></span>
-            </a>
-            <a class="level-item">
-                <span class="icon is-small"><i class="fas fa-retweet"></i></span>
-            </a>
-            <a class="level-item" @click="toggle">
-                <span class="icon is-small"><i class="fas fa-heart"></i></span>
-            </a>
+            <div class="level-item">
+                <span>
+                    <span>{{favoritesCount}}</span>
+                    <a @click="toggle">
+                        <i :class="classes"></i>
+                    </a>
+                </span>
+            </div>
         </div>
     </nav>
 </template>
 
 <script>
     export default {
+
         name: "thread-favorite",
 
         props: ['thread'],
@@ -26,18 +26,20 @@
                 isFavorited: this.thread.isFavorited,
             }
         },
-
+        
         computed: {
+
             classes() {
-                return ['btn', this.isFavorited ? 'btn-primary' : 'btn-default'];
+                return [this.isFavorited ? 'fas fa-heart has-text-danger' : 'far fa-heart has-text-danger'];
             },
 
             endpoint() {
-                return '/threads/' + this.thread.slug + '/favorites';
+                return '/api/threads/' + this.thread.slug + '/favorites';
             },
         },
 
         methods: {
+
             toggle() {
                 return this.isFavorited ? this.destory() : this.create();
             },
