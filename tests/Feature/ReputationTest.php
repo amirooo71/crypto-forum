@@ -102,4 +102,33 @@ class ReputationTest extends TestCase
         $total = Reputation::REPLY_POSTED + Reputation::REPLY_FAVORITED - Reputation::REPLY_FAVORITED;
         $this->assertEquals($total, $reply->owner->fresh()->reputation);
     }
+
+
+    /**
+     * @test
+     */
+    function a_user_earns_points_when_their_thread_is_favorited()
+    {
+        $this->signIn();
+        $thread = create('App\Thread', ['user_id' => auth()->id()]);
+        $this->post("api/threads/{$thread->slug}/favorites");
+        $total = Reputation::THREAD_WAS_PUBLISHED + Reputation::THREAD_FAVORITED;
+        $this->assertEquals($total, $thread->owner->fresh()->reputation);
+    }
+
+    /**
+     * @test
+     */
+    function a_user_loses_points_when_their_favorited_thread_is_unfavorited()
+    {
+        $this->signIn();
+        $thread = create('App\Thread', ['user_id' => auth()->id()]);
+        $this->post("api/threads/{$thread->slug}/favorites");
+        $total = Reputation::THREAD_WAS_PUBLISHED + Reputation::THREAD_FAVORITED;
+        $this->assertEquals($total, $thread->owner->fresh()->reputation);
+        $this->delete("api/threads/{$thread->slug}/favorites");
+        $total = Reputation::THREAD_WAS_PUBLISHED + Reputation::THREAD_FAVORITED - Reputation::THREAD_FAVORITED;
+        $this->assertEquals($total, $thread->owner->fresh()->reputation);
+    }
+
 }

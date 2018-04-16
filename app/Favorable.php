@@ -35,7 +35,6 @@ trait Favorable
     {
         $attributes = ['user_id' => auth()->id()];
         if (!$this->favorites()->where($attributes)->exists()) {
-            (new Reputation)->award(auth()->user(), Reputation::REPLY_FAVORITED);
             return $this->favorites()->create($attributes);
         }
     }
@@ -44,7 +43,6 @@ trait Favorable
     {
         $attributes = ['user_id' => auth()->id()];
         $this->favorites()->where($attributes)->get()->each->delete();
-        (new Reputation)->reduce(auth()->user(), Reputation::REPLY_FAVORITED);
     }
 
     /**

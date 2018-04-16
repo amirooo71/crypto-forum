@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Reputation;
 use App\Thread;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -23,6 +24,7 @@ class ThreadFavoritesController extends Controller
     public function store(Thread $thread)
     {
         $thread->favorite();
+        (new Reputation)->award(auth()->user(), Reputation::THREAD_FAVORITED);
         return back();
     }
 
@@ -32,5 +34,6 @@ class ThreadFavoritesController extends Controller
     public function destroy(Thread $thread)
     {
         $thread->unfavorite();
+        (new Reputation)->reduce(auth()->user(), Reputation::THREAD_FAVORITED);
     }
 }
