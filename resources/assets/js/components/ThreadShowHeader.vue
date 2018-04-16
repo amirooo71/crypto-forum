@@ -57,7 +57,7 @@
                                             <a :href="profileLink">{{thread.owner.name}}</a>
                                             <small>@{{thread.owner.name}}</small>
                                             <br>
-                                            <span class="text-muted">{{thread.owner.created_at | ago}}</span> عضویت
+                                            عضویت <span class="text-muted">{{thread.owner.created_at | ago}}</span>
                                         </p>
                                     </div>
                                     <thread-favorite :thread="thread"></thread-favorite>

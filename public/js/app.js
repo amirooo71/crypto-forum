@@ -69121,13 +69121,14 @@ var render = function() {
                         ]),
                         _vm._v(" "),
                         _c("br"),
-                        _vm._v(" "),
+                        _vm._v(
+                          "\n                                        عضویت "
+                        ),
                         _c("span", { staticClass: "text-muted" }, [
                           _vm._v(
                             _vm._s(_vm._f("ago")(_vm.thread.owner.created_at))
                           )
-                        ]),
-                        _vm._v(" عضویت\n                                    ")
+                        ])
                       ])
                     ]),
                     _vm._v(" "),
